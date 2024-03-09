@@ -1,0 +1,35 @@
+.color-range-picker {
+  position: absolute;
+  width: 154px !important;
+  height: 1px;
+  bottom: -7px;
+  transform: rotate(-90deg);
+  transform-origin: bottom left;
+  margin: 0;
+  background-color: transparent;
+  -webkit-appearance: none;
+}
+
+.color-range-picker:focus {
+  outline: none;
+}
+
+.color-range-picker::-webkit-slider-runnable-track {
+  height: 14px;
+  background: transparent;
+}
+
+.color-range-picker::-webkit-slider-thumb {
+  width: 14px;
+  height: 14px;
+  background: transparent;
+  border-radius: 100%;
+  appearance: none;
+  border: 2px solid currentColor;
+  transform: scale(0.8);
+}
+
+.color-range-picker:focus::-webkit-slider-thumb {
+  border: 4px solid currentColor;
+  transform: scale(1.25);
+}

@@ -1,0 +1,48 @@
+.input {
+  background: rgba(0, 0, 0, 0.05);
+  display: inline-flex;
+  align-items: baseline;
+  padding: 2px 4px;
+  gap: 4px;
+  border-radius: 3px;
+  max-width: 100%;
+  position: relative;
+  font-size: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.085);
+}
+
+.input:focus-within {
+  outline: 2px solid rgba(128, 183, 255, 0.75);
+  position: relative;
+  z-index: 1;
+}
+
+.input__label {
+  opacity: 0.7;
+  white-space: nowrap;
+}
+
+.input__element:focus {
+  outline: none;
+}
+
+.input__element {
+  background: none;
+  color: inherit;
+  padding: 0;
+  margin: 0;
+  font-size: inherit;
+  width: 100%;
+  text-align: inherit;
+}
+
+.input__element[role=combobox] {
+  cursor: default;
+}
+
+.input__element[type=number],
+.input__element[type=number]::-webkit-inner-spin-button,
+.input__element[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+}

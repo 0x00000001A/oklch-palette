@@ -1,0 +1,33 @@
+.input__listbox {
+  background-color: #333;
+  border: 1px solid rgb(0 0 0 / 75%);
+  border-radius: 6px;
+  max-height: 300px;
+  overflow-y: auto;
+  left: 0;
+  position: absolute;
+  top: 100%;
+  margin-top: 2px;
+  width: 100%;
+  z-index: 100;
+}
+
+.input_open:focus-within {
+  z-index: 100;
+}
+
+.input_open .input__listbox {
+  display: block;
+}
+
+.input__option {
+  padding: 2px 4px;
+}
+
+.input__option:hover {
+  background-color: rgb(255, 255, 255, 0.1);
+}
+
+.input__option_current {
+  background-color: rgb(255, 255, 255, 0.1);
+}

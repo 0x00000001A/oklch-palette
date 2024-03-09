@@ -1,0 +1,32 @@
+.split-container {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.split-container .panel {
+  flex: auto;
+}
+
+.split-container_horizontal {
+  flex-direction: row;
+}
+
+.split-container_vertical {
+  flex-direction: column;
+}
+
+.split-container_horizontal .panel {
+  border-right: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.split-container_horizontal .panel:last-of-type {
+  border-right-width: 0;
+}
+
+.split-container_vertical .panel {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.split-container_vertical .panel:last-of-type {
+  border-bottom-width: 0;
+}

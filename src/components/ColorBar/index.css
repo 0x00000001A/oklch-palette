@@ -1,0 +1,69 @@
+.color-bar {
+  display: flex;
+  flex-wrap: nowrap
+}
+
+.color-bar > .color-bar__item {
+  height: 20px;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+.color-bar__item {
+  position: relative;
+  z-index: 1;
+}
+
+.color-bar__item::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-left-width: 0;
+  border-right-width: 0;
+  background-color: currentColor;
+}
+
+.color-bar__item:not(.color-bar__item_selected):hover::after {
+  top: -2px;
+  bottom: -2px;
+}
+
+.color-bar__item_selected {
+  z-index: 0;
+}
+
+.color-bar__item_selected::after {
+  top: -4px;
+  bottom: -4px;
+  border-radius: 6px;
+  border: 0;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+  z-index: 0;
+}
+
+.color-bar > .color-bar__item:first-of-type::after {
+  border-left-width: 1px;
+}
+
+.color-bar > .color-bar__item:last-of-type::after {
+  border-right-width: 1px;
+}
+
+.color-bar > .color-bar__item:hover:not(.color-bar__item_selected)::after,
+.color-bar > .color-bar__item:hover:not(.color-bar__item_selected)::after {
+  border-radius: 3px;
+}
+
+.color-bar > .color-bar__item:hover:first-of-type:not(.color-bar__item_selected)::after,
+.color-bar > .color-bar__item:first-of-type:not(.color-bar__item_selected)::after {
+  border-radius: 3px 0 0 3px;
+}
+
+.color-bar > .color-bar__item:hover:last-of-type:not(.color-bar__item_selected)::after,
+.color-bar > .color-bar__item:last-of-type:not(.color-bar__item_selected)::after {
+  border-radius: 0 3px 3px 0;
+}

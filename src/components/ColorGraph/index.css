@@ -1,0 +1,63 @@
+.color-graph {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  background: #f3f3f3;
+  border: 1px solid #e1e1e1;
+  padding: 9px;
+  border-radius: 6px;
+  gap: 9px
+}
+
+.color-graph__colors,
+.color-graph__inputs {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.color-graph__inputs .color-graph__input {
+  border-radius: 0;
+}
+
+.color-graph__inputs .color-graph__input:first-of-type {
+  border-radius: 4px 0 0 4px;
+}
+
+.color-graph__inputs .color-graph__input:last-of-type {
+  border-radius: 0 4px 4px 0;
+}
+
+.color-graph__canvas {
+  --color-a: #eee;
+  --color-b: #ccc;
+  --size: 6px;
+
+  border-radius: 4px;
+
+  background-position: 0 0, calc(var(--size) / 2) calc(var(--size) / 2);
+  background-size: var(--size) var(--size);
+  background-image: linear-gradient(45deg, var(--color-a) 25%, transparent 25%, transparent 75%, var(--color-a) 75%, var(--color-a) 100%), linear-gradient(45deg, var(--color-a) 25%, var(--color-b) 25%, var(--color-b) 75%, var(--color-a) 75%, var(--color-a) 100%);
+}
+
+.color-graph__canvas-wrapper {
+  position: relative;
+  display: flex;
+}
+
+.color-graph__sliders {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+}
+
+.color-graph__inputs .input {
+  border-right-width: 0;
+}
+
+.color-graph__inputs .input:last-of-type {
+  border-right-width: 1px;
+}

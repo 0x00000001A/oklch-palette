@@ -1,16 +1,21 @@
 import {FC, useCallback, useEffect, useMemo, useRef, useState} from 'react'
+
+import {LCH_CHANNELS_NAMES, useColorsStore} from '../../state'
+import {colorsWorkerManager} from '../../worker'
+import {ColorsMessageResponse} from '../../worker/types.ts'
 import {ColorRangePicker} from '../ColorRangePicker'
-import {useColorsStore} from '../../state'
-import {ColorGraphProps} from './types.ts'
-import './index.css'
 import {Input} from '../Input'
 
+import {ColorGraphProps} from './types.ts'
+
+import './index.css'
+
 type ColorGraphInputProps = {
+  channel: LCH_CHANNELS_NAMES
   col: number
-  channel: number
 }
 
-const ColorGraphInput: FC<ColorGraphInputProps> = ({col, channel}) => {
+const ColorGraphInput: FC<ColorGraphInputProps> = ({channel, col}) => {
   const {color} = useColorsStore(
     (state) => {
       const color = {...state.colors[state.selectedRow][col]}
@@ -32,41 +37,52 @@ const ColorGraphInput: FC<ColorGraphInputProps> = ({col, channel}) => {
 
   return (
     <Input
-      className={'color-graph__input'}
       style={{
-        textAlign: 'center',
-        fontSize: 12,
+        flexBasis: 0,
         flexGrow: 1,
         flexShrink: 1,
-        flexBasis: 0
+        fontSize: 12,
+        textAlign: 'center'
       }}
+      className={'color-graph__input'}
       value={color.oklch[channel]}
       onChange={console.log}
     />
   )
 }
 
-const ColorGraph: FC<ColorGraphProps> = ({min, max, step, channel}) => {
+const ColorGraph: FC<ColorGraphProps> = ({channel, max, min, step}) => {
   const colorsLen = useColorsStore((state) => state.colNames.length)
 
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [canvasSize, setCanvasSize] = useState([0, 0])
 
-  const handleImageDataChanged = useCallback(
-    (data: {value: ImageData; index: number; updatedAt: number}) => {
+  const handleImageDataReceived = useCallback(
+    ({data}: MessageEvent<ColorsMessageResponse>) => {
       if (!canvasRef.current) {
         return
       }
 
-      const context = canvasRef.current.getContext('2d')!
+      const context = canvasRef.current.getContext('2d')
 
-      let x = data.index * data.value.width + 20
+      if (!context) {
+        console.error('Failed to initiate canvas context')
+        return
+      }
+
+      const imageData = new ImageData(
+        new Uint8ClampedArray(data.buffer),
+        data.width,
+        data.height
+      )
+
+      let x = data.index * data.width + 20
 
       if (!data.index) {
         x = 0
       }
 
-      context.putImageData(data.value, x, 0)
+      context.putImageData(imageData, x, 0)
     },
     []
   )
@@ -76,47 +92,48 @@ const ColorGraph: FC<ColorGraphProps> = ({min, max, step, channel}) => {
       return
     }
 
-    const canvas = canvasRef.current!
-
+    const canvas = canvasRef.current
     const width = Math.ceil(canvas.width / colorsLen)
     const height = canvas.height
 
     setCanvasSize([width, height])
   }, [colorsLen])
 
-  const renderColorRangePicker = useCallback(
-    (_: number, index: number) => {
-      return (
-        <ColorRangePicker
-          key={index}
-          min={min}
-          max={max}
-          step={step}
-          width={canvasSize[0]}
-          height={canvasSize[1]}
-          index={index}
-          channel={channel}
-          onImageDataChange={handleImageDataChanged}
-        />
-      )
-    },
-    [canvasSize, channel, handleImageDataChanged, max, min]
-  )
-
-  const renderColorInput = useCallback(
-    (_: number, index: number) => {
-      return <ColorGraphInput key={index} col={index} channel={channel} />
-    },
-    [channel]
-  )
-
   const colorInputs = useMemo(() => {
-    return new Array(colorsLen).fill(0).map(renderColorInput)
-  }, [colorsLen, renderColorInput])
+    return new Array(colorsLen)
+      .fill(0)
+      .map((_, index: number) => (
+        <ColorGraphInput channel={channel} col={index} key={index} />
+      ))
+  }, [channel, colorsLen])
 
   const colorRangePickers = useMemo(() => {
-    return new Array(colorsLen).fill(0).map(renderColorRangePicker)
-  }, [colorsLen, renderColorRangePicker])
+    return new Array(colorsLen)
+      .fill(0)
+      .map((_: number, index: number) => (
+        <ColorRangePicker
+          channel={channel}
+          height={canvasSize[1]}
+          index={index}
+          key={index}
+          max={max}
+          min={min}
+          step={step}
+          width={canvasSize[0]}
+        />
+      ))
+  }, [canvasSize, channel, colorsLen, max, min, step])
+
+  const subscribeToColorsWorkerUpdates = () => {
+    colorsWorkerManager.subscribe(channel, handleImageDataReceived)
+
+    return () => {
+      colorsWorkerManager.unsubscribe(channel, handleImageDataReceived)
+    }
+  }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(subscribeToColorsWorkerUpdates, [])
 
   return (
     <div className={'color-graph'}>
@@ -124,9 +141,9 @@ const ColorGraph: FC<ColorGraphProps> = ({min, max, step, channel}) => {
       <div className={'color-graph__canvas-wrapper'}>
         <canvas
           className={'color-graph__canvas'}
+          height={140}
           ref={canvasRef}
           width={colorsLen * 40}
-          height={140}
         />
         <div className={'color-graph__sliders'}>{colorRangePickers}</div>
       </div>

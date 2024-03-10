@@ -1,27 +1,24 @@
-// noinspection JSSuspiciousNameCombination
-
 import {ChangeEvent, FC, useCallback, useEffect} from 'react'
-import {useColorsStore, LCH_CHANNELS_NAMES} from '../../state'
-import {ColorRangePickerProps} from './types.ts'
-import './index.css'
+
+import {LCH_CHANNELS_NAMES, useColorsStore} from '../../state'
 import {cls} from '../../utils/cls.ts'
 import {colorsWorkerManager} from '../../worker'
-import {ColorsMessageResponse} from '../../worker/types.ts'
+
+import {ColorRangePickerProps} from './types.ts'
+
+import './index.css'
 
 const ColorRangePicker: FC<ColorRangePickerProps> = ({
-  min,
-  max,
-  step,
-  width,
+  channel,
   height,
   index,
-  channel,
-  onImageDataChange
+  max,
+  min,
+  step,
+  width
 }) => {
-  const isSelected = useColorsStore((state) => state.selectedCol === index)
-
-  const isLightColor = useColorsStore((state) => {
-    return state.colors[state.selectedRow][index].analyzersReports.wcag.black.success
+  const isSelected = useColorsStore((state) => {
+    return state.selectedCol === index
   })
 
   const value = useColorsStore((state) => {
@@ -29,47 +26,32 @@ const ColorRangePicker: FC<ColorRangePickerProps> = ({
   })
 
   const nextValue = useColorsStore((state) => {
-    const nextColor = state.colors[state.selectedRow][index + 1]?.oklch || []
+    const colIndex = Math.min(state.colNames.length - 1, index + 1)
+    const nextColor = state.colors[state.selectedRow][colIndex].oklch
+
     return nextColor[channel]
   })
-
-  const imageData = useColorsStore(
-    (state) => ({
-      index,
-      value: state.colors[state.selectedRow][index].imageData[channel],
-      updatedAt: state.colors[state.selectedRow][index].imageDataUpdatedAt
-    }),
-    (a, b) => a?.updatedAt === b?.updatedAt
-  )
 
   const getNeighborColors = useColorsStore((state) => state.getCurrentAndNextColors)
   const setSelectedColorChannelValue = useColorsStore(
     (state) => state.setSelectedColorChannelValue
   )
-  const updateColorImageData = useColorsStore((state) => state.updateColorImageData)
-  const setSelectedCol = useColorsStore((state) => state.setSelectedCol)
-
-  const handleFocus = useCallback(() => {
-    setSelectedCol(index)
-  }, [index, setSelectedCol])
+  const setSelectedCol = useColorsStore((state) => {
+    return state.setSelectedCol
+  })
 
   const handleChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
-      setSelectedColorChannelValue(channel, Number(event.target.value))
+      if (event.target === document.activeElement) {
+        setSelectedColorChannelValue(channel, Number(event.target.value))
+      }
     },
     [channel, setSelectedColorChannelValue]
   )
 
-  const handleSetImageData = useCallback(
-    ({data: {buffer, ...restData}}: MessageEvent<ColorsMessageResponse>) => {
-      updateColorImageData(
-        restData.index,
-        restData.channel,
-        new ImageData(new Uint8ClampedArray(buffer), restData.width, restData.height)
-      )
-    },
-    [updateColorImageData]
-  )
+  const handleFocus = useCallback(() => {
+    setSelectedCol(index)
+  }, [index, setSelectedCol])
 
   const handleValueChange = useCallback(() => {
     if (!width || !height) {
@@ -86,50 +68,41 @@ const ColorRangePicker: FC<ColorRangePickerProps> = ({
 
     const workerMessage = {
       channel,
+      colors,
       height,
-      width,
       index,
-      colors
+      width
     }
 
     channelsToUpdate.forEach((channelToUpdate) => {
-      colorsWorkerManager.runTask(
-        {
-          ...workerMessage,
-          id: `${channelToUpdate}-${workerMessage.index}`,
-          channel: channelToUpdate
-        },
-        handleSetImageData
-      )
+      colorsWorkerManager.runTask({
+        ...workerMessage,
+        channel: channelToUpdate,
+        id: `${channelToUpdate}-${workerMessage.index}`
+      })
     })
-  }, [channel, getNeighborColors, handleSetImageData, height, index, width])
-
-  const handleImageDataChanged = useCallback(() => {
-    imageData.value && onImageDataChange(imageData as never)
-  }, [imageData, onImageDataChange])
+  }, [channel, getNeighborColors, height, index, width])
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(handleValueChange, [width, height, value, nextValue])
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(handleImageDataChanged, [imageData.updatedAt])
-
+  // noinspection JSSuspiciousNameCombination
   return (
     <input
-      className={cls('color-range-picker', isSelected && 'color-range-picker_selected')}
-      type={'range'}
-      min={min}
-      max={max}
-      step={step}
-      size={step}
-      value={value}
       style={{
-        width: height,
+        color: '#000',
         left: index * 40 + 20 + 1,
-        color: isLightColor ? '#000' : '#fff'
+        width: height
       }}
-      onFocus={handleFocus}
+      className={cls('color-range-picker', isSelected && 'color-range-picker_selected')}
+      max={max}
+      min={min}
+      size={step}
+      step={step}
+      type={'range'}
+      value={value}
       onChange={handleChange}
+      onFocus={handleFocus}
     />
   )
 }

@@ -1,11 +1,14 @@
 import {FC, useCallback, useMemo} from 'react'
-import {ColorBarProps} from './types.ts'
-import {useColorsStore} from '../../state'
-import './index.css'
-import useBemClassName from '../../hooks/useBemClassName.ts'
 
-const ColorBarItem: FC<{index: number} & ColorBarProps> = ({index, colorsFrom}) => {
-  const {setSelectedRow, setSelectedCol} = useColorsStore(undefined, () => true)
+import useBemClassName from '../../hooks/useBemClassName.ts'
+import {useColorsStore} from '../../state'
+
+import {ColorBarProps} from './types.ts'
+
+import './index.css'
+
+const ColorBarItem: FC<{index: number} & ColorBarProps> = ({colorsFrom, index}) => {
+  const {setSelectedCol, setSelectedRow} = useColorsStore(undefined, () => true)
 
   const {color, isSelected} = useColorsStore(
     (state) => {
@@ -23,8 +26,8 @@ const ColorBarItem: FC<{index: number} & ColorBarProps> = ({index, colorsFrom}) 
       color.oklch = oklch as never
 
       return {
-        isSelected: index === selectedIndex,
         color,
+        isSelected: index === selectedIndex,
         row: state.selectedRow
       }
     },
@@ -56,9 +59,9 @@ const ColorBarItem: FC<{index: number} & ColorBarProps> = ({index, colorsFrom}) 
 
   return (
     <div
-      onClick={handleClick}
       className={bemClassName.colorBarItem}
       style={{color: color.hex}}
+      onClick={handleClick}
     />
   )
 }
@@ -77,7 +80,7 @@ const ColorBar: FC<ColorBarProps> = ({colorsFrom}) => {
 
   const colors = useMemo(() => {
     return colorsNames.map((_: string, index: number) => (
-      <ColorBarItem key={index} index={index} colorsFrom={colorsFrom} />
+      <ColorBarItem colorsFrom={colorsFrom} index={index} key={index} />
     ))
   }, [colorsFrom, colorsNames])
 

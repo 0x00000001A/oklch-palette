@@ -1,9 +1,10 @@
+import {LCH_CHANNELS_NAMES} from '../../state'
+
 import {
   WorkerImplementation,
   WorkerTaskCallback,
   WorkerTaskData,
-  WorkerTaskId,
-  WorkerTaskInQueue
+  WorkerTaskId
 } from './types.ts'
 
 export const createWebWorkersManager = (WorkerToUse: WorkerImplementation) => {
@@ -13,27 +14,51 @@ export const createWebWorkersManager = (WorkerToUse: WorkerImplementation) => {
       return new WorkerToUse()
     })
 
-  const queue = new Map<WorkerTaskId, WorkerTaskInQueue>([])
+  const queue = new Map<WorkerTaskId, WorkerTaskData>([])
+  const subscribers = new Map<LCH_CHANNELS_NAMES, WorkerTaskCallback[]>()
 
-  const runTask = <GData extends WorkerTaskData, GCallback extends WorkerTaskCallback>(
-    data: GData,
-    callback: GCallback
+  const subscribe = (channel: LCH_CHANNELS_NAMES, callback: WorkerTaskCallback) => {
+    const existingSubscribers = subscribers.get(channel) || []
+
+    subscribers.set(channel, [...existingSubscribers, callback])
+  }
+
+  const unsubscribe = (channel: LCH_CHANNELS_NAMES, callback: WorkerTaskCallback) => {
+    const existingSubscribers = subscribers.get(channel) || []
+
+    subscribers.set(
+      channel,
+      existingSubscribers.filter((subscribersItem) => {
+        return subscribersItem !== callback
+      })
+    )
+  }
+
+  const notifySubscribers = (
+    event: MessageEvent<WorkerTaskData>,
+    subscribersToNotify: WorkerTaskCallback[] = []
   ) => {
-    const hasFreeWorkers = availableWorkers.length
-    let nextTaskId: WorkerTaskId = data.id
-    let nextTaskPayload: WorkerTaskInQueue = {data, callback}
+    subscribersToNotify.forEach((subscriber) => {
+      subscriber(event)
+    })
+  }
 
-    if (!hasFreeWorkers) {
+  const runTask = <GData extends WorkerTaskData>(data: GData) => {
+    const freeWorker = availableWorkers.pop()
+    let nextTaskId: WorkerTaskId = data.id
+    let nextTaskPayload = data
+
+    if (!freeWorker) {
       queue.set(nextTaskId, nextTaskPayload)
       return
     }
 
-    const freeWorker = availableWorkers.pop()!
     freeWorker.postMessage(data)
 
-    freeWorker.onmessage = (e) => {
+    freeWorker.onmessage = (event: MessageEvent<WorkerTaskData>) => {
       availableWorkers.push(freeWorker)
-      callback(e)
+
+      notifySubscribers(event, subscribers.get(data.channel))
 
       const queueIterator = queue.entries().next()
 
@@ -42,14 +67,16 @@ export const createWebWorkersManager = (WorkerToUse: WorkerImplementation) => {
       }
 
       nextTaskId = queueIterator.value[0]
-      nextTaskPayload = queueIterator.value[1]
+      nextTaskPayload = queueIterator.value[1] as never
 
       queue.delete(nextTaskId)
-      runTask(nextTaskPayload.data, nextTaskPayload.callback)
+      runTask(nextTaskPayload)
     }
   }
 
   return {
-    runTask
+    runTask,
+    subscribe,
+    unsubscribe
   }
 }

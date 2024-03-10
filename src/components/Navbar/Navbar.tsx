@@ -1,11 +1,14 @@
 import React, {FC, useId, useMemo} from 'react'
-import './index.css'
-import {useColorsStore} from '../../state'
+
+import {CHROMA_MAX} from '../../constants/colors.ts'
 import IconGithub from '../../icons/IconGithub.tsx'
+import IconSettings from '../../icons/IconSettings.tsx'
+import IconSun from '../../icons/IconSun.tsx'
+import {useColorsStore} from '../../state'
 import {Input} from '../Input'
 import {InputProps} from '../Input/Input.tsx'
-import IconSun from '../../icons/IconSun.tsx'
-import IconSettings from '../../icons/IconSettings.tsx'
+
+import './index.css'
 
 type ChannelInputProps = InputProps & {
   channel: number
@@ -30,7 +33,7 @@ const ChannelInput: FC<ChannelInputProps> = ({channel, ...restProps}) => {
     }
 
     if (channel === 1) {
-      return 0.33
+      return CHROMA_MAX
     }
 
     return 360
@@ -46,11 +49,11 @@ const ChannelInput: FC<ChannelInputProps> = ({channel, ...restProps}) => {
 
   return (
     <Input
-      type={'number'}
-      value={channelValue}
-      step={step}
       max={max}
       min={0}
+      step={step}
+      type={'number'}
+      value={channelValue}
       onChange={console.log}
       {...restProps}
     />
@@ -66,14 +69,14 @@ const SelectedColorForm: FC = () => {
 
     return (
       <React.Fragment key={channel}>
-        <label id={labelId} htmlFor={inputId}>
+        <label htmlFor={inputId} id={labelId}>
           {label}:
         </label>
         <ChannelInput
+          aria-labelledby={labelId}
+          channel={channel}
           id={inputId}
           label={label}
-          channel={channel}
-          aria-labelledby={labelId}
         />
       </React.Fragment>
     )
@@ -89,20 +92,20 @@ const Navbar: FC = () => {
       </div>
       <ul className={'navbar__menu'}>
         <li className={'navbar__item'}>
-          <button className={'navbar__button'} aria-label={'Switch to light mode'}>
+          <button aria-label={'Switch to light mode'} className={'navbar__button'}>
             <IconSettings />
           </button>
         </li>
         <li className={'navbar__item'}>
-          <button className={'navbar__button'} aria-label={'Switch to light mode'}>
+          <button aria-label={'Switch to light mode'} className={'navbar__button'}>
             <IconSun />
           </button>
         </li>
         <li className={'navbar__item'}>
           <a
-            href={'#'}
-            className={'navbar__button'}
             aria-label={'Go to project GitHub page'}
+            className={'navbar__button'}
+            href={'#'}
           >
             <IconGithub />
           </a>

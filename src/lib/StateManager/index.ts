@@ -1,6 +1,6 @@
 import {useSyncExternalStoreWithSelector} from 'use-sync-external-store/with-selector'
-import {defaultEqualityFn, defaultSelector} from './helpers.ts'
 
+import {defaultEqualityFn, defaultSelector} from './helpers.ts'
 import {StoreCreator, StoreMethods, StoreSubscriber} from './types.ts'
 
 export const createStore = <GState>(storeCreator: StoreCreator<GState>) => {
@@ -12,6 +12,14 @@ export const createStore = <GState>(storeCreator: StoreCreator<GState>) => {
   const listeners = new Set<StoreSubscriber<GState>>()
 
   const storeMethods: StoreMethods<GState> = {
+    destroy() {
+      listeners.clear()
+    },
+
+    getState() {
+      return state
+    },
+
     setState(partial, replace?: boolean) {
       const nextState = typeof partial === 'function' ? partial(state) : partial
 
@@ -23,12 +31,10 @@ export const createStore = <GState>(storeCreator: StoreCreator<GState>) => {
             ? (nextState as unknown as GState)
             : Object.assign({}, state, nextState)
 
-        listeners.forEach((listener) => listener(state, previousState))
+        listeners.forEach((listener) => {
+          listener(state, previousState)
+        })
       }
-    },
-
-    getState() {
-      return state
     },
 
     subscribe(listener: StoreSubscriber<GState>) {
@@ -37,10 +43,6 @@ export const createStore = <GState>(storeCreator: StoreCreator<GState>) => {
       return () => {
         listeners.delete(listener)
       }
-    },
-
-    destroy() {
-      listeners.clear()
     }
   }
 

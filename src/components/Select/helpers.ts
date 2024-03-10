@@ -1,9 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call,@typescript-eslint/prefer-includes,@typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unnecessary-condition */
 import {KeyboardEvent} from 'react'
+
 import {SelectActions} from './constants.ts'
 
 export function isElementInView(element: HTMLElement) {
-  const {top, left, right, bottom} = element.getBoundingClientRect()
+  const {bottom, left, right, top} = element.getBoundingClientRect()
 
   const windowHeight = innerHeight || document.documentElement.clientHeight
   const windowWidth = innerWidth || document.documentElement.clientWidth
@@ -15,7 +16,7 @@ export function getActionFromKey(
   event: KeyboardEvent<HTMLDivElement>,
   menuOpen: boolean
 ) {
-  const {key, altKey, ctrlKey, metaKey} = event
+  const {altKey, ctrlKey, key, metaKey} = event
   const openKeys = ['ArrowDown', 'ArrowUp', 'Enter', ' ']
 
   if (!menuOpen && openKeys.includes(key)) {

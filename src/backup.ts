@@ -1,17 +1,4 @@
 export const stripePalette = {
-  name: 'Stripe',
-  rowNames: [
-    'gray',
-    'blue',
-    'cyan',
-    'green',
-    'yellow',
-    'orange',
-    'red',
-    'purple',
-    'violet'
-  ],
-  columnNames: ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900'],
   colors: [
     [
       [0.9895569435743947, 0.0021214313033237724, 197.12340562535616],
@@ -121,5 +108,18 @@ export const stripePalette = {
       [0.3151035800902085, 0.11244576545074716, 293.30112485978265],
       [0.24676112242130174, 0.09791045883236837, 286.6848650155197]
     ]
+  ],
+  columnNames: ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  name: 'Stripe',
+  rowNames: [
+    'gray',
+    'blue',
+    'cyan',
+    'green',
+    'yellow',
+    'orange',
+    'red',
+    'purple',
+    'violet'
   ]
 }

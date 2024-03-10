@@ -1,9 +1,9 @@
 export type AnalyzerResult = {
-  label: string
-  value: string | number
-  success: boolean
-  foregroundColor: number[]
   backgroundColor: number[]
+  foregroundColor: number[]
+  label: string
+  success: boolean
+  value: number | string
 }
 
 export type Analyzer = (
@@ -31,10 +31,10 @@ function contrastRatio(luminance1: number, luminance2: number) {
 }
 
 const WCAG_MINIMUM_RATIOS = [
-  {label: 'Fail', value: 0, success: false},
-  {label: 'AA Large', value: 3, success: true},
-  {label: 'AA', value: 4.5, success: true},
-  {label: 'AAA', value: 7, success: true}
+  {label: 'Fail', success: false, value: 0},
+  {label: 'AA Large', success: true, value: 3},
+  {label: 'AA', success: true, value: 4.5},
+  {label: 'AAA', success: true, value: 7}
 ]
 
 export const wcag22: Analyzer = (foregroundColor, backgroundColor) => {
@@ -54,5 +54,5 @@ export const wcag22: Analyzer = (foregroundColor, backgroundColor) => {
     }
   }
 
-  return {success, value, label, foregroundColor, backgroundColor}
+  return {backgroundColor, foregroundColor, label, success, value}
 }

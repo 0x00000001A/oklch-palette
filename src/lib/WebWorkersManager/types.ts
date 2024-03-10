@@ -1,16 +1,12 @@
-export type WorkerTaskId = string | number | symbol
+export type WorkerTaskId = number | string | symbol
 
 export type WorkerTaskData = {
+  channel: number
   id: WorkerTaskId
 }
 
 export type WorkerTaskCallback = {
   (event: MessageEvent): void
-}
-
-export type WorkerTaskInQueue = {
-  data: WorkerTaskData
-  callback: WorkerTaskCallback
 }
 
 export type WorkerImplementation = {

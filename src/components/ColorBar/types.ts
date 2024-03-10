@@ -1,3 +1,3 @@
 export type ColorBarProps = {
-  colorsFrom: 'row' | 'col'
+  colorsFrom: 'col' | 'row'
 }

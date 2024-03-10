@@ -1,5 +1,5 @@
 export const deferredPromise = <T>() => {
-  let resolve: (value: T | PromiseLike<T>) => void = () => undefined
+  let resolve: (value: PromiseLike<T> | T) => void = () => undefined
   let reject: (reason?: unknown) => void = () => undefined
 
   const promise = new Promise<T>((res, rej) => {
@@ -7,5 +7,5 @@ export const deferredPromise = <T>() => {
     reject = rej
   })
 
-  return {resolve, reject, promise}
+  return {promise, reject, resolve}
 }

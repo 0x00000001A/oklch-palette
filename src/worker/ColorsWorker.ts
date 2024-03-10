@@ -1,6 +1,8 @@
+import {CHROMA_MAX, HUE_MAX, LIGHTNESS_MAX} from '../constants/colors.ts'
 import {LCH_CHANNELS_NAMES} from '../state'
-import {ColorsMessagePayload} from './types.ts'
 import {isWithinGamut, oklchToRgb} from '../utils/colors.ts'
+
+import {ColorsMessagePayload} from './types.ts'
 
 function putImageData(index: number, data: Uint8ClampedArray, rgba: number[] = []) {
   data[index] = rgba[0]
@@ -12,15 +14,13 @@ function putImageData(index: number, data: Uint8ClampedArray, rgba: number[] = [
 function generateNumbersBetween(min: number, max: number, amount: number) {
   const increments = (max - min) / amount
 
-  return [...Array(amount + 1)].map((_, y) => min + increments * y)
+  return Array(amount + 1)
+    .fill(0)
+    .map((_, y) => min + increments * y)
 }
 
 self.addEventListener('message', (event: MessageEvent<ColorsMessagePayload>) => {
-  if (!event) {
-    return
-  }
-
-  const {channel, height, index, colors} = event.data
+  const {channel, colors, height, index} = event.data
   let width = event.data.width
 
   if (!index) {
@@ -62,21 +62,21 @@ self.addEventListener('message', (event: MessageEvent<ColorsMessagePayload>) => 
     const resultColor = [...currentColor]
 
     if (channel === LCH_CHANNELS_NAMES.LIGHTNESS) {
-      resultColor[0] = 1 - y / height
+      resultColor[0] = LIGHTNESS_MAX - y / height
       resultColor[1] = workingColor[1][x]
       resultColor[2] = workingColor[2][x]
     }
 
     if (channel === LCH_CHANNELS_NAMES.CHROMA) {
       resultColor[0] = workingColor[0][x]
-      resultColor[1] = (0.33 * (height - y)) / height
+      resultColor[1] = (CHROMA_MAX * (height - y)) / height
       resultColor[2] = workingColor[2][x]
     }
 
     if (channel === LCH_CHANNELS_NAMES.HUE) {
       resultColor[0] = workingColor[0][x]
       resultColor[1] = workingColor[1][x]
-      resultColor[2] = 360 - (360 * y) / height
+      resultColor[2] = HUE_MAX - (HUE_MAX * y) / height
     }
 
     const rgbColor = oklchToRgb([resultColor[0], resultColor[1], resultColor[2]])
@@ -105,7 +105,11 @@ self.addEventListener('message', (event: MessageEvent<ColorsMessagePayload>) => 
     // }
   }
 
+  // @todo postMessage API needs to be clarified
+  // Or there is something wrong with docs.
+  // OR I'm using it in the wrong way.
+  // Needs to be reviewed somehow someday.
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  postMessage({channel, index, width, height, buffer}, [buffer])
+  // @ts-expect-error
+  postMessage({buffer, channel, height, index, width}, [buffer])
 })

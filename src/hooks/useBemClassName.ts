@@ -1,5 +1,6 @@
-import {cls} from '../utils/cls.ts'
 import {DependencyList, useMemo} from 'react'
+
+import {cls} from '../utils/cls.ts'
 
 const bemClassNameBuilder = (baseClassName: string, classNameFromProps?: string) => {
   const result: unknown[] = [baseClassName]
@@ -8,15 +9,15 @@ const bemClassNameBuilder = (baseClassName: string, classNameFromProps?: string)
     build() {
       return cls(...result, classNameFromProps)
     },
-    withModifier(modifier: string, condition?: boolean) {
-      condition && result.push(`${baseClassName}_${modifier}`)
-      return this
-    },
     createBlock(blockClassName: string, classNameFromPropsB?: string) {
       return bemClassNameBuilder(
         `${baseClassName}__${blockClassName}`,
         classNameFromPropsB
       )
+    },
+    withModifier(modifier: string, condition?: boolean) {
+      condition && result.push(`${baseClassName}_${modifier}`)
+      return this
     }
   }
 }

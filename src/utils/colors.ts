@@ -1,10 +1,10 @@
-import {Matrix, multiplyMatrixAndVector, Vector} from './math.ts'
+import {Matrix, Vector, multiplyMatrixAndVector} from './math.ts'
 
 export type Color = [number, number, number]
 
 export function isWithinGamut(rgb: Color) {
-  const ε = 0.000005
-  return rgb.reduce((a, b) => a && b >= 0 - ε && b <= 1 + ε, true)
+  const EPS = 0.000005
+  return rgb.reduce((a, b) => a && b >= 0 - EPS && b <= 1 + EPS, true)
 }
 
 export function rgbToFloat(rgb: Color) {

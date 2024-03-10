@@ -1,11 +1,14 @@
 import {FC} from 'react'
+
 import useBemClassName from '../../hooks/useBemClassName.ts'
-import './index.css'
+
 import {SplitContainerProps} from './types.ts'
 
+import './index.css'
+
 const SplitContainer: FC<SplitContainerProps> = ({
-  direction = 'horizontal',
   className,
+  direction = 'horizontal',
   ...restProps
 }) => {
   const bemClassName = useBemClassName(

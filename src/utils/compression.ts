@@ -27,9 +27,9 @@ export function base64ToStream(base64String: string) {
   return toStream(decodeFromBase64(base64String))
 }
 
-export async function responseToJson(response: Response) {
+export async function responseFromJson<T>(response: Response) {
   const blob = await response.blob()
-  return JSON.parse(await blob.text())
+  return JSON.parse(await blob.text()) as T
 }
 
 export async function responseToBase64(response: Response) {
@@ -38,13 +38,13 @@ export async function responseToBase64(response: Response) {
   return encodeToBase64(buffer)
 }
 
-export async function compressStream(stream: ReadableStream) {
+export function compressStream(stream: ReadableStream) {
   const compressedReadableStream = stream.pipeThrough(new CompressionStream('gzip'))
 
   return new Response(compressedReadableStream)
 }
 
-export async function decompressStream(stream: ReadableStream) {
+export function decompressStream(stream: ReadableStream) {
   const compressedReadableStream = stream.pipeThrough(new DecompressionStream('gzip'))
 
   return new Response(compressedReadableStream)

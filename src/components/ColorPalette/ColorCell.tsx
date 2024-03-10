@@ -1,31 +1,32 @@
 import {FC, HTMLAttributes, PropsWithChildren, useCallback, useMemo} from 'react'
-import {cls} from '../../utils/cls.ts'
+
 import {useColorsStore} from '../../state'
+import {cls} from '../../utils/cls.ts'
 
 export type ColorCellProps = Omit<HTMLAttributes<HTMLDivElement>, 'color' | 'onClick'> &
   PropsWithChildren & {
-    row?: number
     col?: number
-    onClick?: (row: number, col: number) => void
     isNotSelectable?: boolean
+    onClick?: (row: number, col: number) => void
+    row?: number
   }
 
 const ColorCell: FC<ColorCellProps> = ({
-  row = 0,
-  col = 0,
-  style,
-  className,
   children,
-  onClick = () => {},
+  className,
+  col = 0,
   isNotSelectable,
+  onClick = () => {},
+  row = 0,
+  style,
   ...restProps
 }) => {
   const color = useColorsStore(
-    ({colors, selectedRow, selectedCol}) => {
+    ({colors, selectedCol, selectedRow}) => {
       const isSelected = col === selectedCol && row === selectedRow
 
-      const {hex, analyzersReports, updatedAt} = colors[row][col]
-      return {hex, analyzersReports, updatedAt, isSelected}
+      const {hex, updatedAt} = colors[row][col]
+      return {hex, isSelected, updatedAt}
     },
     (a, b) => {
       return a.isSelected === b.isSelected && a.updatedAt === b.updatedAt
@@ -40,13 +41,10 @@ const ColorCell: FC<ColorCellProps> = ({
     return {
       ...style,
       background: color.hex,
-      color: color.analyzersReports.wcag.white.success ? '#fff' : '#000',
+      color: '#fff',
       outlineColor: color.hex
-      // boxShadow: color.isSelected
-      //   ? `0 0 0 4px ${color.hex}, 0 0 12px 0 rgba(0, 0, 0, 0.2)`
-      //   : undefined
     }
-  }, [color.analyzersReports.wcag.white.success, color.hex, style])
+  }, [color.hex, style])
 
   const cellClassName = useMemo(() => {
     return cls(
@@ -60,8 +58,8 @@ const ColorCell: FC<ColorCellProps> = ({
   return (
     <div
       {...restProps}
-      style={cellStyles}
       className={cellClassName}
+      style={cellStyles}
       onClick={handleColorClick}
     >
       {children}

@@ -1,12 +1,14 @@
 import {FC, InputHTMLAttributes} from 'react'
-import './index.css'
+
 import {cls} from '../../utils/cls.ts'
+
+import './index.css'
 
 export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   label?: string
 }
 
-const Input: FC<InputProps> = ({style, className, ...restProps}) => {
+const Input: FC<InputProps> = ({className, style, ...restProps}) => {
   return (
     <div className={cls('input', className)} style={style}>
       <input className={'input__element'} {...restProps} />

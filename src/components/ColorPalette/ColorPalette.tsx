@@ -1,7 +1,10 @@
-import './index.css'
-import {useColorsStore} from '../../state'
 import {useCallback} from 'react'
+
+import {useColorsStore} from '../../state'
+
 import ColorCell from './ColorCell.tsx'
+
+import './index.css'
 
 const ColorPalette = () => {
   const rowNames = useColorsStore((state) => state.rowNames)
@@ -24,8 +27,8 @@ const ColorPalette = () => {
           <th className={'color-palette__table-cell'} />
           {colNames.map((columnName, col) => (
             <th
-              key={col}
               className={'color-palette__table-cell color-palette__column-label'}
+              key={col}
             >
               {columnName}
             </th>
@@ -39,8 +42,8 @@ const ColorPalette = () => {
               {rowName}
             </td>
             {colNames.map((_, col) => (
-              <td key={col} className={'color-palette__table-cell'}>
-                <ColorCell row={row} col={col} onClick={handleColorClick}>
+              <td className={'color-palette__table-cell'} key={col}>
+                <ColorCell col={col} row={row} onClick={handleColorClick}>
                   50
                 </ColorCell>
               </td>

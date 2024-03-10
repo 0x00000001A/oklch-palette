@@ -1,35 +1,17 @@
-import {FC, useEffect, useState} from 'react'
+import {FC} from 'react'
+
+import {ColorBar} from '../components/ColorBar'
 import {ColorGraph} from '../components/ColorGraph'
-import {LCH_CHANNELS_NAMES} from '../state'
 import ColorPalette from '../components/ColorPalette'
 import {Navbar} from '../components/Navbar'
-import {ContrastChecker} from '../components/ContrastChecker'
+import {Panel} from '../components/Panel'
+import {SplitContainer} from '../components/SplitContainer'
+import {CHROMA_MAX, HUE_MAX, LIGHTNESS_MAX} from '../constants/colors.ts'
+import {LCH_CHANNELS_NAMES} from '../state'
 
 import './index.css'
-import {SplitContainer} from '../components/SplitContainer'
-import {Panel} from '../components/Panel'
-import {ColorBar} from '../components/ColorBar'
-import {restoreStoreFromLocalStorage} from '../state/io.ts'
 
 const App: FC = () => {
-  const [loading, setLoading] = useState(true)
-
-  const handleAppInit = () => {
-    restoreStoreFromLocalStorage().then(() => {
-      setLoading(false)
-    })
-
-    return () => {
-      setLoading(true)
-    }
-  }
-
-  useEffect(handleAppInit, [])
-
-  if (loading) {
-    return null
-  }
-
   return (
     <div className={'app'}>
       <div className={'app__header'}>
@@ -42,40 +24,28 @@ const App: FC = () => {
         <Panel
           style={{
             display: 'flex',
-            flexDirection: 'column',
-            gap: 8,
-            width: 150,
-            fontSize: 14,
-            flexShrink: 0
-          }}
-        >
-          <ContrastChecker />
-        </Panel>
-        <Panel
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 8,
-            overflow: 'auto',
             flexBasis: 'min-content',
-            flexShrink: 0
+            flexDirection: 'column',
+            flexShrink: 0,
+            gap: 8,
+            overflow: 'auto'
           }}
         >
           <ColorGraph
             channel={LCH_CHANNELS_NAMES.LIGHTNESS}
+            max={LIGHTNESS_MAX}
             min={0}
-            max={1}
             step={0.005}
           />
           <ColorBar colorsFrom={'col'} />
           <ColorGraph
             channel={LCH_CHANNELS_NAMES.CHROMA}
+            max={CHROMA_MAX}
             min={0}
-            max={0.33}
             step={0.005}
           />
           <ColorBar colorsFrom={'row'} />
-          <ColorGraph channel={LCH_CHANNELS_NAMES.HUE} min={0} max={360} step={0.5} />
+          <ColorGraph channel={LCH_CHANNELS_NAMES.HUE} max={HUE_MAX} min={0} step={0.5} />
         </Panel>
       </SplitContainer>
     </div>

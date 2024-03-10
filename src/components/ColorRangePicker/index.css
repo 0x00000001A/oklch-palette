@@ -29,6 +29,7 @@
   transform: scale(0.8);
 }
 
+.color-range-picker.color-range-picker_selected::-webkit-slider-thumb,
 .color-range-picker:focus::-webkit-slider-thumb {
   border: 4px solid currentColor;
   transform: scale(1.25);

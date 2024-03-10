@@ -1,20 +1,21 @@
 import {HTMLAttributes, MouseEvent, useCallback, useMemo} from 'react'
+
 import {cls} from '../../utils/cls.ts'
 
 type SelectOptionProps<GOption> = Omit<HTMLAttributes<HTMLDivElement>, 'onClick'> & {
-  option: GOption
-  label: string
-  selected?: boolean
   highlighted?: boolean
+  label: string
   onClick: (option: GOption, event: MouseEvent<HTMLDivElement>) => void
+  option: GOption
+  selected?: boolean
 }
 
 const SelectOption = <GOption,>({
+  highlighted,
   label,
+  onClick,
   option,
   selected,
-  highlighted,
-  onClick,
   ...restProps
 }: SelectOptionProps<GOption>) => {
   const className = useMemo(() => {
@@ -25,10 +26,6 @@ const SelectOption = <GOption,>({
     (event: MouseEvent<HTMLDivElement>) => {
       event.stopPropagation()
 
-      if (!onClick) {
-        return
-      }
-
       onClick(option, event)
     },
     [onClick, option]
@@ -36,9 +33,9 @@ const SelectOption = <GOption,>({
 
   return (
     <div
+      aria-selected={selected}
       className={className}
       role={'option'}
-      aria-selected={selected}
       onClick={handleOptionClick}
       {...restProps}
     >

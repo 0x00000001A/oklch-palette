@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import './index.css'
+/* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/no-non-null-assertion,@typescript-eslint/prefer-includes,@typescript-eslint/no-unsafe-assignment,@typescript-eslint/restrict-plus-operands,@typescript-eslint/no-unnecessary-condition,@typescript-eslint/no-unsafe-argument */
 import {
   FocusEvent,
   HTMLAttributes,
@@ -11,7 +10,10 @@ import {
   useRef,
   useState
 } from 'react'
+
 import {cls} from '../../utils/cls.ts'
+
+import {SelectActions, closeActions, navigationActions, openActions} from './constants.ts'
 import {
   getActionFromKey,
   getIndexByLetter,
@@ -19,8 +21,9 @@ import {
   isScrollable,
   maintainScrollVisibility
 } from './helpers.ts'
-import {closeActions, navigationActions, openActions, SelectActions} from './constants.ts'
 import SelectOption from './Option.tsx'
+
+import './index.css'
 
 type SelectFieldNames<GOption> = {
   label: keyof GOption
@@ -28,11 +31,11 @@ type SelectFieldNames<GOption> = {
 }
 
 type SelectProps<GValue, GOption> = HTMLAttributes<HTMLDivElement> & {
-  label?: string
-  value?: GValue
-  options?: GOption[]
   fieldNames?: Partial<SelectFieldNames<GOption>>
+  label?: string
   nothingSelectedLabel?: string
+  options?: GOption[]
+  value?: GValue
 }
 
 const defaultFieldNames = {
@@ -41,11 +44,11 @@ const defaultFieldNames = {
 }
 
 const Select = <GValue, GOption>({
+  className,
+  fieldNames: fieldNamesFromProps = defaultFieldNames as SelectFieldNames<GOption>,
+  nothingSelectedLabel = 'Select an option',
   // value,
   options = [],
-  fieldNames: fieldNamesFromProps = defaultFieldNames as SelectFieldNames<GOption>,
-  className,
-  nothingSelectedLabel = 'Select an option',
   ...restProps
 }: SelectProps<GValue, GOption>) => {
   const listboxId = useId()
@@ -225,12 +228,12 @@ const Select = <GValue, GOption>({
 
       return (
         <SelectOption<GOption>
+          highlighted={index === highlightedIndex}
           id={`${listboxId}__${index}`}
           key={index}
           label={optionLabel}
           option={option}
           selected={index === selectedOption}
-          highlighted={index === highlightedIndex}
           onClick={handleOptionClick}
         />
       )
@@ -274,12 +277,12 @@ const Select = <GValue, GOption>({
 
     return (
       <div
-        onBlur={handleListboxBlur}
         className={'input__listbox'}
-        role={'listbox'}
         id={listboxId}
-        tabIndex={-1}
         ref={listboxRef}
+        role={'listbox'}
+        tabIndex={-1}
+        onBlur={handleListboxBlur}
       >
         {optionsElements}
       </div>
@@ -304,18 +307,18 @@ const Select = <GValue, GOption>({
   return (
     <div className={cls(className, 'input', open && 'input_open')} {...restProps}>
       <div
-        onBlur={handleComboboxBlur}
-        onClick={handleComboboxClick}
-        onKeyDown={handleComboboxKeyDown}
+        aria-activedescendant={highlightedOptionId}
         aria-controls={listboxId}
         aria-expanded={open}
         aria-haspopup={'listbox'}
-        aria-activedescendant={highlightedOptionId}
-        id={comboboxId}
         className={'input__element'}
-        role={'combobox'}
+        id={comboboxId}
         ref={comboboxRef}
+        role={'combobox'}
         tabIndex={0}
+        onBlur={handleComboboxBlur}
+        onClick={handleComboboxClick}
+        onKeyDown={handleComboboxKeyDown}
       >
         {renderValue}
       </div>

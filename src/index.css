@@ -1,14 +1,21 @@
+:root {
+  --font-size: 14px;
+  --line-height: 1.2em;
+  --outline-color: rgba(128, 183, 255, 0.75);
+  --outline-size: 2px;
+}
+
 html, body {
   margin: 0;
   padding: 0;
   font-family: "Open Sans", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
-  font-size: 14px;
+  font-size: var(--font-size);
 }
 
 *:focus {
-  outline: 2px solid rgba(128, 183, 255, 0.75);
+  outline: var(--outline-size) solid var(--outline-color);
 }
 
 * {
@@ -17,7 +24,7 @@ html, body {
 
 select, input, button, label {
   border-width: 0;
-  line-height: 1.2;
+  line-height: var(--line-height);
 }
 
 *, *::after, *::before {

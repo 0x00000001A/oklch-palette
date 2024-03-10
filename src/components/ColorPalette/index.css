@@ -52,11 +52,10 @@
   position: relative;
   z-index: 2;
   transition: none;
-  outline-width: 8px;
+  outline-width: 12px;
   outline-style: solid;
   border-radius: 4px;
   outline-offset: -4px;
-  box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.2);
 }
 
 .color-palette__cell_selected:not(:hover) {

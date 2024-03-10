@@ -66,7 +66,7 @@ const ColorBarItem: FC<{index: number} & ColorBarProps> = ({colorsFrom, index}) 
   )
 }
 
-const ColorBar: FC<ColorBarProps> = ({colorsFrom}) => {
+const ColorBar: FC<ColorBarProps> = ({colorsFrom, ...restProps}) => {
   const colorsNames = useColorsStore(
     (state) => {
       if (colorsFrom === 'row') {
@@ -84,7 +84,7 @@ const ColorBar: FC<ColorBarProps> = ({colorsFrom}) => {
     ))
   }, [colorsFrom, colorsNames])
 
-  return <div className={'color-bar'}>{colors}</div>
+  return <div className={'color-bar'} {...restProps}>{colors}</div>
 }
 
 export default ColorBar

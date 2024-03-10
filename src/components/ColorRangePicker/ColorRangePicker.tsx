@@ -33,6 +33,7 @@ const ColorRangePicker: FC<ColorRangePickerProps> = ({
   })
 
   const getNeighborColors = useColorsStore((state) => state.getCurrentAndNextColors)
+
   const setSelectedColorChannelValue = useColorsStore(
     (state) => state.setSelectedColorChannelValue
   )

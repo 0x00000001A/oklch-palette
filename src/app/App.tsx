@@ -3,6 +3,7 @@ import {FC} from 'react'
 import {ColorBar} from '../components/ColorBar'
 import {ColorGraph} from '../components/ColorGraph'
 import ColorPalette from '../components/ColorPalette'
+import {Input} from '../components/Input'
 import {Navbar} from '../components/Navbar'
 import {Panel} from '../components/Panel'
 import {SplitContainer} from '../components/SplitContainer'
@@ -21,32 +22,101 @@ const App: FC = () => {
         <Panel style={{overflow: 'auto'}}>
           <ColorPalette />
         </Panel>
-        <Panel
+        <div
           style={{
             display: 'flex',
             flexBasis: 'min-content',
             flexDirection: 'column',
             flexShrink: 0,
-            gap: 8,
             overflow: 'auto'
           }}
         >
-          <ColorGraph
-            channel={LCH_CHANNELS_NAMES.LIGHTNESS}
-            max={LIGHTNESS_MAX}
-            min={0}
-            step={0.005}
-          />
-          <ColorBar colorsFrom={'col'} />
-          <ColorGraph
-            channel={LCH_CHANNELS_NAMES.CHROMA}
-            max={CHROMA_MAX}
-            min={0}
-            step={0.005}
-          />
-          <ColorBar colorsFrom={'row'} />
-          <ColorGraph channel={LCH_CHANNELS_NAMES.HUE} max={HUE_MAX} min={0} step={0.5} />
-        </Panel>
+          <Panel
+            style={{
+              display: 'grid',
+              gap: 8,
+              gridTemplateColumns: '1fr 1fr',
+              rowGap: 16
+            }}
+          >
+            <div style={{display: 'flex'}}>
+              <div style={{alignItems: 'center', display: 'flex', gap: 8}}>
+                <label>Lightness:</label>
+                <Input
+                  max={LIGHTNESS_MAX}
+                  min={0}
+                  step={LIGHTNESS_MAX / 100}
+                  type={'number'}
+                />
+              </div>
+              <div style={{alignItems: 'center', display: 'flex', gap: 8}}>
+                <label>Chroma:</label>
+                <Input max={CHROMA_MAX} min={0} step={CHROMA_MAX / 100} type={'number'} />
+              </div>
+              <div style={{alignItems: 'center', display: 'flex', gap: 8}}>
+                <label>Hue:</label>
+                <Input max={HUE_MAX} min={0} step={HUE_MAX / 100} type={'number'} />
+              </div>
+            </div>
+            <div>#000</div>
+            <ColorBar colorsFrom={'col'} style={{flexGrow: 1}} />
+            <ColorBar colorsFrom={'row'} style={{flexGrow: 1}} />
+          </Panel>
+          <Panel
+            style={{
+              display: 'flex',
+              flexBasis: 'min-content',
+              flexShrink: 0,
+              gap: 8,
+              overflow: 'auto'
+            }}
+          >
+            <div
+              style={{
+                display: 'grid',
+                gap: 8,
+                gridTemplateColumns: '1fr 1fr'
+              }}
+            >
+              <ColorGraph
+                channel={LCH_CHANNELS_NAMES.LIGHTNESS}
+                max={LIGHTNESS_MAX}
+                min={0}
+                step={0.005}
+              />
+              <ColorGraph
+                channel={LCH_CHANNELS_NAMES.CHROMA}
+                max={CHROMA_MAX}
+                min={0}
+                step={0.005}
+              />
+              <ColorGraph
+                channel={LCH_CHANNELS_NAMES.HUE}
+                max={HUE_MAX}
+                min={0}
+                step={0.5}
+              />
+              <ColorGraph
+                channel={LCH_CHANNELS_NAMES.LIGHTNESS}
+                max={LIGHTNESS_MAX}
+                min={0}
+                step={0.005}
+              />
+              <ColorGraph
+                channel={LCH_CHANNELS_NAMES.CHROMA}
+                max={CHROMA_MAX}
+                min={0}
+                step={0.005}
+              />
+              <ColorGraph
+                channel={LCH_CHANNELS_NAMES.HUE}
+                max={HUE_MAX}
+                min={0}
+                step={0.5}
+              />
+            </div>
+          </Panel>
+        </div>
       </SplitContainer>
     </div>
   )

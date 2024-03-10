@@ -1,0 +1,15 @@
+.color-form {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.color-form__item {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.color-form__item .input {
+  width: 12ch;
+}

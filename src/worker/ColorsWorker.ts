@@ -20,7 +20,7 @@ function generateNumbersBetween(min: number, max: number, amount: number) {
 }
 
 self.addEventListener('message', (event: MessageEvent<ColorsMessagePayload>) => {
-  const {channel, colors, height, index} = event.data
+  const {channel, colorChannel, colors, height, index} = event.data
   let width = event.data.width
 
   if (!index) {
@@ -61,19 +61,19 @@ self.addEventListener('message', (event: MessageEvent<ColorsMessagePayload>) => 
 
     const resultColor = [...currentColor]
 
-    if (channel === LCH_CHANNELS_NAMES.LIGHTNESS) {
+    if (colorChannel === LCH_CHANNELS_NAMES.LIGHTNESS) {
       resultColor[0] = LIGHTNESS_MAX - y / height
       resultColor[1] = workingColor[1][x]
       resultColor[2] = workingColor[2][x]
     }
 
-    if (channel === LCH_CHANNELS_NAMES.CHROMA) {
+    if (colorChannel === LCH_CHANNELS_NAMES.CHROMA) {
       resultColor[0] = workingColor[0][x]
       resultColor[1] = (CHROMA_MAX * (height - y)) / height
       resultColor[2] = workingColor[2][x]
     }
 
-    if (channel === LCH_CHANNELS_NAMES.HUE) {
+    if (colorChannel === LCH_CHANNELS_NAMES.HUE) {
       resultColor[0] = workingColor[0][x]
       resultColor[1] = workingColor[1][x]
       resultColor[2] = HUE_MAX - (HUE_MAX * y) / height
@@ -111,5 +111,5 @@ self.addEventListener('message', (event: MessageEvent<ColorsMessagePayload>) => 
   // Needs to be reviewed somehow someday.
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-expect-error
-  postMessage({buffer, channel, height, index, width}, [buffer])
+  postMessage({buffer, channel, colorChannel, height, index, width}, [buffer])
 })

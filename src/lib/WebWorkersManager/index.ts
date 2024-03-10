@@ -1,6 +1,5 @@
-import {LCH_CHANNELS_NAMES} from '../../state'
-
 import {
+  WorkerChannel,
   WorkerImplementation,
   WorkerTaskCallback,
   WorkerTaskData,
@@ -15,15 +14,15 @@ export const createWebWorkersManager = (WorkerToUse: WorkerImplementation) => {
     })
 
   const queue = new Map<WorkerTaskId, WorkerTaskData>([])
-  const subscribers = new Map<LCH_CHANNELS_NAMES, WorkerTaskCallback[]>()
+  const subscribers = new Map<WorkerChannel, WorkerTaskCallback[]>()
 
-  const subscribe = (channel: LCH_CHANNELS_NAMES, callback: WorkerTaskCallback) => {
+  const subscribe = (channel: WorkerChannel, callback: WorkerTaskCallback) => {
     const existingSubscribers = subscribers.get(channel) || []
 
     subscribers.set(channel, [...existingSubscribers, callback])
   }
 
-  const unsubscribe = (channel: LCH_CHANNELS_NAMES, callback: WorkerTaskCallback) => {
+  const unsubscribe = (channel: WorkerChannel, callback: WorkerTaskCallback) => {
     const existingSubscribers = subscribers.get(channel) || []
 
     subscribers.set(

@@ -4,7 +4,6 @@ import {LCH_CHANNELS_NAMES, useColorsStore} from '../../state'
 import {colorsWorkerManager} from '../../worker'
 import {ColorsMessageResponse} from '../../worker/types.ts'
 import {ColorRangePicker} from '../ColorRangePicker'
-import {Input} from '../Input'
 
 import {ColorGraphProps} from './types.ts'
 
@@ -35,24 +34,23 @@ const ColorGraphInput: FC<ColorGraphInputProps> = ({channel, col}) => {
     (a, b) => a.color.updatedAt === b.color.updatedAt && a.row === b.row
   )
 
-  return (
-    <Input
-      style={{
-        flexBasis: 0,
-        flexGrow: 1,
-        flexShrink: 1,
-        fontSize: 12,
-        textAlign: 'center'
-      }}
-      className={'color-graph__input'}
-      value={color.oklch[channel]}
-      onChange={console.log}
-    />
-  )
+  return <span className={'color-graph__value'}>{color.oklch[channel]}</span>
 }
 
-const ColorGraph: FC<ColorGraphProps> = ({channel, max, min, step}) => {
-  const colorsLen = useColorsStore((state) => state.colNames.length)
+const ColorGraph: FC<ColorGraphProps> = ({
+  channel,
+  colorsFrom = 'row',
+  max,
+  min,
+  step
+}) => {
+  const colorsLen = useColorsStore((state) => {
+    if (colorsFrom === 'column') {
+      return state.rowNames.length
+    }
+
+    return state.colNames.length
+  })
 
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [canvasSize, setCanvasSize] = useState([0, 0])
@@ -113,6 +111,7 @@ const ColorGraph: FC<ColorGraphProps> = ({channel, max, min, step}) => {
       .map((_: number, index: number) => (
         <ColorRangePicker
           channel={channel}
+          colorsFrom={colorsFrom}
           height={canvasSize[1]}
           index={index}
           key={index}
@@ -122,13 +121,15 @@ const ColorGraph: FC<ColorGraphProps> = ({channel, max, min, step}) => {
           width={canvasSize[0]}
         />
       ))
-  }, [canvasSize, channel, colorsLen, max, min, step])
+  }, [canvasSize, channel, colorsFrom, colorsLen, max, min, step])
 
   const subscribeToColorsWorkerUpdates = () => {
-    colorsWorkerManager.subscribe(channel, handleImageDataReceived)
+    const workerChannel = `${channel}-${colorsFrom}`
+
+    colorsWorkerManager.subscribe(workerChannel, handleImageDataReceived)
 
     return () => {
-      colorsWorkerManager.unsubscribe(channel, handleImageDataReceived)
+      colorsWorkerManager.unsubscribe(workerChannel, handleImageDataReceived)
     }
   }
 
@@ -137,7 +138,7 @@ const ColorGraph: FC<ColorGraphProps> = ({channel, max, min, step}) => {
 
   return (
     <div className={'color-graph'}>
-      <div className={'color-graph__inputs'}>{colorInputs}</div>
+      <div className={'color-graph__values'}>{colorInputs}</div>
       <div className={'color-graph__canvas-wrapper'}>
         <canvas
           className={'color-graph__canvas'}

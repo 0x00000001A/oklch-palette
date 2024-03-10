@@ -1,18 +1,23 @@
 .color-graph {
   position: relative;
-  display: inline-flex;
-  flex-direction: column;
   background: #f3f3f3;
   border: 1px solid #e1e1e1;
-  padding: 9px;
   border-radius: 6px;
-  gap: 9px
 }
 
-.color-graph__colors,
-.color-graph__inputs {
+.color-graph__values {
   display: flex;
   flex-wrap: nowrap;
+  border-radius: 3px 3px 0 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  padding: 4px 0;
+}
+
+.color-graph__value {
+  font-size: 12px;
+  flex: 1 0 0;
+  text-align: center;
+  padding: 0 4px;
 }
 
 .color-graph__inputs .color-graph__input {
@@ -32,7 +37,7 @@
   --color-b: #ccc;
   --size: 6px;
 
-  border-radius: 4px;
+  border-radius: 0 0 3px 3px;
 
   background-position: 0 0, calc(var(--size) / 2) calc(var(--size) / 2);
   background-size: var(--size) var(--size);

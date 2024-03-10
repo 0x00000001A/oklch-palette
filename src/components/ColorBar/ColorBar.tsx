@@ -84,7 +84,11 @@ const ColorBar: FC<ColorBarProps> = ({colorsFrom, ...restProps}) => {
     ))
   }, [colorsFrom, colorsNames])
 
-  return <div className={'color-bar'} {...restProps}>{colors}</div>
+  return (
+    <div className={'color-bar'} {...restProps}>
+      {colors}
+    </div>
+  )
 }
 
 export default ColorBar

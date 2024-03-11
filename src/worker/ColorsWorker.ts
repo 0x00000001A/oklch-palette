@@ -21,10 +21,12 @@ function generateNumbersBetween(min: number, max: number, amount: number) {
 
 self.addEventListener('message', (event: MessageEvent<ColorsMessagePayload>) => {
   const {channel, colorChannel, colors, height, index} = event.data
-  let width = event.data.width
+  const originalWidth = event.data.width
+  const halfWidth = Math.round(originalWidth / 2)
+  let width = originalWidth
 
   if (!index) {
-    width += width / 2
+    width += halfWidth
   }
 
   const size = width * height
@@ -36,20 +38,20 @@ self.addEventListener('message', (event: MessageEvent<ColorsMessagePayload>) => 
   const nextColor = colors[1] ? colors[1] : colors[0]
 
   const workingColor = [
-    generateNumbersBetween(currentColor[0], nextColor[0], 40),
-    generateNumbersBetween(currentColor[1], nextColor[1], 40),
-    generateNumbersBetween(currentColor[2], nextColor[2], 40)
+    generateNumbersBetween(currentColor[0], nextColor[0], originalWidth),
+    generateNumbersBetween(currentColor[1], nextColor[1], originalWidth),
+    generateNumbersBetween(currentColor[2], nextColor[2], originalWidth)
   ]
 
   if (!index) {
     workingColor[0].unshift(
-      ...generateNumbersBetween(currentColor[0], currentColor[0], 20)
+      ...generateNumbersBetween(currentColor[0], currentColor[0], halfWidth)
     )
     workingColor[1].unshift(
-      ...generateNumbersBetween(currentColor[1], currentColor[1], 20)
+      ...generateNumbersBetween(currentColor[1], currentColor[1], halfWidth)
     )
     workingColor[2].unshift(
-      ...generateNumbersBetween(currentColor[2], currentColor[2], 20)
+      ...generateNumbersBetween(currentColor[2], currentColor[2], halfWidth)
     )
   }
 

@@ -1,5 +1,6 @@
-import {ChangeEvent, FC, useCallback, useEffect} from 'react'
+import {ChangeEvent, FC, useCallback, useEffect, useMemo} from 'react'
 
+import {GRAPH_WIDTH} from '../../constants/colors.ts'
 import {LCH_CHANNELS_NAMES, useColorsStore} from '../../state'
 import {cls} from '../../utils/cls.ts'
 import {colorsWorkerManager} from '../../worker'
@@ -18,6 +19,14 @@ const ColorRangePicker: FC<ColorRangePickerProps> = ({
   step,
   width
 }) => {
+  const colorsLength = useColorsStore((state) => {
+    if (colorsFrom === 'column') {
+      return state.rowNames.length
+    }
+
+    return state.colNames.length
+  })
+
   const isSelected = useColorsStore((state) => {
     if (colorsFrom === 'column') {
       return state.selectedRow === index
@@ -114,22 +123,30 @@ const ColorRangePicker: FC<ColorRangePickerProps> = ({
     })
   }, [width, height, neighborColors, channel, index, colorsFrom])
 
+  const inputStyles = useMemo(() => {
+    const blockSize = Math.round(GRAPH_WIDTH / colorsLength)
+    const blockSizeHalf = Math.round(blockSize / 2)
+    const inputOffsetLeft = index * blockSize + blockSizeHalf + 1
+
+    // noinspection JSSuspiciousNameCombination
+    return {
+      color: '#000',
+      left: inputOffsetLeft,
+      width: height // because of transform @todo props naming
+    }
+  }, [colorsLength, height, index])
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(handleValueChange, [width, height, value, nextValue])
 
-  // noinspection JSSuspiciousNameCombination
   return (
     <input
-      style={{
-        color: '#000',
-        left: index * 40 + 20 + 1,
-        width: height
-      }}
       className={cls('color-range-picker', isSelected && 'color-range-picker_selected')}
       max={max}
       min={min}
       size={step}
       step={step}
+      style={inputStyles}
       type={'range'}
       value={value}
       onChange={handleChange}

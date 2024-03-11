@@ -33,20 +33,18 @@
 }
 
 .color-graph__canvas {
-  --color-a: #eee;
-  --color-b: #ccc;
-  --size: 6px;
-
   border-radius: 0 0 3px 3px;
-
-  background-position: 0 0, calc(var(--size) / 2) calc(var(--size) / 2);
-  background-size: var(--size) var(--size);
-  background-image: linear-gradient(45deg, var(--color-a) 25%, transparent 25%, transparent 75%, var(--color-a) 75%, var(--color-a) 100%), linear-gradient(45deg, var(--color-a) 25%, var(--color-b) 25%, var(--color-b) 75%, var(--color-a) 75%, var(--color-a) 100%);
+  filter: drop-shadow(0 0 0 #a2abb7);
 }
 
 .color-graph__canvas-wrapper {
   position: relative;
   display: flex;
+  overflow: hidden;
+  --color-a: #e4e4e4;
+  --size: 6px;
+  background-image: linear-gradient(-45deg, var(--color-a) 25%, transparent 25%, transparent 50%, var(--color-a) 50%, var(--color-a) 75%, transparent 75%, transparent);
+  background-size: 6px 6px;
 }
 
 .color-graph__sliders {

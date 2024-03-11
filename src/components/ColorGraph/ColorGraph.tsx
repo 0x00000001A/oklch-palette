@@ -1,5 +1,6 @@
 import {FC, useCallback, useEffect, useMemo, useRef, useState} from 'react'
 
+import {GRAPH_HEIGHT, GRAPH_WIDTH} from '../../constants/colors.ts'
 import {LCH_CHANNELS_NAMES, useColorsStore} from '../../state'
 import {colorsWorkerManager} from '../../worker'
 import {ColorsMessageResponse} from '../../worker/types.ts'
@@ -74,7 +75,7 @@ const ColorGraph: FC<ColorGraphProps> = ({
         data.height
       )
 
-      let x = data.index * data.width + 20
+      let x = data.index * data.width + Math.round(data.width / 2)
 
       if (!data.index) {
         x = 0
@@ -142,9 +143,9 @@ const ColorGraph: FC<ColorGraphProps> = ({
       <div className={'color-graph__canvas-wrapper'}>
         <canvas
           className={'color-graph__canvas'}
-          height={140}
+          height={GRAPH_HEIGHT}
           ref={canvasRef}
-          width={colorsLen * 40}
+          width={GRAPH_WIDTH}
         />
         <div className={'color-graph__sliders'}>{colorRangePickers}</div>
       </div>

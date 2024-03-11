@@ -1,5 +1,4 @@
-import {CHROMA_MAX, HUE_MAX, LIGHTNESS_MAX} from '../constants/colors.ts'
-import {LCH_CHANNELS_NAMES} from '../state'
+import {LCH_CHANNELS_CONFIG, LCH_CHANNELS_NAMES} from '../constants/colors.ts'
 import {isWithinGamut, oklchToRgb} from '../utils/colors.ts'
 
 import {ColorsMessagePayload} from './types.ts'
@@ -34,26 +33,14 @@ self.addEventListener('message', (event: MessageEvent<ColorsMessagePayload>) => 
   const buffer = new ArrayBuffer(size * 4)
   const result = new Uint8ClampedArray(buffer)
 
-  const currentColor = colors[0]
-  const nextColor = colors[1] ? colors[1] : colors[0]
+  const currColor = colors[0]
+  const nextColor = !index || colors[1] ? colors[1] : colors[0]
 
-  const workingColor = [
-    generateNumbersBetween(currentColor[0], nextColor[0], originalWidth),
-    generateNumbersBetween(currentColor[1], nextColor[1], originalWidth),
-    generateNumbersBetween(currentColor[2], nextColor[2], originalWidth)
+  const [lightness, chroma, hue] = [
+    generateNumbersBetween(currColor[0], nextColor[0], width),
+    generateNumbersBetween(currColor[1], nextColor[1], width),
+    generateNumbersBetween(currColor[2], nextColor[2], width)
   ]
-
-  if (!index) {
-    workingColor[0].unshift(
-      ...generateNumbersBetween(currentColor[0], currentColor[0], halfWidth)
-    )
-    workingColor[1].unshift(
-      ...generateNumbersBetween(currentColor[1], currentColor[1], halfWidth)
-    )
-    workingColor[2].unshift(
-      ...generateNumbersBetween(currentColor[2], currentColor[2], halfWidth)
-    )
-  }
 
   for (let pixelIndex = 0; pixelIndex < size; pixelIndex += 1) {
     const bufferIndex = pixelIndex * 4
@@ -61,24 +48,15 @@ self.addEventListener('message', (event: MessageEvent<ColorsMessagePayload>) => 
     const x = pixelIndex % width
     const y = Math.floor(pixelIndex / width)
 
-    const resultColor = [...currentColor]
+    const resultColor = [lightness[x], chroma[x], hue[x]]
+    const config = LCH_CHANNELS_CONFIG[colorChannel as keyof typeof LCH_CHANNELS_CONFIG]
 
     if (colorChannel === LCH_CHANNELS_NAMES.LIGHTNESS) {
-      resultColor[0] = LIGHTNESS_MAX - y / height
-      resultColor[1] = workingColor[1][x]
-      resultColor[2] = workingColor[2][x]
-    }
-
-    if (colorChannel === LCH_CHANNELS_NAMES.CHROMA) {
-      resultColor[0] = workingColor[0][x]
-      resultColor[1] = (CHROMA_MAX * (height - y)) / height
-      resultColor[2] = workingColor[2][x]
-    }
-
-    if (colorChannel === LCH_CHANNELS_NAMES.HUE) {
-      resultColor[0] = workingColor[0][x]
-      resultColor[1] = workingColor[1][x]
-      resultColor[2] = HUE_MAX - (HUE_MAX * y) / height
+      resultColor[0] = config.max - y / height
+    } else if (colorChannel === LCH_CHANNELS_NAMES.CHROMA) {
+      resultColor[1] = (config.max * (height - y)) / height
+    } else if (colorChannel === LCH_CHANNELS_NAMES.HUE) {
+      resultColor[2] = config.max - (config.max * y) / height
     }
 
     const rgbColor = oklchToRgb([resultColor[0], resultColor[1], resultColor[2]])

@@ -1,5 +1,7 @@
 import {HTMLAttributes} from 'react'
 
 export type ColorBarProps = HTMLAttributes<HTMLDivElement> & {
-  colorsFrom: 'col' | 'row'
+  colorsFrom: 'column' | 'row'
 }
+
+export type ColorBarItemProps = ColorBarProps & {index: number}

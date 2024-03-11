@@ -21,11 +21,6 @@ export const colorsStore = createStore<ColorsState>((set, get) => ({
   colors: stripePalette.colors.map((colorsRow) => {
     return (colorsRow as [number, number, number][]).map(createSchemaColor)
   }),
-  getCurrentAndNextColors(index: number) {
-    const state = get()
-    const colors = state.colors[state.selectedRow]
-    return [colors[index].oklch, colors[index + 1]?.oklch]
-  },
   getSelectedColor() {
     const {colors, selectedCol, selectedRow} = get()
     return colors[selectedRow][selectedCol]
@@ -35,8 +30,8 @@ export const colorsStore = createStore<ColorsState>((set, get) => ({
   rowNames: stripePalette.rowNames,
   selectedCol: 0,
   selectedRow: 0,
-  setSelectedCol(index) {
-    set(() => ({selectedCol: index}))
+  setSelectedColor(selectedRow, selectedCol) {
+    set({selectedCol, selectedRow})
   },
   setSelectedColorChannelValue(channel, value) {
     set(({colors, getSelectedColor, selectedCol, selectedRow}) => {
@@ -50,22 +45,10 @@ export const colorsStore = createStore<ColorsState>((set, get) => ({
       }
     })
   },
-  setSelectedRow(index) {
-    set(() => ({selectedRow: index}))
-  },
-  updateColorImageData(index: number, channel: number, data: ImageData) {
-    set(({colors, selectedRow}) => {
-      const selectedColor = colors[selectedRow][index]
+  setSelectedColorInDirection(direction, value) {
+    const key = direction === 'column' ? 'selectedRow' : 'selectedCol'
 
-      selectedColor.imageData[channel] = data
-
-      colors[selectedRow][index] = {
-        ...selectedColor,
-        imageDataUpdatedAt: Date.now()
-      }
-
-      return {colors}
-    })
+    set({[key]: value})
   }
 }))
 

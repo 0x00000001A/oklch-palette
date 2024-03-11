@@ -1,42 +1,15 @@
 import {FC, useCallback, useEffect, useMemo, useRef, useState} from 'react'
 
 import {GRAPH_HEIGHT, GRAPH_WIDTH} from '../../constants/colors.ts'
-import {LCH_CHANNELS_NAMES, useColorsStore} from '../../state'
+import {useColorsStore} from '../../state'
 import {colorsWorkerManager} from '../../worker'
 import {ColorsMessageResponse} from '../../worker/types.ts'
 import {ColorRangePicker} from '../ColorRangePicker'
 
+import ColorGraphValue from './ColorGraphValue.tsx'
 import {ColorGraphProps} from './types.ts'
 
 import './index.css'
-
-type ColorGraphInputProps = {
-  channel: LCH_CHANNELS_NAMES
-  col: number
-}
-
-const ColorGraphInput: FC<ColorGraphInputProps> = ({channel, col}) => {
-  const {color} = useColorsStore(
-    (state) => {
-      const color = {...state.colors[state.selectedRow][col]}
-      const oklch = [...color.oklch]
-
-      oklch[0] = Number(String(oklch[0] * 100).slice(0, 5))
-      oklch[1] = Number(String(oklch[1]).slice(0, 5))
-      oklch[2] = Number(String(oklch[2]).slice(0, 5))
-
-      color.oklch = oklch as never
-
-      return {
-        color,
-        row: state.selectedRow
-      }
-    },
-    (a, b) => a.color.updatedAt === b.color.updatedAt && a.row === b.row
-  )
-
-  return <span className={'color-graph__value'}>{color.oklch[channel]}</span>
-}
 
 const ColorGraph: FC<ColorGraphProps> = ({
   channel,
@@ -98,11 +71,11 @@ const ColorGraph: FC<ColorGraphProps> = ({
     setCanvasSize([width, height])
   }, [colorsLen])
 
-  const colorInputs = useMemo(() => {
+  const colorValues = useMemo(() => {
     return new Array(colorsLen)
       .fill(0)
       .map((_, index: number) => (
-        <ColorGraphInput channel={channel} col={index} key={index} />
+        <ColorGraphValue channel={channel} col={index} key={index} />
       ))
   }, [channel, colorsLen])
 
@@ -113,6 +86,7 @@ const ColorGraph: FC<ColorGraphProps> = ({
         <ColorRangePicker
           channel={channel}
           colorsFrom={colorsFrom}
+          colorsLength={colorsLen}
           height={canvasSize[1]}
           index={index}
           key={index}
@@ -139,7 +113,7 @@ const ColorGraph: FC<ColorGraphProps> = ({
 
   return (
     <div className={'color-graph'}>
-      <div className={'color-graph__values'}>{colorInputs}</div>
+      <div className={'color-graph__values'}>{colorValues}</div>
       <div className={'color-graph__canvas-wrapper'}>
         <canvas
           className={'color-graph__canvas'}

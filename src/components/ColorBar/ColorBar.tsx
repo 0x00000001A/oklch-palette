@@ -1,82 +1,16 @@
-import {FC, useCallback, useMemo} from 'react'
+import {FC, useMemo} from 'react'
 
-import useBemClassName from '../../hooks/useBemClassName.ts'
 import {useColorsStore} from '../../state'
+import {colorsNamesByDirection} from '../../state/selectors.ts'
+import {arrayCompare} from '../../utils/compare.ts'
 
+import ColorBarItem from './ColorBarItem.tsx'
 import {ColorBarProps} from './types.ts'
 
 import './index.css'
 
-const ColorBarItem: FC<{index: number} & ColorBarProps> = ({colorsFrom, index}) => {
-  const {setSelectedCol, setSelectedRow} = useColorsStore(undefined, () => true)
-
-  const {color, isSelected} = useColorsStore(
-    (state) => {
-      const selectedIndex = colorsFrom === 'row' ? state.selectedRow : state.selectedCol
-      const rowIndex = colorsFrom === 'row' ? index : state.selectedRow
-      const colIndex = colorsFrom === 'col' ? index : state.selectedCol
-
-      const color = {...state.colors[rowIndex][colIndex]}
-      const oklch = [...color.oklch]
-
-      oklch[0] = Number(String(oklch[0] * 100).slice(0, 5))
-      oklch[1] = Number(String(oklch[1]).slice(0, 5))
-      oklch[2] = Number(String(oklch[2]).slice(0, 5))
-
-      color.oklch = oklch as never
-
-      return {
-        color,
-        isSelected: index === selectedIndex,
-        row: state.selectedRow
-      }
-    },
-    (a, b) => {
-      return (
-        a.isSelected === b.isSelected && a.row === b.row && a.color.hex === b.color.hex
-      )
-    }
-  )
-
-  const bemClassName = useBemClassName(
-    (builder) => {
-      const element = builder('color-bar__item')
-      element.withModifier('selected', isSelected)
-
-      return {colorBarItem: element.build()}
-    },
-    [isSelected]
-  )
-
-  const handleClick = useCallback(() => {
-    if (colorsFrom === 'row') {
-      setSelectedRow(index)
-      return
-    }
-
-    setSelectedCol(index)
-  }, [colorsFrom, index, setSelectedCol, setSelectedRow])
-
-  return (
-    <div
-      className={bemClassName.colorBarItem}
-      style={{color: color.hex}}
-      onClick={handleClick}
-    />
-  )
-}
-
 const ColorBar: FC<ColorBarProps> = ({colorsFrom, ...restProps}) => {
-  const colorsNames = useColorsStore(
-    (state) => {
-      if (colorsFrom === 'row') {
-        return state.rowNames
-      }
-
-      return state.colNames
-    },
-    (a, b) => a.toString() === b.toString()
-  )
+  const colorsNames = useColorsStore(colorsNamesByDirection(colorsFrom), arrayCompare)
 
   const colors = useMemo(() => {
     return colorsNames.map((_: string, index: number) => (

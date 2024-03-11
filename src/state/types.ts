@@ -1,8 +1,4 @@
-export enum LCH_CHANNELS_NAMES {
-  LIGHTNESS,
-  CHROMA,
-  HUE
-}
+import {LCH_CHANNELS_NAMES} from '../constants/colors.ts'
 
 export type SchemaColor = {
   hex: string
@@ -14,14 +10,12 @@ export type SchemaColor = {
 export type ColorsState = {
   colNames: string[]
   colors: SchemaColor[][]
-  getCurrentAndNextColors: (index: number) => SchemaColor['oklch'][]
   getSelectedColor: () => SchemaColor
   name: string
   rowNames: string[]
   selectedCol: number
   selectedRow: number
-  setSelectedCol: (index: number) => void
+  setSelectedColor: (row: number, col: number) => void
   setSelectedColorChannelValue: (channel: LCH_CHANNELS_NAMES, value: number) => void
-  setSelectedRow: (index: number) => void
-  updateColorImageData: (index: number, channel: number, data: ImageData) => void
+  setSelectedColorInDirection: (direction: 'column' | 'row', value: number) => void
 }

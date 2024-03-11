@@ -3,7 +3,7 @@ export type WorkerTaskId = number | string | symbol
 export type WorkerChannel = number | string | symbol
 
 export type WorkerTaskData = {
-  channel: number
+  channel: WorkerChannel
   id: WorkerTaskId
 }
 

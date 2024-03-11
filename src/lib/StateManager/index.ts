@@ -20,7 +20,10 @@ export const createStore = <GState>(storeCreator: StoreCreator<GState>) => {
       return state
     },
 
-    setState(partial, replace?: boolean) {
+    setState(
+      partial: ((state: GState) => Partial<GState>) | Partial<GState>,
+      replace?: boolean
+    ) {
       const nextState = typeof partial === 'function' ? partial(state) : partial
 
       if (!Object.is(nextState, state)) {

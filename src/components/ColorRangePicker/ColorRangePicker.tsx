@@ -1,8 +1,14 @@
 import {ChangeEvent, FC, useCallback, useEffect, useMemo} from 'react'
 
-import {GRAPH_WIDTH} from '../../constants/colors.ts'
-import {LCH_CHANNELS_NAMES, useColorsStore} from '../../state'
+import {GRAPH_WIDTH, LCH_CHANNELS_ARRAY} from '../../constants/colors.ts'
+import {useColorsStore} from '../../state'
+import {
+  getColorByDirection,
+  getNextColor,
+  isColorSelectedByDirection
+} from '../../state/selectors.ts'
 import {cls} from '../../utils/cls.ts'
+import {colorCompare} from '../../utils/compare.ts'
 import {colorsWorkerManager} from '../../worker'
 
 import {ColorRangePickerProps} from './types.ts'
@@ -12,6 +18,7 @@ import './index.css'
 const ColorRangePicker: FC<ColorRangePickerProps> = ({
   channel,
   colorsFrom = 'row',
+  colorsLength,
   height,
   index,
   max,
@@ -19,92 +26,35 @@ const ColorRangePicker: FC<ColorRangePickerProps> = ({
   step,
   width
 }) => {
-  const colorsLength = useColorsStore((state) => {
-    if (colorsFrom === 'column') {
-      return state.rowNames.length
-    }
+  const isSelected = useColorsStore(isColorSelectedByDirection(colorsFrom, index))
 
-    return state.colNames.length
-  })
+  const setChannelValue = useColorsStore((state) => state.setSelectedColorChannelValue)
+  const setSelectedColor = useColorsStore((state) => state.setSelectedColorInDirection)
 
-  const isSelected = useColorsStore((state) => {
-    if (colorsFrom === 'column') {
-      return state.selectedRow === index
-    }
-
-    return state.selectedCol === index
-  })
-
-  const value = useColorsStore((state) => {
-    if (colorsFrom === 'column') {
-      return state.colors[index][state.selectedCol].oklch[channel]
-    }
-
-    return state.colors[state.selectedRow][index].oklch[channel]
-  })
-
-  const nextValue = useColorsStore((state) => {
-    if (colorsFrom === 'column') {
-      const rowIndex = Math.min(state.rowNames.length - 1, index + 1)
-      const nextColor = state.colors[rowIndex][state.selectedCol].oklch
-
-      return nextColor[channel]
-    }
-
-    const colIndex = Math.min(state.colNames.length - 1, index + 1)
-    const nextColor = state.colors[state.selectedRow][colIndex].oklch
-
-    return nextColor[channel]
-  })
-
-  const neighborColors = useColorsStore((state) => {
-    if (colorsFrom === 'column') {
-      const curRow = state.colors[index] || []
-      const nextRow = state.colors[index + 1] || []
-      return [curRow[state.selectedCol].oklch, nextRow[state.selectedCol]?.oklch]
-    }
-
-    const colors = state.colors[state.selectedRow]
-    return [colors[index].oklch, colors[index + 1]?.oklch]
-  })
-
-  const setSelectedColorChannelValue = useColorsStore(
-    (state) => state.setSelectedColorChannelValue
-  )
-
-  const setSelectedCol = useColorsStore((state) => {
-    if (colorsFrom === 'column') {
-      return state.setSelectedRow
-    }
-
-    return state.setSelectedCol
-  })
+  const nextColor = useColorsStore(getNextColor(colorsFrom, index), colorCompare)
+  const currColor = useColorsStore(getColorByDirection(colorsFrom, index), colorCompare)
 
   const handleChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       if (event.target === document.activeElement) {
-        setSelectedColorChannelValue(channel, Number(event.target.value))
+        setChannelValue(channel, Number(event.target.value))
       }
     },
-    [channel, setSelectedColorChannelValue]
+    [channel, setChannelValue]
   )
 
   const handleFocus = useCallback(() => {
-    setSelectedCol(index)
-  }, [index, setSelectedCol])
+    setSelectedColor(colorsFrom, index)
+  }, [colorsFrom, index, setSelectedColor])
 
   const handleValueChange = useCallback(() => {
     if (!width || !height) {
       return
     }
 
-    const channelsToUpdate = [
-      LCH_CHANNELS_NAMES.LIGHTNESS,
-      LCH_CHANNELS_NAMES.CHROMA,
-      LCH_CHANNELS_NAMES.HUE
-    ].filter((i) => i !== channel)
+    const channelsToUpdate = LCH_CHANNELS_ARRAY.filter((i) => i !== channel)
 
-    const colors = neighborColors
+    const colors = [currColor.oklch, nextColor.oklch]
 
     const workerMessage = {
       colors,
@@ -121,7 +71,7 @@ const ColorRangePicker: FC<ColorRangePickerProps> = ({
         id: `${channelToUpdate}-${workerMessage.index}-${colorsFrom}`
       })
     })
-  }, [width, height, neighborColors, channel, index, colorsFrom])
+  }, [width, height, currColor, nextColor, index, channel, colorsFrom])
 
   const inputStyles = useMemo(() => {
     const blockSize = Math.round(GRAPH_WIDTH / colorsLength)
@@ -137,7 +87,7 @@ const ColorRangePicker: FC<ColorRangePickerProps> = ({
   }, [colorsLength, height, index])
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(handleValueChange, [width, height, value, nextValue])
+  useEffect(handleValueChange, [width, height, currColor, nextColor])
 
   return (
     <input
@@ -148,7 +98,7 @@ const ColorRangePicker: FC<ColorRangePickerProps> = ({
       step={step}
       style={inputStyles}
       type={'range'}
-      value={value}
+      value={currColor.oklch[channel]}
       onChange={handleChange}
       onFocus={handleFocus}
     />

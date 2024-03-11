@@ -1,15 +1,35 @@
-import {FC} from 'react'
+import React, {FC, useMemo} from 'react'
 
 import {ColorGraph} from '../components/ColorGraph'
 import {Panel} from '../components/Panel'
-import {CHROMA_MAX, HUE_MAX, LIGHTNESS_MAX} from '../constants/colors.ts'
-import {LCH_CHANNELS_NAMES} from '../state'
+import {LCH_CHANNELS_ARRAY, LCH_CHANNELS_CONFIG} from '../constants/colors.ts'
 
 export type SidebarBodyProps = {
   // props
 }
 
 const SidebarBody: FC<SidebarBodyProps> = () => {
+  const colorGraphs = useMemo(() => {
+    return LCH_CHANNELS_ARRAY.map((channel) => (
+      <React.Fragment key={channel}>
+        <ColorGraph
+          channel={channel}
+          colorsFrom={'row'}
+          max={LCH_CHANNELS_CONFIG[channel].max}
+          min={LCH_CHANNELS_CONFIG[channel].min}
+          step={LCH_CHANNELS_CONFIG[channel].step}
+        />
+        <ColorGraph
+          channel={channel}
+          colorsFrom={'column'}
+          max={LCH_CHANNELS_CONFIG[channel].max}
+          min={LCH_CHANNELS_CONFIG[channel].min}
+          step={LCH_CHANNELS_CONFIG[channel].step}
+        />
+      </React.Fragment>
+    ))
+  }, [])
+
   return (
     <Panel
       style={{
@@ -27,48 +47,7 @@ const SidebarBody: FC<SidebarBodyProps> = () => {
           gridTemplateColumns: '1fr 1fr'
         }}
       >
-        <ColorGraph
-          channel={LCH_CHANNELS_NAMES.LIGHTNESS}
-          colorsFrom={'row'}
-          max={LIGHTNESS_MAX}
-          min={0}
-          step={0.005}
-        />
-        <ColorGraph
-          channel={LCH_CHANNELS_NAMES.LIGHTNESS}
-          colorsFrom={'column'}
-          max={LIGHTNESS_MAX}
-          min={0}
-          step={0.005}
-        />
-        <ColorGraph
-          channel={LCH_CHANNELS_NAMES.CHROMA}
-          colorsFrom={'row'}
-          max={CHROMA_MAX}
-          min={0}
-          step={0.005}
-        />
-        <ColorGraph
-          channel={LCH_CHANNELS_NAMES.CHROMA}
-          colorsFrom={'column'}
-          max={CHROMA_MAX}
-          min={0}
-          step={0.005}
-        />
-        <ColorGraph
-          channel={LCH_CHANNELS_NAMES.HUE}
-          colorsFrom={'row'}
-          max={HUE_MAX}
-          min={0}
-          step={0.5}
-        />
-        <ColorGraph
-          channel={LCH_CHANNELS_NAMES.HUE}
-          colorsFrom={'column'}
-          max={HUE_MAX}
-          min={0}
-          step={0.5}
-        />
+        {colorGraphs}
       </div>
     </Panel>
   )

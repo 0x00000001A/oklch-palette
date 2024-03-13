@@ -1,6 +1,14 @@
 import {createStore} from '../lib/StateManager'
-import {stripePalette} from '../palette.ts'
-import {oklchToRgb, rgbFloatToInt, rgbToHex} from '../utils/colors.ts'
+import defaultPalette from '../palettes/default.ts'
+import {
+  hexToRgb,
+  oklabToOklch,
+  oklchToRgb,
+  rgbFloatToInt,
+  rgbToHex,
+  rgbToXyz,
+  xyzToOklab
+} from '../utils/colors.ts'
 
 import {ColorsState, SchemaColor} from './types.ts'
 
@@ -16,10 +24,23 @@ export const createSchemaColor = (oklch: [number, number, number]): SchemaColor 
   }
 }
 
+export const hexToSchemaColor = (hex: string): SchemaColor => {
+  const rgb = hexToRgb(hex)
+
+  const oklch = oklabToOklch(xyzToOklab(rgbToXyz(rgb)))
+
+  return {
+    hex,
+    oklch,
+    rgb,
+    updatedAt: Date.now()
+  }
+}
+
 export const colorsStore = createStore<ColorsState>((set, get) => ({
-  colNames: stripePalette.columnNames,
-  colors: stripePalette.colors.map((colorsRow) => {
-    return (colorsRow as [number, number, number][]).map(createSchemaColor)
+  colNames: defaultPalette.colNames,
+  colors: defaultPalette.colors.map((colorsRow) => {
+    return (colorsRow as string[]).map(hexToSchemaColor)
   }),
   getSelectedColor() {
     const {colors, selectedCol, selectedRow} = get()
@@ -27,9 +48,17 @@ export const colorsStore = createStore<ColorsState>((set, get) => ({
   },
   imageData: [],
   name: 'Default palette',
-  rowNames: stripePalette.rowNames,
+  rowNames: defaultPalette.rowNames,
   selectedCol: 0,
   selectedRow: 0,
+  setPalette(palette) {
+    set({
+      ...palette,
+      colors: palette.colors.map((colorsRow) => {
+        return (colorsRow as string[]).map(hexToSchemaColor)
+      })
+    })
+  },
   setSelectedColor(selectedRow, selectedCol) {
     set({selectedCol, selectedRow})
   },

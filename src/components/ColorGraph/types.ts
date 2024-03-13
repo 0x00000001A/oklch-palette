@@ -10,5 +10,6 @@ export type ColorGraphProps = {
 
 export type ColorGraphValueProps = {
   channel: LCH_CHANNELS_NAMES
-  col: number
+  colorsFrom: 'column' | 'row'
+  index: number
 }

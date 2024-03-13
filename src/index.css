@@ -1,17 +1,21 @@
 :root {
   --font-size: 14px;
-  --line-height: 1.2em;
+  --line-height: 16px;
   --outline-color: rgba(128, 183, 255, 0.75);
   --outline-size: 2px;
+
+  font-size: var(--font-size);
+  font-weight: normal;
+  font-family: "Open Sans", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 html, body {
   margin: 0;
   padding: 0;
-  font-family: "Open Sans", sans-serif;
-  font-optical-sizing: auto;
-  font-style: normal;
-  font-size: var(--font-size);
 }
 
 *:focus {
@@ -27,6 +31,10 @@ select, input, button, label {
   line-height: var(--line-height);
 }
 
+button, input[type=button] {
+  font-weight: 600;
+}
+
 *, *::after, *::before {
   box-sizing: border-box;
 }
@@ -38,4 +46,15 @@ html {
 body {
   min-height: 100%;
   width: 100%;
+}
+
+
+.animated-spinning {
+  animation: spinning 1.42s linear infinite;
+}
+
+@keyframes spinning {
+  100% {
+    transform: rotate(360deg);
+  }
 }

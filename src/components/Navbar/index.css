@@ -1,12 +1,13 @@
 .navbar {
-  display: flex;
-  background: #efefe8;
+  background: #f2f2ee;
   border-bottom: 1px solid #e3e1e9;
   color: #2b2e43;
-  padding: 8px 10px;
+  padding: 8px;
   justify-content: space-between;
   align-items: center;
-  font-weight: 600;
+  font-weight: normal;
+  display: flex;
+  /*grid-template-columns: 1fr 1fr 1fr;*/
 }
 
 .navbar__item {
@@ -15,7 +16,7 @@
   justify-content: center;
 }
 
-.navbar__menu {
+.navbar__items {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -23,33 +24,11 @@
   align-items: center;
 }
 
-.navbar__button {
-  background: none;
-  color: inherit;
-  margin: 0;
-  text-align: right;
-  font-size: 14px;
-  display: inline-flex;
-  align-items: baseline;
-  padding: 0 8px;
-  gap: 4px;
-  border-radius: 3px;
-}
-
 .navbar__form {
   display: flex;
   gap: 8px;
-  margin: 0 8px;
-  align-items: baseline;
-}
-
-.navbar__button svg {
-  font-size: 1.4em;
-}
-
-.navbar__button:hover {
-  background: rgba(170, 150, 150, .2);
-  box-shadow: 0 0 0 2px rgba(170, 150, 150, .2);
+  margin: 0;
+  align-items: center;
 }
 
 .navbar__controls {
@@ -59,4 +38,26 @@
 
 .navbar__form .input {
   background: rgba(235, 235, 235, 0.1);
+}
+
+.navbar__button {
+  font-size: 14px;
+  padding: 2px 4px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 3px;
+  line-height: 20px;
+  color: inherit;
+  position: relative;
+  margin: 0;
+  gap: 8px;
+  vertical-align: top;
+}
+
+.navbar__button:hover {
+  background: rgba(0, 0, 0, .1);
+}
+
+.navbar__button svg {
+  font-size: 20px;
 }

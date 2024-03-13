@@ -1,5 +1,5 @@
+import {LCH_CHANNELS_NAMES} from '../constants/colors.ts'
 import {WorkerChannel} from '../lib/WebWorkersManager/types.ts'
-import {LCH_CHANNELS_NAMES} from '../state'
 import {Vector} from '../utils/math.ts'
 
 export type ColorsMessagePayload = {

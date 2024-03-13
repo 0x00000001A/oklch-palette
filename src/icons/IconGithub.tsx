@@ -1,6 +1,6 @@
-import {FC, HTMLAttributes} from 'react'
+import {FC, PropsWithoutRef, SVGProps} from 'react'
 
-const IconGithub: FC<HTMLAttributes<SVGElement>> = (props) => {
+const IconGithub: FC<PropsWithoutRef<SVGProps<SVGElement>>> = (props) => {
   return (
     <svg
       fill="currentColor"

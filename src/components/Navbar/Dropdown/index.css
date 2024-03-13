@@ -1,0 +1,32 @@
+.navbar-dropdown {
+  position: relative;
+}
+
+.navbar-dropdown__menu {
+  position: fixed;
+  list-style: none;
+  background-color: #eee;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  padding: 3px;
+  box-shadow: 0 12px 12px -4px rgba(0, 0, 0, 0.25), inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+  overflow: auto;
+}
+
+.navbar-dropdown__item {
+  padding: 2px 8px;
+  border-radius: 3px;
+  cursor: default;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.navbar-dropdown__item:hover {
+  background-color: #3870e0;
+  color: #fff;
+}
+
+.navbar-dropdown__menu_hidden {
+  display: none;
+}

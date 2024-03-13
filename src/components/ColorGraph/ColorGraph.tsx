@@ -75,9 +75,14 @@ const ColorGraph: FC<ColorGraphProps> = ({
     return new Array(colorsLen)
       .fill(0)
       .map((_, index: number) => (
-        <ColorGraphValue channel={channel} col={index} key={index} />
+        <ColorGraphValue
+          channel={channel}
+          colorsFrom={colorsFrom}
+          index={index}
+          key={index}
+        />
       ))
-  }, [channel, colorsLen])
+  }, [channel, colorsFrom, colorsLen])
 
   const colorRangePickers = useMemo(() => {
     return new Array(colorsLen)

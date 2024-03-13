@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position: absolute">
+  <defs>
+    <filter id="blurredVision">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2"/>
+    </filter>
+    <!-- The filter grayscale matrix is based on the following research paper:
+         Rang Man Ho Nguyen and Michael S. Brown,
+         “Why You Should Forget Luminance Conversion and Do Something Better”.
+         IEEE Conference on Computer Vision and Pattern Recognition (CVPR),
+         Honolulu, HI, 2017. pp. 6750-6758.
+         https://openaccess.thecvf.com/content_cvpr_2017/papers/Nguyen_Why_You_Should_CVPR_2017_paper.pdf
+         -->
+    <filter id="achromatopsia">
+      <!--
+        Note: Safari 13 doesn’t support leading newlines in the `values` attribute value.
+        https://bugs.webkit.org/show_bug.cgi?id=215602
+      -->
+      <feColorMatrix values="0.213  0.715  0.072  0.000  0.000
+                               0.213  0.715  0.072  0.000  0.000
+                               0.213  0.715  0.072  0.000  0.000
+                               0.000  0.000  0.000  1.000  0.000">
+      </feColorMatrix>
+    </filter>
+    <!-- The filter color matrices are based on the following research paper:
+         Gustavo M. Machado, Manuel M. Oliveira, and Leandro A. F. Fernandes,
+         “A Physiologically-based Model for Simulation of Color Vision Deficiency”.
+         IEEE Transactions on Visualization and Computer Graphics. Volume 15 (2009),
+         Number 6, November/December 2009. pp. 1291-1298.
+         https://www.inf.ufrgs.br/~oliveira/pubs_files/CVD_Simulation/CVD_Simulation.html
+         -->
+    <filter id="deuteranopia">
+      <feColorMatrix values="0.367  0.861 -0.228  0.000  0.000
+                               0.280  0.673  0.047  0.000  0.000
+                              -0.012  0.043  0.969  0.000  0.000
+                               0.000  0.000  0.000  1.000  0.000">
+      </feColorMatrix>
+    </filter>
+    <filter id="protanopia">
+      <feColorMatrix values="0.152  1.053 -0.205  0.000  0.000
+                               0.115  0.786  0.099  0.000  0.000
+                              -0.004 -0.048  1.052  0.000  0.000
+                               0.000  0.000  0.000  1.000  0.000">
+      </feColorMatrix>
+    </filter>
+    <filter id="tritanopia">
+      <feColorMatrix values="1.256 -0.077 -0.179  0.000  0.000
+                              -0.078  0.931  0.148  0.000  0.000
+                               0.005  0.691  0.304  0.000  0.000
+                               0.000  0.000  0.000  1.000  0.000">
+      </feColorMatrix>
+    </filter>
+    <filter id="protanomaly">
+      <feColorMatrix type="matrix" values=".81667 .18333 0 0 0
+                                          .33333 .66667 0    0 0
+                                          0      .125   .875 0 0
+                                          0      0      0    1 0">
+
+      </feColorMatrix>
+    </filter>
+    <filter id="deuteranomaly">
+      <feColorMatrix type="matrix" values=".8 .2 0 0 0
+                                            .25833 .74167 0      0 0
+                                            0      .14167 .85833 0 0
+                                            0      0      0      1 0">
+
+      </feColorMatrix>
+    </filter>
+    <filter id="tritanomaly">
+      <feColorMatrix type="matrix" values=".96667 .3333 0 0 0
+                                            0      .73333 .26667 0 0
+                                            0      .18333 .81667 0 0
+                                            0      0      0      1 0">
+
+      </feColorMatrix>
+    </filter>
+    <filter id="grayscale">
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+</svg>

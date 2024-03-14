@@ -14,7 +14,6 @@
 .sidebar {
   background: rgb(251, 250, 250);
   display: flex;
-  flex-basis: min-content;
   flex-direction: column;
   flex-shrink: 0;
   overflow: auto;

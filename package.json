@@ -12,12 +12,14 @@
   "dependencies": {
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-transition-group": "4.4.5",
     "use-sync-external-store": "1.2.0",
     "vite-plugin-svgr": "4.2.0"
   },
   "devDependencies": {
     "@types/react": "18.2.55",
     "@types/react-dom": "18.2.19",
+    "@types/react-transition-group": "4.4.10",
     "@types/use-sync-external-store": "0.0.6",
     "@typescript-eslint/eslint-plugin": "6.21.0",
     "@typescript-eslint/parser": "6.21.0",

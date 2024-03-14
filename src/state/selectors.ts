@@ -1,13 +1,13 @@
 import {selectorCreator} from '../lib/StateManager/helpers.ts'
 
-import {ColorsState} from './types.ts'
+import {ColorsDirection, ColorsState} from './types.ts'
 
 const colorsSelector = selectorCreator<ColorsState>()
 
 export const isColorSelectedByDirection = colorsSelector(
-  (direction: 'column' | 'row', index: number) => {
+  (direction: ColorsDirection, index: number) => {
     return (state) => {
-      if (direction === 'column') {
+      if (direction === 'col') {
         return state.selectedRow === index
       }
 
@@ -17,11 +17,11 @@ export const isColorSelectedByDirection = colorsSelector(
 )
 
 export const getNextColor = colorsSelector(
-  (direction: 'column' | 'row', index: number) => {
+  (direction: ColorsDirection, index: number) => {
     return (state: ColorsState) => {
       let [nextRow, nextCol] = [state.selectedRow, state.selectedCol]
 
-      if (direction === 'column') {
+      if (direction === 'col') {
         nextRow = Math.min(state.rowNames.length - 1, index + 1)
       } else {
         nextCol = Math.min(state.colNames.length - 1, index + 1)
@@ -33,11 +33,11 @@ export const getNextColor = colorsSelector(
 )
 
 export const getColorByDirection = colorsSelector(
-  (direction: 'column' | 'row', index: number) => {
+  (direction: ColorsDirection, index: number) => {
     return (state) => {
       let indexes = [state.selectedRow, index]
 
-      if (direction === 'column') {
+      if (direction === 'col') {
         indexes = [index, state.selectedCol]
       }
 
@@ -46,9 +46,9 @@ export const getColorByDirection = colorsSelector(
   }
 )
 
-export const colorsNamesByDirection = colorsSelector((direction: 'column' | 'row') => {
+export const colorsNamesByDirection = colorsSelector((direction: ColorsDirection) => {
   return (state) => {
-    if (direction === 'column') {
+    if (direction === 'col') {
       return state.rowNames
     }
 
@@ -56,7 +56,7 @@ export const colorsNamesByDirection = colorsSelector((direction: 'column' | 'row
   }
 })
 
-export const colorsLengthByDirection = colorsSelector((direction: 'column' | 'row') => {
+export const getColorsLengthByDirection = colorsSelector((direction: ColorsDirection) => {
   return (state) => {
     return colorsNamesByDirection(direction)(state).length
   }

@@ -10,23 +10,26 @@ import {VisionDropdown} from './VisionDropdown'
 
 import './index.css'
 import IconShare from '../../icons/IconShare.tsx'
+import {PaletteActionsDropdown} from './PaletteActionsDropdown'
 
 const Navbar: FC = () => {
   return (
     <nav className={'navbar'}>
-      <div>OK PALETTE</div>
-      <div className="navbar__form">
+      <div className={'navbar__items'}>
+        <PaletteActionsDropdown />
+      </div>
+      <div className="navbar__items">
         <PaletteDropdown />
         <button aria-label={'Share link to this palette'} className={'navbar__button'}>
           <IconShare />
         </button>
       </div>
-      <div className={'navbar__form'}>
-        <div className="navbar__form">
+      <div className={'navbar__items'}>
+        <div className="navbar__items">
           <ColorSpaceDropdown />
           <VisionDropdown />
         </div>
-        <div className="navbar__form">
+        <div className="navbar__items">
           <button aria-label={'Switch to light mode'} className={'navbar__button'}>
             <IconSettings />
           </button>

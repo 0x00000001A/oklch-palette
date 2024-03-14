@@ -44,7 +44,7 @@ const SidebarHeader: FC<SidebarHeaderProps> = () => {
       <ColorInfo />
       <ColorForm />
       <ColorBar colorsFrom={'row'} style={{flexGrow: 1}} />
-      <ColorBar colorsFrom={'column'} style={{flexGrow: 1}} />
+      <ColorBar colorsFrom={'col'} style={{flexGrow: 1}} />
     </Panel>
   )
 }

@@ -1,7 +1,8 @@
 import {HTMLAttributes} from 'react'
+import {ColorsDirection} from '../../state'
 
 export type ColorBarProps = HTMLAttributes<HTMLDivElement> & {
-  colorsFrom: 'column' | 'row'
+  colorsFrom: ColorsDirection
 }
 
 export type ColorBarItemProps = ColorBarProps & {index: number}

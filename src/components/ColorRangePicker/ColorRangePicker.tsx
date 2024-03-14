@@ -74,9 +74,10 @@ const ColorRangePicker: FC<ColorRangePickerProps> = ({
   }, [width, height, currColor, nextColor, index, channel, colorsFrom])
 
   const inputStyles = useMemo(() => {
-    const blockSize = Math.round(GRAPH_WIDTH / colorsLength)
-    const blockSizeHalf = Math.round(blockSize / 2)
-    const inputOffsetLeft = index * blockSize + blockSizeHalf + 1
+    const blockSize = GRAPH_WIDTH / colorsLength
+    const blockSizeHalf = blockSize / 2
+
+    const inputOffsetLeft = index * blockSize  + blockSizeHalf + 1
 
     // noinspection JSSuspiciousNameCombination
     return {

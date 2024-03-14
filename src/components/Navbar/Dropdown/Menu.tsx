@@ -43,17 +43,17 @@ const MenuInternal = <GOption extends BaseOption = BaseOption>(
 
     const rootRect = root.getBoundingClientRect()
 
-    dropdown.style.top = `${rootRect.y}px`
-    dropdown.style.minWidth = `${rootRect.width}px`
+    dropdown.style.top = `${rootRect.y - 2}px`
+    dropdown.style.minWidth = `${rootRect.width + 4}px`
     dropdown.style.maxHeight = window.innerHeight - rootRect.y - 8 + 'px'
 
     const dropdownRect = dropdown.getBoundingClientRect()
 
     if (rootRect.left > window.innerWidth / 2) {
       dropdown.style.left =
-        rootRect.left - Math.abs(rootRect.width - dropdownRect.width) + 'px'
+        rootRect.left + 2 - Math.abs(rootRect.width - dropdownRect.width) + 'px'
     } else {
-      dropdown.style.left = `${rootRect.left}px`
+      dropdown.style.left = `${rootRect.left - 2}px`
     }
   }, [rootRef])
 

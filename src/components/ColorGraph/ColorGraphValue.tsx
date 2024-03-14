@@ -17,7 +17,18 @@ const ColorGraphValue: FC<ColorGraphValueProps> = ({channel, colorsFrom, index})
     return String(result).slice(0, 5)
   })
 
-  return <span className={'color-graph__value'}>{value}</span>
+  return (
+    <span className={'color-graph__value'}>
+      <span
+        style={{
+          overflow: 'hidden',
+          display: 'block'
+        }}
+      >
+        {value}
+      </span>
+    </span>
+  )
 }
 
 export default ColorGraphValue

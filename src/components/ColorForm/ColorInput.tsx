@@ -1,15 +1,26 @@
-import {ChangeEvent, FC, useCallback} from 'react'
+import {ChangeEvent, FC, useCallback, useMemo} from 'react'
 
-import {LCH_CHANNELS_CONFIG} from '../../constants/colors.ts'
+import {LCH_CHANNELS_CONFIG, LCH_CHANNELS_NAMES} from '../../constants/colors.ts'
 import IconGithub from '../../icons/IconGithub.tsx'
 import {useColorsStore} from '../../state'
 import {Input} from '../Input'
 
 import {ColorInputProps} from './types.ts'
+import {getSelectedColorOklch} from '../../state/selectors.ts'
+import {toFixedTruncate} from '../../utils/math.ts'
 
 const ColorInput: FC<ColorInputProps> = ({channel}) => {
+  const isLightnessChannel = channel === LCH_CHANNELS_NAMES.LIGHTNESS
+  const channelConfig = LCH_CHANNELS_CONFIG[channel]
+
   const value = useColorsStore((state) => {
-    return state.colors[state.selectedRow][state.selectedCol].oklch[channel]
+    let channelValue = getSelectedColorOklch()(state)[channel]
+
+    if (isLightnessChannel) {
+      channelValue = channelValue * 100
+    }
+
+    return toFixedTruncate(channelValue, channelConfig.step)
   })
 
   const setSelectedColorChannelValue = useColorsStore((state) => {
@@ -18,18 +29,36 @@ const ColorInput: FC<ColorInputProps> = ({channel}) => {
 
   const handleChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
-      setSelectedColorChannelValue(channel, parseFloat(event.target.value))
+      let newValue = parseFloat(event.target.value)
+
+      if (channel === LCH_CHANNELS_NAMES.LIGHTNESS) {
+        newValue = newValue / 100
+      }
+
+      setSelectedColorChannelValue(channel, newValue)
     },
     [channel, setSelectedColorChannelValue]
   )
+
+  const colorConfig = useMemo(() => {
+    const max = isLightnessChannel ? channelConfig.max * 100 : value
+
+    const step = isLightnessChannel ? channelConfig.step * 10 : channelConfig.step
+
+    return {
+      ...channelConfig,
+      step,
+      max
+    }
+  }, [])
 
   return (
     <div className={'color-form__item'} key={channel}>
       <label>{LCH_CHANNELS_CONFIG[channel].name}:</label>
       <Input
-        max={LCH_CHANNELS_CONFIG[channel].max}
-        min={LCH_CHANNELS_CONFIG[channel].min}
-        step={LCH_CHANNELS_CONFIG[channel].step}
+        max={colorConfig.max}
+        min={colorConfig.min}
+        step={colorConfig.step}
         type={'number'}
         value={value}
         onChange={handleChange}

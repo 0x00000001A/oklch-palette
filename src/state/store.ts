@@ -38,6 +38,34 @@ export const hexToSchemaColor = (hex: string): SchemaColor => {
 }
 
 export const colorsStore = createStore<ColorsState>((set, get) => ({
+  addToPalette(data) {
+    set((state) => {
+      const updatedColors = [...state.colors]
+      const colNames = [...state.colNames]
+      const rowNames = [...state.rowNames]
+
+      const name = 'No name'
+
+      if (data.direction === 'col') {
+        updatedColors.forEach((row) => {
+          row.push(hexToSchemaColor('#333'))
+        })
+        colNames.push(name)
+        // do something
+      } else {
+        updatedColors.push(Array(state.colNames.length).fill(hexToSchemaColor('#333')))
+        rowNames.push(name)
+      }
+
+      console.log(updatedColors)
+
+      return {
+        colNames,
+        colors: updatedColors,
+        rowNames
+      }
+    })
+  },
   colNames: defaultPalette.colNames,
   colors: defaultPalette.colors.map((colorsRow) => {
     return (colorsRow as string[]).map(hexToSchemaColor)
@@ -56,7 +84,9 @@ export const colorsStore = createStore<ColorsState>((set, get) => ({
       ...palette,
       colors: palette.colors.map((colorsRow) => {
         return (colorsRow as string[]).map(hexToSchemaColor)
-      })
+      }),
+      selectedCol: 0,
+      selectedRow: 0
     })
   },
   setSelectedColor(selectedRow, selectedCol) {
@@ -75,7 +105,7 @@ export const colorsStore = createStore<ColorsState>((set, get) => ({
     })
   },
   setSelectedColorInDirection(direction, value) {
-    const key = direction === 'column' ? 'selectedRow' : 'selectedCol'
+    const key = direction === 'col' ? 'selectedRow' : 'selectedCol'
 
     set({[key]: value})
   }

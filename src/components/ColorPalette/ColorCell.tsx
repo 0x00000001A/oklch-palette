@@ -40,9 +40,8 @@ const ColorCell: FC<ColorCellProps> = ({
   const cellStyles = useMemo(() => {
     return {
       ...style,
-      background: color.hex,
-      color: '#fff',
-      outlineColor: color.hex
+      backgroundColor: color.hex,
+      color: '#fff'
     }
   }, [color.hex, style])
 

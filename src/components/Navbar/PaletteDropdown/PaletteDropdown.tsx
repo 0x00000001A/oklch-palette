@@ -3,8 +3,6 @@ import {FC, useCallback, useState} from 'react'
 import IconSavedPalettes from '../../../icons/IconSavedPalettes.tsx'
 import palettes from '../../../palettes'
 import Dropdown from '../Dropdown/Dropdown.tsx'
-import {BaseOption} from '../Dropdown/types.ts'
-import defaultPalette from '../../../palettes/default.ts'
 import {useColorsStore} from '../../../state'
 
 const palettesOptions = Object.values(palettes).map((palette) => ({

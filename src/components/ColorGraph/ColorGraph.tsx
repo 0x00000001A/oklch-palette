@@ -10,6 +10,7 @@ import ColorGraphValue from './ColorGraphValue.tsx'
 import {ColorGraphProps} from './types.ts'
 
 import './index.css'
+import {getColorsLengthByDirection} from '../../state/selectors.ts'
 
 const ColorGraph: FC<ColorGraphProps> = ({
   channel,
@@ -18,13 +19,7 @@ const ColorGraph: FC<ColorGraphProps> = ({
   min,
   step
 }) => {
-  const colorsLen = useColorsStore((state) => {
-    if (colorsFrom === 'column') {
-      return state.rowNames.length
-    }
-
-    return state.colNames.length
-  })
+  const colorsLen = useColorsStore(getColorsLengthByDirection(colorsFrom))
 
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [canvasSize, setCanvasSize] = useState([0, 0])
@@ -117,7 +112,7 @@ const ColorGraph: FC<ColorGraphProps> = ({
   useEffect(subscribeToColorsWorkerUpdates, [])
 
   return (
-    <div className={'color-graph'}>
+    <div className={'color-graph'} style={{width: GRAPH_WIDTH}}>
       <div className={'color-graph__values'}>{colorValues}</div>
       <div className={'color-graph__canvas-wrapper'}>
         <canvas
@@ -126,7 +121,7 @@ const ColorGraph: FC<ColorGraphProps> = ({
           ref={canvasRef}
           width={GRAPH_WIDTH}
         />
-        <div className={'color-graph__sliders'}>{colorRangePickers}</div>
+        {colorRangePickers}
       </div>
     </div>
   )

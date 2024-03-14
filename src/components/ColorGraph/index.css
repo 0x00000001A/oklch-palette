@@ -1,8 +1,9 @@
 .color-graph {
   position: relative;
   background: #f3f3f3;
-  border: 1px solid #e1e1e1;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
   border-radius: 6px;
+  min-width: 0;
 }
 
 .color-graph__values {
@@ -15,9 +16,11 @@
 
 .color-graph__value {
   font-size: 12px;
-  flex: 1 0 0;
   text-align: center;
   padding: 0 4px;
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .color-graph__inputs .color-graph__input {

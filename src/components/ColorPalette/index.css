@@ -35,11 +35,9 @@
   outline-color: transparent;
   text-align: center;
   line-height: 42px;
-  /*width: 100%;*/
-  /*height: 100%;*/
-  /*display: flex;*/
-  /*justify-content: center;*/
-  /*align-items: center;*/
+  align-items: center;
+  display: flex;
+  justify-content: center;
 }
 
 .color-palette__cell:not(.color-palette__cell_not-selectable) {
@@ -48,16 +46,33 @@
 
 .color-palette__cell_selected,
 .color-palette__cell:not(.color-palette__cell_not-selectable):hover {
-  /*transform: scale(1.1);*/
   position: relative;
-  z-index: 2;
   transition: none;
-  outline-width: 12px;
-  outline-style: solid;
-  border-radius: 4px;
-  outline-offset: -4px;
 }
 
-.color-palette__cell_selected:not(:hover) {
-  z-index: 1;
+.color-palette__cell_selected::after,
+.color-palette__cell:not(.color-palette__cell_not-selectable):hover::after {
+  --border-width: 2px;
+  --border-corner-size: 8px;
+  --border-color: #fff;
+
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+
+  /*noinspection CssReplaceWithShorthandSafely*/
+  background: linear-gradient(to right, var(--border-color) var(--border-width), transparent var(--border-width)) 0 0,
+  linear-gradient(to right, var(--border-color) var(--border-width), transparent var(--border-width)) 0 100%,
+  linear-gradient(to left, var(--border-color) var(--border-width), transparent var(--border-width)) 100% 0,
+  linear-gradient(to left, var(--border-color) var(--border-width), transparent var(--border-width)) 100% 100%,
+  linear-gradient(to bottom, var(--border-color) var(--border-width), transparent var(--border-width)) 0 0,
+  linear-gradient(to bottom, var(--border-color) var(--border-width), transparent var(--border-width)) 100% 0,
+  linear-gradient(to top, var(--border-color) var(--border-width), transparent var(--border-width)) 0 100%,
+  linear-gradient(to top, var(--border-color) var(--border-width), transparent var(--border-width)) 100% 100%;
+
+  background-repeat: no-repeat;
+  background-size: var(--border-corner-size) var(--border-corner-size);
 }

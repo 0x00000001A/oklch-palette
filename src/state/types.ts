@@ -8,7 +8,10 @@ export type SchemaColor = {
   updatedAt: number
 }
 
+export type ColorsDirection = 'col' | 'row'
+
 export type ColorsState = {
+  addToPalette: (data: {afterIndex?: number; direction: ColorsDirection}) => void
   colNames: string[]
   colors: SchemaColor[][]
   getSelectedColor: () => SchemaColor
@@ -19,5 +22,5 @@ export type ColorsState = {
   setPalette: (palette: typeof defaultPalette) => void
   setSelectedColor: (row: number, col: number) => void
   setSelectedColorChannelValue: (channel: LCH_CHANNELS_NAMES, value: number) => void
-  setSelectedColorInDirection: (direction: 'column' | 'row', value: number) => void
+  setSelectedColorInDirection: (direction: ColorsDirection, value: number) => void
 }

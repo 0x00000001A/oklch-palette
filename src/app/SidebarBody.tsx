@@ -21,7 +21,7 @@ const SidebarBody: FC<SidebarBodyProps> = () => {
         />
         <ColorGraph
           channel={channel}
-          colorsFrom={'column'}
+          colorsFrom={'col'}
           max={LCH_CHANNELS_CONFIG[channel].max}
           min={LCH_CHANNELS_CONFIG[channel].min}
           step={LCH_CHANNELS_CONFIG[channel].step}
@@ -37,7 +37,8 @@ const SidebarBody: FC<SidebarBodyProps> = () => {
         flexBasis: 'min-content',
         flexShrink: 0,
         gap: 8,
-        overflow: 'auto'
+        overflow: 'auto',
+        width: '100%',
       }}
     >
       <div

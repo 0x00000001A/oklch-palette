@@ -2,12 +2,12 @@ import {useCallback, useRef, useState} from 'react'
 
 import useClickOutside from '../../../hooks/useClickOutside.ts'
 import IconArrowDropdown from '../../../icons/IconArrowDropdown.tsx'
+import IconLoading from '../../../icons/IconLoading.tsx'
 
 import Menu from './Menu.tsx'
 import {BaseOption, DropdownProps} from './types.ts'
 
 import './index.css'
-import IconLoading from '../../../icons/IconLoading.tsx'
 
 const Dropdown = <GOption extends BaseOption = BaseOption>({
   icon,
@@ -28,8 +28,8 @@ const Dropdown = <GOption extends BaseOption = BaseOption>({
 
   const handleOptionClick = useCallback(
     (option: GOption) => {
-      onChange && onChange(option)
       toggleDropdown()
+      onChange && onChange(option)
     },
     [onChange, toggleDropdown]
   )

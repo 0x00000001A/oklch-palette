@@ -20,38 +20,89 @@ const ColorPalette = () => {
     [setSelectedColor]
   )
 
+  const cellSize = 48
+
   return (
-    <table className={'color-palette'}>
-      <thead>
-        <tr>
-          <th className={'color-palette__table-cell'} />
-          {colNames.map((columnName, col) => (
-            <th
-              className={'color-palette__table-cell color-palette__column-label'}
-              key={col}
-            >
-              {columnName}
-            </th>
+    <div
+      style={{
+        alignContent: 'start',
+        display: 'grid',
+        gridTemplateColumns: `96px repeat(${colNames.length}, ${cellSize}px)`,
+        gridTemplateRows: `max-content repeat(${colNames.length}, ${cellSize}px)`,
+        justifyContent: 'start',
+        overflow: 'auto',
+        overscrollBehavior: 'none',
+        padding: '0 8px 8px 0',
+        width: '100%'
+      }}
+    >
+      <div
+        style={{
+          background: '#fff',
+          left: 0,
+          position: 'sticky',
+          top: 0,
+          zIndex: 4
+        }}
+      >
+        {/*  0,0 cell */}
+      </div>
+      {colNames.map((col) => (
+        <div
+          style={{
+            alignItems: 'end',
+            background: '#fff',
+            display: 'flex',
+            fontSize: 12,
+            justifyContent: 'center',
+            lineHeight: '18px',
+            padding: '8px 4px',
+            position: 'sticky',
+            top: 0,
+            zIndex: 3
+          }}
+          key={col}
+        >
+          <span
+            style={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap'
+            }}
+          >
+            {col}
+          </span>
+        </div>
+      ))}
+      {rowNames.map((row, rowIndex) => (
+        <>
+          <div
+            style={{
+              alignItems: 'center',
+              background: '#fff',
+              display: 'flex',
+              fontSize: 12,
+              left: 0,
+              overflow: 'hidden',
+              padding: '4px 8px 4px 8px',
+              position: 'sticky',
+              textAlign: 'right',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              zIndex: 3
+            }}
+            key={rowIndex}
+          >
+            {row}
+          </div>
+          {colNames.map((col, colIndex) => (
+            <ColorCell col={colIndex} key={col} row={rowIndex} onClick={handleColorClick}>
+              50
+            </ColorCell>
           ))}
-        </tr>
-      </thead>
-      <tbody>
-        {rowNames.map((rowName, row) => (
-          <tr key={row}>
-            <td className={'color-palette__table-cell color-palette__row-label'}>
-              {rowName}
-            </td>
-            {colNames.map((_, col) => (
-              <td className={'color-palette__table-cell'} key={col}>
-                <ColorCell col={col} row={row} onClick={handleColorClick}>
-                  50
-                </ColorCell>
-              </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+        </>
+      ))}
+    </div>
   )
 }
 

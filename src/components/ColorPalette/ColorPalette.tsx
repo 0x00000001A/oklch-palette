@@ -1,4 +1,4 @@
-import {useCallback} from 'react'
+import {Fragment, useCallback} from 'react'
 
 import {useColorsStore} from '../../state'
 import {arrayCompare} from '../../utils/compare.ts'
@@ -75,7 +75,7 @@ const ColorPalette = () => {
         </div>
       ))}
       {rowNames.map((row, rowIndex) => (
-        <>
+        <Fragment key={rowIndex}>
           <div
             style={{
               alignItems: 'center',
@@ -100,7 +100,7 @@ const ColorPalette = () => {
               50
             </ColorCell>
           ))}
-        </>
+        </Fragment>
       ))}
     </div>
   )

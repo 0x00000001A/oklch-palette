@@ -1,6 +1,7 @@
 import {FC} from 'react'
 
 import IconGithub from '../icons/IconGithub.tsx'
+import {Button} from '../components/Button'
 
 export type PlaygroundProps = {
   // props
@@ -10,16 +11,16 @@ const Playground: FC<PlaygroundProps> = () => {
   return (
     <div>
       <div>
-        <button className={'pg-button'}>
+        <Button>
           <IconGithub />
           Button text
-        </button>
+        </Button>
       </div>
-      <button className={'pg-button'}>Text only</button>
+      <Button>Text only</Button>
       <div>
-        <button className={'pg-button'}>
+        <Button>
           <IconGithub />
-        </button>
+        </Button>
       </div>
     </div>
   )

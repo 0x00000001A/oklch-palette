@@ -2,6 +2,7 @@ import {FC, useCallback, useEffect, useMemo, useRef, useState} from 'react'
 
 import {GRAPH_HEIGHT, GRAPH_WIDTH} from '../../constants/colors.ts'
 import {useColorsStore} from '../../state'
+import {getColorsLengthByDirection} from '../../state/selectors.ts'
 import {colorsWorkerManager} from '../../worker'
 import {ColorsMessageResponse} from '../../worker/types.ts'
 import {ColorRangePicker} from '../ColorRangePicker'
@@ -10,7 +11,6 @@ import ColorGraphValue from './ColorGraphValue.tsx'
 import {ColorGraphProps} from './types.ts'
 
 import './index.css'
-import {getColorsLengthByDirection} from '../../state/selectors.ts'
 
 const ColorGraph: FC<ColorGraphProps> = ({
   channel,

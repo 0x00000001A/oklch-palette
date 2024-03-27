@@ -23,4 +23,5 @@ export type ColorsState = {
   setSelectedColor: (row: number, col: number) => void
   setSelectedColorChannelValue: (channel: LCH_CHANNELS_NAMES, value: number) => void
   setSelectedColorInDirection: (direction: ColorsDirection, value: number) => void
+  setSelectedColorValue: (hex: string) => void
 }

@@ -1,7 +1,8 @@
-import {FC, useCallback} from 'react'
+import {FC, useCallback, useState} from 'react'
 
 import IconPlusCircle from '../../../icons/IconPlusCircle.tsx'
-import {useColorsStore} from '../../../state'
+import {ColorFamilyModal} from '../ColorFamilyModal'
+import {ColorTonesModal} from '../ColorTonesModal'
 import Dropdown from '../Dropdown/Dropdown.tsx'
 import {BaseOption} from '../Dropdown/types.ts'
 
@@ -26,30 +27,45 @@ const actions = [
 ]
 
 const PaletteActionsDropdown: FC = () => {
-  const addToPalette = useColorsStore((state) => state.addToPalette)
+  const [actionStates, setActionStates] = useState<boolean[]>([true])
+
+  // const addToPalette = useColorsStore((state) => state.addToPalette)
 
   const handleChange = useCallback(
     (option: BaseOption) => {
-      if (option.value === ACTIONS.ADD_COLOR_FAMILY) {
-        addToPalette({direction: 'row'})
-        return
-      }
+      const updatedActionStates = [...actionStates]
 
-      if (option.value === ACTIONS.ADD_COLOR_TONES) {
-        addToPalette({direction: 'col'})
-      }
+      updatedActionStates[option.value as ACTIONS] = true
+
+      setActionStates(updatedActionStates)
     },
-    [addToPalette]
+    [actionStates]
   )
 
+  const handleModalClose = useCallback(() => {
+    setActionStates([])
+  }, [])
+
   return (
-    <Dropdown
-      icon={<IconPlusCircle />}
-      optionLabelProp={'label'}
-      options={actions.slice(1)}
-      value={actions[0]}
-      onChange={handleChange}
-    />
+    <>
+      <Dropdown
+        icon={<IconPlusCircle />}
+        optionLabelProp={'label'}
+        options={actions.slice(1)}
+        value={actions[0]}
+        onChange={handleChange}
+      />
+
+      <ColorFamilyModal
+        open={actionStates[ACTIONS.ADD_COLOR_FAMILY]}
+        onClose={handleModalClose}
+      />
+
+      <ColorTonesModal
+        open={actionStates[ACTIONS.ADD_COLOR_TONES]}
+        onClose={handleModalClose}
+      />
+    </>
   )
 }
 

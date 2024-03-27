@@ -15,7 +15,7 @@ export function toFixedTruncate(value: number, decimalsLength: number) {
     decimalsLength = decimalsLength.toString().split('.').length
   }
 
-  const result = new RegExp('^-?\\d+(?:\.\\d{0,' + decimalsLength + '})?');
+  const result = new RegExp('^-?\\d+(?:.\\d{0,' + decimalsLength + '})?')
   const matches = value.toString().match(result)
 
   if (!matches) {
@@ -23,5 +23,5 @@ export function toFixedTruncate(value: number, decimalsLength: number) {
     return value
   }
 
-  return parseFloat(matches[0]);
+  return parseFloat(matches[0])
 }

@@ -2,15 +2,15 @@ import {FC} from 'react'
 
 import IconGithub from '../../icons/IconGithub.tsx'
 import IconSettings from '../../icons/IconSettings.tsx'
+import IconShare from '../../icons/IconShare.tsx'
 import IconSun from '../../icons/IconSun.tsx'
 
 import {ColorSpaceDropdown} from './ColorSpaceDropdown'
+import {PaletteActionsDropdown} from './PaletteActionsDropdown'
 import {PaletteDropdown} from './PaletteDropdown'
 import {VisionDropdown} from './VisionDropdown'
 
 import './index.css'
-import IconShare from '../../icons/IconShare.tsx'
-import {PaletteActionsDropdown} from './PaletteActionsDropdown'
 
 const Navbar: FC = () => {
   return (

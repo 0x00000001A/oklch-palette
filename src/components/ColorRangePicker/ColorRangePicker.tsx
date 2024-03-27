@@ -77,7 +77,7 @@ const ColorRangePicker: FC<ColorRangePickerProps> = ({
     const blockSize = GRAPH_WIDTH / colorsLength
     const blockSizeHalf = blockSize / 2
 
-    const inputOffsetLeft = index * blockSize  + blockSizeHalf + 1
+    const inputOffsetLeft = index * blockSize + blockSizeHalf + 1
 
     // noinspection JSSuspiciousNameCombination
     return {

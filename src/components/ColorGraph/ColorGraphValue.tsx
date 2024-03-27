@@ -21,8 +21,8 @@ const ColorGraphValue: FC<ColorGraphValueProps> = ({channel, colorsFrom, index})
     <span className={'color-graph__value'}>
       <span
         style={{
-          overflow: 'hidden',
-          display: 'block'
+          display: 'block',
+          overflow: 'hidden'
         }}
       >
         {value}

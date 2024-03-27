@@ -1,6 +1,8 @@
-import {useEffect, useRef} from 'react'
+import {RefObject, useEffect} from 'react'
 
 import {AnyFunction} from '../utils/types.ts'
+
+import useEffectEvent from './useEffectEvent.ts'
 
 export type EventListenerTarget = Document | Element | HTMLElement | Window
 
@@ -32,6 +34,13 @@ function useEventListener<GEventName extends keyof WindowEventMap>(
   options?: AddEventListenerOptions | boolean
 ): void
 
+function useEventListener<GEventName extends keyof HTMLElementEventMap>(
+  target: RefObject<EventListenerTarget>,
+  eventName: GEventName,
+  handler: (ev: HTMLElementEventMap[GEventName]) => void,
+  options?: AddEventListenerOptions | boolean
+): void
+
 function useEventListener(
   target: EventListenerTarget,
   eventName: string,
@@ -40,22 +49,21 @@ function useEventListener(
 ): void
 
 function useEventListener(
-  target: EventListenerTarget,
+  target: EventListenerTarget | RefObject<EventListenerTarget>,
   eventName: string,
   handler: AnyFunction,
   options?: AddEventListenerOptions | boolean
 ) {
-  const handlerRef = useRef(handler)
+  const handlerCallback = useEffectEvent(handler)
 
   useEffect(() => {
-    const wrappedHandler = (event: Event) => {
-      handlerRef.current(event)
-    }
+    const targetRef = target as unknown as RefObject<EventListenerTarget>
+    const element = (targetRef.current || target) as NonNullable<EventListenerTarget>
 
-    target.addEventListener(eventName, wrappedHandler, options)
+    element.addEventListener(eventName, handlerCallback, options)
 
     return () => {
-      target.removeEventListener(eventName, wrappedHandler, {
+      element.removeEventListener(eventName, handlerCallback, {
         capture: typeof options === 'object' ? options.capture : options
       })
     }

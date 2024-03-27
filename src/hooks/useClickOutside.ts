@@ -20,7 +20,7 @@ function useClickOutside(
   callback: AnyFunction
 ) {
   const wrappedCallback = (event: Event) => {
-    let isClickOutside: boolean | undefined = true
+    let isClickOutside: boolean | undefined
 
     if (Array.isArray(target)) {
       isClickOutside = !target

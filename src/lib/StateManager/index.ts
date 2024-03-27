@@ -9,7 +9,26 @@ export const createStore = <GState>(storeCreator: StoreCreator<GState>) => {
   }
 
   let state: GState
+  let history: Partial<GState>[] = []
+  let historyPosition = -1
   const listeners = new Set<StoreSubscriber<GState>>()
+
+  // mb I need to limit the history size
+  function addHistoryRecord(nextState: Partial<GState>, override?: boolean) {
+    if (override) {
+      history = [nextState]
+      historyPosition = 0
+    } else {
+      if (historyPosition !== history.length - 1) {
+        history.splice(historyPosition)
+        historyPosition = history.length - 1
+      }
+
+      // it should be enough for cur req
+      history.push(JSON.parse(JSON.stringify(nextState)))
+      historyPosition += 1
+    }
+  }
 
   const storeMethods: StoreMethods<GState> = {
     destroy() {
@@ -22,12 +41,17 @@ export const createStore = <GState>(storeCreator: StoreCreator<GState>) => {
 
     setState(
       partial: ((state: GState) => Partial<GState>) | Partial<GState>,
-      replace?: boolean
+      replace?: boolean,
+      isHistoryOperation?: boolean
     ) {
       const nextState = typeof partial === 'function' ? partial(state) : partial
 
       if (!Object.is(nextState, state)) {
         const previousState = state
+
+        if (!isHistoryOperation) {
+          addHistoryRecord(nextState, replace)
+        }
 
         state =
           replace ?? typeof nextState !== 'object'
@@ -50,6 +74,22 @@ export const createStore = <GState>(storeCreator: StoreCreator<GState>) => {
   }
 
   state = storeCreator(storeMethods.setState, storeMethods.getState, storeMethods)
+
+  const historyCallback = (event: KeyboardEvent) => {
+    if (event.key.toLowerCase() === 'z' && event.metaKey) {
+      const nextPosition = event.shiftKey ? historyPosition + 1 : historyPosition - 1
+
+      historyPosition = Math.max(0, Math.min(nextPosition, history.length - 1))
+
+      const patch = history[nextPosition]
+
+      if (patch) {
+        storeMethods.setState(patch, undefined, true)
+      }
+    }
+  }
+
+  window.addEventListener('keydown', historyCallback, {capture: true})
 
   return {
     useStoreHook: <GSelectorResult = GState>(

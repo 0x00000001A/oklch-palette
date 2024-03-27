@@ -230,3 +230,49 @@ export function oklchToRgb(oklch: Color) {
 export function rgbToHex([r, g, b]: [number, number, number]) {
   return '#' + ((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1)
 }
+
+export function hslToRgb([h, s, l]: [number, number, number]) {
+  const [fh, fs, fl] = [h / 360, s / 100, l / 100]
+  let rgb = [fl, fl, fl]
+
+  if (s !== 0) {
+    const q = fl < 0.5 ? fl * (1 + fs) : fl + fs - fl * fs
+    const p = 2 * fl - q
+
+    rgb = [fh + 1 / 3, fh, fh - 1 / 3].map((t) => {
+      const rt = t < 0 ? t + 1 : t > 1 ? t - 1 : t
+
+      return rt < 1 / 6
+        ? p + (q - p) * 6 * rt
+        : rt < 1 / 2
+          ? q
+          : rt < 2 / 3
+            ? p + (q - p) * (2 / 3 - rt) * 6
+            : p
+    })
+  }
+
+  return rgb.map((i) => [Math.round(i * 255)])
+}
+
+export function hsvToRgb([h, s, v]: [number, number, number]) {
+  const f = h / 60 - Math.floor(h / 60)
+  const p = v * (1.0 - s)
+  const q = v * (1.0 - f * s)
+  const t = v * (1.0 - (1.0 - f) * s)
+  const c = [
+    [v, t, p],
+    [q, v, p],
+    [p, v, t],
+    [p, q, v],
+    [t, p, v],
+    [v, p, q]
+  ][Math.floor(h / 60) % 6]
+
+  return [c[0] * 255, c[1] * 255, c[2] * 255]
+}
+
+export function isValidHex(hex: string) {
+  // mb shorter
+  return /^#([A-Z0-9]{3}){1,2}$/i.test(hex)
+}

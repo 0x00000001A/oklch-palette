@@ -57,8 +57,6 @@ export const colorsStore = createStore<ColorsState>((set, get) => ({
         rowNames.push(name)
       }
 
-      console.log(updatedColors)
-
       return {
         colNames,
         colors: updatedColors,
@@ -80,11 +78,10 @@ export const colorsStore = createStore<ColorsState>((set, get) => ({
   selectedCol: 0,
   selectedRow: 0,
   setPalette(palette) {
+    console.log(palette)
     set({
       ...palette,
-      colors: palette.colors.map((colorsRow) => {
-        return (colorsRow as string[]).map(hexToSchemaColor)
-      }),
+      colors: palette.colors.map((paletteColors) => paletteColors.map(hexToSchemaColor)),
       selectedCol: 0,
       selectedRow: 0
     })
@@ -108,6 +105,16 @@ export const colorsStore = createStore<ColorsState>((set, get) => ({
     const key = direction === 'col' ? 'selectedRow' : 'selectedCol'
 
     set({[key]: value})
+  },
+  setSelectedColorValue(hex: string) {
+    // shallow copy wtf
+    set(({colors, selectedCol, selectedRow}) => {
+      colors[selectedRow][selectedCol] = hexToSchemaColor(hex)
+
+      return {
+        colors
+      }
+    })
   }
 }))
 

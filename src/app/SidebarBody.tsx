@@ -38,7 +38,7 @@ const SidebarBody: FC<SidebarBodyProps> = () => {
         flexShrink: 0,
         gap: 8,
         overflow: 'auto',
-        width: '100%',
+        width: '100%'
       }}
     >
       <div

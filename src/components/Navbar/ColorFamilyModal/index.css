@@ -1,0 +1,26 @@
+.color-family-modal__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.color-family-modal__form {
+  background: rgba(0, 0, 0, 0.015);
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.09);
+  padding: 4px
+}
+
+.color-family-modal__input-group {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  padding: 4px;
+}
+
+.color-family-modal__footer {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}

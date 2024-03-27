@@ -3,11 +3,12 @@ import {ChangeEvent, FC, useCallback, useMemo} from 'react'
 import {LCH_CHANNELS_CONFIG, LCH_CHANNELS_NAMES} from '../../constants/colors.ts'
 import IconGithub from '../../icons/IconGithub.tsx'
 import {useColorsStore} from '../../state'
+import {getSelectedColorOklch} from '../../state/selectors.ts'
+import {toFixedTruncate} from '../../utils/math.ts'
 import {Input} from '../Input'
 
 import {ColorInputProps} from './types.ts'
-import {getSelectedColorOklch} from '../../state/selectors.ts'
-import {toFixedTruncate} from '../../utils/math.ts'
+import {Button} from '../Button'
 
 const ColorInput: FC<ColorInputProps> = ({channel}) => {
   const isLightnessChannel = channel === LCH_CHANNELS_NAMES.LIGHTNESS
@@ -47,10 +48,10 @@ const ColorInput: FC<ColorInputProps> = ({channel}) => {
 
     return {
       ...channelConfig,
-      step,
-      max
+      max,
+      step
     }
-  }, [])
+  }, [channelConfig, isLightnessChannel, value])
 
   return (
     <div className={'color-form__item'} key={channel}>
@@ -63,9 +64,9 @@ const ColorInput: FC<ColorInputProps> = ({channel}) => {
         value={value}
         onChange={handleChange}
       />
-      <button className={'pg-button'}>
+      <Button>
         <IconGithub />
-      </button>
+      </Button>
     </div>
   )
 }

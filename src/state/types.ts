@@ -10,8 +10,22 @@ export type SchemaColor = {
 
 export type ColorsDirection = 'col' | 'row'
 
+export const INSERT_POSITIONS = {
+  AFTER: 0,
+  BEFORE: 1,
+  END: 3,
+  START: 4
+} as const
+
+export type INSERT_POSITION = (typeof INSERT_POSITIONS)[keyof typeof INSERT_POSITIONS]
+
 export type ColorsState = {
-  addToPalette: (data: {afterIndex?: number; direction: ColorsDirection}) => void
+  addToPalette: (insertType: ColorsDirection, insertDirection: INSERT_POSITION) => void
+  applyChannelValueTo: (
+    direction: ColorsDirection,
+    channel: number,
+    value?: number
+  ) => void
   colNames: string[]
   colors: SchemaColor[][]
   getSelectedColor: () => SchemaColor

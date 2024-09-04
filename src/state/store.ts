@@ -10,7 +10,7 @@ import {
   xyzToOklab
 } from '../utils/colors.ts'
 
-import {ColorsState, SchemaColor} from './types.ts'
+import {ColorsState, INSERT_POSITIONS, SchemaColor} from './types.ts'
 
 export const createSchemaColor = (oklch: [number, number, number]): SchemaColor => {
   const rgb = rgbFloatToInt(oklchToRgb(oklch))
@@ -38,30 +38,75 @@ export const hexToSchemaColor = (hex: string): SchemaColor => {
 }
 
 export const colorsStore = createStore<ColorsState>((set, get) => ({
-  addToPalette(data) {
+  addToPalette(insertType, insertDirection) {
     set((state) => {
-      const updatedColors = [...state.colors]
-      const colNames = [...state.colNames]
-      const rowNames = [...state.rowNames]
+      let updatedColors = [...state.colors]
+      let updatedSelectedCol = state.selectedCol
+      let updatedSelectedRow = state.selectedRow
 
-      const name = 'No name'
+      const updatedRowNames = [...state.rowNames]
+      const updatedColNames = [...state.colNames]
+      const insertPosition = insertDirection === INSERT_POSITIONS.AFTER ? 1 : 0
 
-      if (data.direction === 'col') {
-        updatedColors.forEach((row) => {
-          row.push(hexToSchemaColor('#333'))
-        })
-        colNames.push(name)
-        // do something
+      if (insertType === 'row') {
+        updatedSelectedRow = state.selectedRow + insertPosition
+
+        updatedColors.splice(updatedSelectedRow, 0, [...updatedColors[state.selectedRow]])
+        updatedRowNames.splice(updatedSelectedRow, 0, 'No name')
       } else {
-        updatedColors.push(Array(state.colNames.length).fill(hexToSchemaColor('#333')))
-        rowNames.push(name)
+        updatedSelectedCol = state.selectedCol + insertPosition
+
+        updatedColors = updatedColors.map((row) => {
+          row.splice(updatedSelectedCol, 0, row[state.selectedCol])
+          return row
+        })
+        updatedColNames.splice(updatedSelectedCol, 0, 'No name')
       }
+
+      updatedColors = updatedColors.map((row) => {
+        return row.map((color) => {
+          return {
+            ...color,
+            updatedAt: Date.now()
+          }
+        })
+      })
 
       return {
-        colNames,
+        colNames: updatedColNames,
         colors: updatedColors,
-        rowNames
+        rowNames: updatedRowNames,
+        selectedCol: updatedSelectedCol,
+        selectedRow: updatedSelectedRow
       }
+    })
+  },
+  applyChannelValueTo(direction, channel, value) {
+    set((state) => {
+      const updatedColors = [...state.colors]
+      const updatedValue =
+        typeof value === 'number'
+          ? value
+          : updatedColors[state.selectedRow][state.selectedCol].oklch[channel]
+
+      if (direction === 'row') {
+        updatedColors[state.selectedRow] = updatedColors[state.selectedRow].map(
+          (color) => {
+            const updatedColor = color.oklch
+            updatedColor[channel] = updatedValue
+            return createSchemaColor(updatedColor)
+          }
+        )
+      } else {
+        state.rowNames.forEach((_, rowIndex) => {
+          const updatedColor = updatedColors[rowIndex][state.selectedCol].oklch
+          updatedColor[channel] = updatedValue
+
+          updatedColors[rowIndex][state.selectedCol] = createSchemaColor(updatedColor)
+        })
+      }
+
+      return {colors: updatedColors}
     })
   },
   colNames: defaultPalette.colNames,

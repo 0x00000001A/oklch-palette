@@ -1,4 +1,4 @@
-import {FC} from 'react'
+import {FC, createRef} from 'react'
 import {createPortal} from 'react-dom'
 import {CSSTransition} from 'react-transition-group'
 
@@ -17,9 +17,21 @@ const ModalImplementation: FC<ModalProps> = ({
   width,
   ...htmlProps
 }) => {
+  // @ts-expect-error shit
+  const transitionNodeRef = createRef(null)
+
+  // @ts-expect-error shit
+  const backdropRef = createRef(null)
+
   return (
     <>
-      <CSSTransition classNames={'modal'} in={open} timeout={550} unmountOnExit>
+      <CSSTransition
+        classNames={'modal'}
+        in={open}
+        nodeRef={transitionNodeRef as never}
+        timeout={550}
+        unmountOnExit
+      >
         <div className={'modal'} style={{width}} {...htmlProps}>
           <div className={'modal__header'}>
             <div className={'modal__title'}>{title}</div>
@@ -35,7 +47,13 @@ const ModalImplementation: FC<ModalProps> = ({
           <div className={'modal__footer'}>{footer}</div>
         </div>
       </CSSTransition>
-      <CSSTransition classNames={'modal'} in={open} timeout={250} unmountOnExit>
+      <CSSTransition
+        classNames={'modal'}
+        in={open}
+        nodeRef={backdropRef as never}
+        timeout={250}
+        unmountOnExit
+      >
         <div className={'modal__backdrop'} />
       </CSSTransition>
     </>

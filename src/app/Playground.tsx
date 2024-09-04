@@ -1,7 +1,7 @@
 import {FC} from 'react'
 
-import IconGithub from '../icons/IconGithub.tsx'
 import {Button} from '../components/Button'
+import IconGithub from '../icons/IconGithub.tsx'
 
 export type PlaygroundProps = {
   // props

@@ -8,7 +8,7 @@ export const cssVariablesExporter: PaletteExporterHandler = (
   return palette.reduce((acc, row, rowIndex) => {
     const variables = row
       .map((color, colorIndex) => {
-        return `--color-${rowNames[rowIndex]}-${colNames[colorIndex]}: ${color.hex}`
+        return `--color-${rowNames[rowIndex]}-${colNames[colorIndex]}: ${color.hex};`
       })
       .join('\n')
 

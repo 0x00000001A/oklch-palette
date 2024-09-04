@@ -14,6 +14,7 @@ import {useColorsStore} from '../../state/index.ts'
 import {INSERT_POSITIONS} from '../../state/types.ts'
 
 import {ColorSpaceDropdown} from './ColorSpaceDropdown'
+import ExportDropdown from './ExportDropdown/ExportDropdown.tsx'
 import {PaletteDropdown} from './PaletteDropdown'
 import {VisionDropdown} from './VisionDropdown'
 
@@ -53,7 +54,8 @@ const Navbar: FC = () => {
 
   return (
     <nav className={'navbar'}>
-      <div className={'navbar__items'}>
+      <div className="navbar__items">
+        <ExportDropdown />
         <button
           aria-label={'Insert color shades after selected row'}
           className={'navbar__button'}

@@ -24,6 +24,7 @@ export type OptionProps<GOption extends BaseOption = BaseOption> = {
 
 export type DropdownProps<GOption extends BaseOption = BaseOption> = {
   icon?: ReactNode
+  label?: string
   loading?: boolean
   onChange?: (option: GOption) => void
   optionLabelProp?: keyof GOption

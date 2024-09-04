@@ -11,6 +11,7 @@ import './index.css'
 
 const Dropdown = <GOption extends BaseOption = BaseOption>({
   icon,
+  label = 'No value',
   loading,
   onChange,
   optionLabelProp = 'label',
@@ -44,7 +45,7 @@ const Dropdown = <GOption extends BaseOption = BaseOption>({
     <div className={'navbar-dropdown'} ref={rootRef}>
       <button className={'navbar__button'} onClick={toggleDropdown}>
         {loading ? <IconLoading /> : icon}
-        {value ? value[optionLabelProp] : 'No value'}
+        {value ? value[optionLabelProp] : label}
         <IconArrowDropdown width={'.7em'} />
       </button>
       <Menu<GOption>

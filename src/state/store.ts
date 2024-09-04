@@ -1,3 +1,4 @@
+import {paletteExporters} from '../lib/PaletteExporters/PaletteExporter.ts'
 import {createStore} from '../lib/StateManager'
 import defaultPalette from '../palettes/default.ts'
 import {
@@ -113,6 +114,10 @@ export const colorsStore = createStore<ColorsState>((set, get) => ({
   colors: defaultPalette.colors.map((colorsRow) => {
     return (colorsRow as string[]).map(hexToSchemaColor)
   }),
+  exportPalette(exporter) {
+    const {colNames, colors, rowNames} = get()
+    return exporter(rowNames, colNames, colors)
+  },
   getSelectedColor() {
     const {colors, selectedCol, selectedRow} = get()
     return colors[selectedRow][selectedCol]
@@ -130,6 +135,13 @@ export const colorsStore = createStore<ColorsState>((set, get) => ({
       selectedCol: 0,
       selectedRow: 0
     })
+    console.log(
+      paletteExporters[1].handler(
+        palette.rowNames,
+        palette.colNames,
+        palette.colors.map((paletteColors) => paletteColors.map(hexToSchemaColor))
+      )
+    )
   },
   setSelectedColor(selectedRow, selectedCol) {
     set({selectedCol, selectedRow})

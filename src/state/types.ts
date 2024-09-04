@@ -1,4 +1,5 @@
 import {LCH_CHANNELS_NAMES} from '../constants/colors.ts'
+import {PaletteExporterHandler} from '../lib/PaletteExporters/types.ts'
 import defaultPalette from '../palettes/default.ts'
 
 export type SchemaColor = {
@@ -28,6 +29,7 @@ export type ColorsState = {
   ) => void
   colNames: string[]
   colors: SchemaColor[][]
+  exportPalette: (exporter: PaletteExporterHandler) => string
   getSelectedColor: () => SchemaColor
   name: string
   rowNames: string[]

@@ -5,13 +5,17 @@ export const cssVariablesExporter: PaletteExporterHandler = (
   colNames,
   palette
 ) => {
-  return palette.reduce((acc, row, rowIndex) => {
-    const variables = row
-      .map((color, colorIndex) => {
-        return `--color-${rowNames[rowIndex]}-${colNames[colorIndex]}: ${color.hex};`
-      })
-      .join('\n')
+  const result: string[] = []
 
-    return `${acc}\n\n${variables}`
-  }, '')
+  palette.forEach((row, rowIndex) => {
+    result.push(
+      ...row.map((color, colorIndex) => {
+        return `--color-${rowNames[rowIndex]}-${colNames[colorIndex]}: ${color.hex};\n`
+      })
+    )
+
+    result.push('\n')
+  })
+
+  return result.join('')
 }

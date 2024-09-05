@@ -1,17 +1,19 @@
+import {
+  ColumnHeightOutlined,
+  ColumnWidthOutlined,
+  InsertRowAboveOutlined,
+  InsertRowBelowOutlined,
+  InsertRowLeftOutlined,
+  InsertRowRightOutlined
+} from '@ant-design/icons'
+import {Button, Divider} from 'antd'
 import {FC, useCallback} from 'react'
 
-import IconExpandHorizontalLine from '../../icons/IconExpandHorizontalLine.tsx'
-import IconExpandVerticalLine from '../../icons/IconExpandVerticalLine.tsx'
 import IconGithub from '../../icons/IconGithub.tsx'
-import IconInsertColumnLeft from '../../icons/IconInsertColumnLeft.tsx'
-import IconInsertColumnRight from '../../icons/IconInsertColumnRight.tsx'
-import IconInsertRowBottom from '../../icons/IconInsertRowBottom.tsx'
-import IconInsertRowTop from '../../icons/IconInsertRowTop.tsx'
 import IconSettings from '../../icons/IconSettings.tsx'
-import IconShare from '../../icons/IconShare.tsx'
 import IconSun from '../../icons/IconSun.tsx'
+import {INSERT_POSITIONS} from '../../state'
 import {useColorsStore} from '../../state/index.ts'
-import {INSERT_POSITIONS} from '../../state/types.ts'
 
 import {ColorSpaceDropdown} from './ColorSpaceDropdown'
 import ExportDropdown from './ExportDropdown/ExportDropdown.tsx'
@@ -55,62 +57,58 @@ const Navbar: FC = () => {
   return (
     <nav className={'navbar'}>
       <div className="navbar__items">
+        <PaletteDropdown />
         <ExportDropdown />
-        <button
-          aria-label={'Insert color shades after selected row'}
-          className={'navbar__button'}
+        <Divider type={'vertical'} />
+        <Button
+          icon={<InsertRowLeftOutlined />}
+          size={'small'}
+          type={'text'}
           onClick={handleInsertColorTonesAfterButtonClick}
-        >
-          <IconInsertColumnRight />
-        </button>
-        <button
-          aria-label={'Insert color shades before selected row'}
-          className={'navbar__button'}
+        />
+        <Button
+          icon={<InsertRowRightOutlined />}
+          size={'small'}
+          type={'text'}
           onClick={handleInsertColorTonesBeforeButtonClick}
-        >
-          <IconInsertColumnLeft />
-        </button>
-        <button
-          aria-label={'Insert color shades after selected row'}
-          className={'navbar__button'}
+        />
+        <Button
+          icon={<InsertRowAboveOutlined />}
+          size={'small'}
+          type={'text'}
           onClick={handleInsertColorFamilyAfterButtonClick}
-        >
-          <IconInsertRowBottom />
-        </button>
-        <button
-          aria-label={'Insert color shades after selected row'}
-          className={'navbar__button'}
+        />
+        <Button
+          icon={<InsertRowBelowOutlined />}
+          size={'small'}
+          type={'text'}
           onClick={handleInsertColorFamilyBeforeButtonClick}
-        >
-          <IconInsertRowTop />
-        </button>
-        <button
-          aria-label={'Insert color shades after selected row'}
-          className={'navbar__button'}
+        />
+        <Divider type={'vertical'} />
+        <Button
+          icon={<ColumnHeightOutlined />}
+          size={'small'}
+          type={'text'}
           onClick={handleApplyLightnessToColButtonClick}
         >
-          <IconExpandVerticalLine />L
-        </button>
-        <button
-          aria-label={'Insert color shades after selected row'}
-          className={'navbar__button'}
+          L
+        </Button>
+        <Button
+          icon={<ColumnHeightOutlined />}
+          size={'small'}
+          type={'text'}
           onClick={handleApplyChromaToColButtonClick}
         >
-          <IconExpandVerticalLine />C
-        </button>
-        <button
-          aria-label={'Insert color shades after selected row'}
-          className={'navbar__button'}
+          C
+        </Button>
+        <Button
+          icon={<ColumnWidthOutlined />}
+          size={'small'}
+          type={'text'}
           onClick={handleApplyHueToRowButtonClick}
         >
-          <IconExpandHorizontalLine />H
-        </button>
-      </div>
-      <div className="navbar__items">
-        <PaletteDropdown />
-        <button aria-label={'Share link to this palette'} className={'navbar__button'}>
-          <IconShare />
-        </button>
+          H
+        </Button>
       </div>
       <div className={'navbar__items'}>
         <div className="navbar__items">

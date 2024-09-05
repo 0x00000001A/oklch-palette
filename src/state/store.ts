@@ -128,20 +128,12 @@ export const colorsStore = createStore<ColorsState>((set, get) => ({
   selectedCol: 0,
   selectedRow: 0,
   setPalette(palette) {
-    console.log(palette)
     set({
       ...palette,
       colors: palette.colors.map((paletteColors) => paletteColors.map(hexToSchemaColor)),
       selectedCol: 0,
       selectedRow: 0
     })
-    console.log(
-      paletteExporters[1].handler(
-        palette.rowNames,
-        palette.colNames,
-        palette.colors.map((paletteColors) => paletteColors.map(hexToSchemaColor))
-      )
-    )
   },
   setSelectedColor(selectedRow, selectedCol) {
     set({selectedCol, selectedRow})

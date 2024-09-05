@@ -5,10 +5,10 @@ import IconGithub from '../../icons/IconGithub.tsx'
 import {useColorsStore} from '../../state'
 import {getSelectedColorOklch} from '../../state/selectors.ts'
 import {toFixedTruncate} from '../../utils/math.ts'
+import {Button} from '../Button'
 import {Input} from '../Input'
 
 import {ColorInputProps} from './types.ts'
-import {Button} from '../Button'
 
 const ColorInput: FC<ColorInputProps> = ({channel}) => {
   const isLightnessChannel = channel === LCH_CHANNELS_NAMES.LIGHTNESS

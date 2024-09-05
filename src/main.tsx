@@ -1,3 +1,4 @@
+import {App as AntdApp} from 'antd'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 
@@ -14,6 +15,8 @@ if (!rootElement) {
 
 ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
-    <App />
+    <AntdApp>
+      <App />
+    </AntdApp>
   </React.StrictMode>
 )

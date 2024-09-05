@@ -1,32 +1,51 @@
-import {FC, useCallback} from 'react'
+import {SaveOutlined} from '@ant-design/icons'
+import {Button, Dropdown, message} from 'antd'
+import {FC, useCallback, useMemo} from 'react'
 
-import IconSave from '../../../icons/IconSave.tsx'
 import {paletteExporters} from '../../../lib/PaletteExporters/PaletteExporter.ts'
 import {useColorsStore} from '../../../state/index.ts'
-import Dropdown from '../Dropdown/Dropdown.tsx'
-
-const palettesOptions = paletteExporters.map((exporter, exporterIndex) => ({
-  label: exporter.name,
-  value: exporterIndex
-}))
 
 const ExportDropdown: FC = () => {
+  const [messageApi, contextHolder] = message.useMessage()
   const exportPalette = useColorsStore((state) => state.exportPalette)
 
-  const handleChange = useCallback(
-    (option: {label: string; value: number}) => {
-      navigator.clipboard.writeText(exportPalette(paletteExporters[option.value].handler))
+  const handleExporterSelected = useCallback(
+    (option: {key: string}) => {
+      try {
+        navigator.clipboard.writeText(
+          exportPalette(paletteExporters[Number(option.key)].handler)
+        )
+        messageApi.open({
+          content: '🎉 Copied to clipboard',
+          type: 'success'
+        })
+      } catch (error) {
+        console.error(error)
+        messageApi.open({
+          content: '😬 Failed to export. Browser needs some updates?',
+          type: 'success'
+        })
+      }
     },
-    [exportPalette]
+    [exportPalette, messageApi]
   )
 
+  const items = useMemo(() => {
+    return paletteExporters.map((exporter, exporterIndex) => ({
+      key: exporterIndex,
+      label: exporter.name
+    }))
+  }, [])
+
   return (
-    <Dropdown
-      icon={<IconSave />}
-      label={'Export'}
-      options={palettesOptions}
-      onChange={handleChange}
-    />
+    <>
+      {contextHolder}
+      <Dropdown menu={{items, onClick: handleExporterSelected}} trigger={['click']}>
+        <Button icon={<SaveOutlined />} size={'small'} type={'text'}>
+          Export as
+        </Button>
+      </Dropdown>
+    </>
   )
 }
 

@@ -1,31 +1,38 @@
-import {FC, useCallback, useState} from 'react'
+import {FolderOpenOutlined} from '@ant-design/icons'
+import {Button, Dropdown, message} from 'antd'
+import {FC, useCallback, useMemo, useState} from 'react'
 
-import IconSavedPalettes from '../../../icons/IconSavedPalettes.tsx'
 import palettes from '../../../palettes'
 import {useColorsStore} from '../../../state'
-import Dropdown from '../Dropdown/Dropdown.tsx'
 
 const palettesOptions = Object.values(palettes).map((palette) => ({
   ...palette,
-  label: palette.name,
-  value: palette.name
+  key: palette.name,
+  label: palette.name
 }))
 
 const PaletteDropdown: FC = () => {
+  const [messageApi, contextHolder] = message.useMessage()
   const setPalette = useColorsStore((state) => state.setPalette)
 
-  const [value, setValue] = useState<(typeof palettesOptions)[0]>(palettesOptions[0])
   const [loading, setLoading] = useState(false)
+  const [paletteName, setPaletteName] = useState(palettesOptions[0].name)
 
-  const handleChange = useCallback(
-    (option: (typeof palettesOptions)[0]) => {
-      setValue(option)
+  const handlePaletteSelected = useCallback(
+    (option: {key: string}) => {
+      const newPaletteName = option.key
+
       setLoading(true)
 
-      option
+      palettes[newPaletteName.toLowerCase()]
         .lazyImport()
         .then((module) => {
           setPalette(module.default)
+          setPaletteName(newPaletteName)
+          messageApi.success('Palette loaded')
+        })
+        .catch(() => {
+          messageApi.error('Failed to load palette')
         })
         .finally(() => {
           setTimeout(() => {
@@ -33,18 +40,30 @@ const PaletteDropdown: FC = () => {
           }, 240)
         })
     },
-    [setPalette]
+    [messageApi, setPalette]
   )
 
+  const items = useMemo(() => {
+    return Object.values(palettes).map((palette) => ({
+      key: palette.name,
+      label: palette.name
+    }))
+  }, [])
+
   return (
-    <Dropdown
-      icon={<IconSavedPalettes />}
-      loading={loading}
-      optionLabelProp={'label'}
-      options={palettesOptions}
-      value={value}
-      onChange={handleChange}
-    />
+    <>
+      {contextHolder}
+      <Dropdown menu={{items, onClick: handlePaletteSelected}} trigger={['click']}>
+        <Button
+          icon={<FolderOpenOutlined />}
+          loading={loading}
+          size={'small'}
+          type={'text'}
+        >
+          <strong>Palette:</strong> {paletteName}
+        </Button>
+      </Dropdown>
+    </>
   )
 }
 

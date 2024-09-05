@@ -1,16 +1,16 @@
-import {ChangeEvent, FC, useCallback, useMemo} from 'react'
+import {InputNumber, Space} from 'antd'
+import {FC, useCallback, useId, useMemo} from 'react'
 
 import {LCH_CHANNELS_CONFIG, LCH_CHANNELS_NAMES} from '../../constants/colors.ts'
-import IconGithub from '../../icons/IconGithub.tsx'
 import {useColorsStore} from '../../state'
 import {getSelectedColorOklch} from '../../state/selectors.ts'
 import {toFixedTruncate} from '../../utils/math.ts'
-import {Button} from '../Button'
-import {Input} from '../Input'
 
 import {ColorInputProps} from './types.ts'
 
 const ColorInput: FC<ColorInputProps> = ({channel}) => {
+  const inputId = useId()
+
   const isLightnessChannel = channel === LCH_CHANNELS_NAMES.LIGHTNESS
   const channelConfig = LCH_CHANNELS_CONFIG[channel]
 
@@ -29,8 +29,8 @@ const ColorInput: FC<ColorInputProps> = ({channel}) => {
   })
 
   const handleChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      let newValue = parseFloat(event.target.value)
+    (unparsedValue: null | number) => {
+      let newValue = unparsedValue || 0
 
       if (channel === LCH_CHANNELS_NAMES.LIGHTNESS) {
         newValue = newValue / 100
@@ -54,20 +54,19 @@ const ColorInput: FC<ColorInputProps> = ({channel}) => {
   }, [channelConfig, isLightnessChannel, value])
 
   return (
-    <div className={'color-form__item'} key={channel}>
-      <label>{LCH_CHANNELS_CONFIG[channel].name}:</label>
-      <Input
+    <Space key={channel}>
+      <label htmlFor={inputId}>{LCH_CHANNELS_CONFIG[channel].name}:</label>
+      <InputNumber
+        id={inputId}
         max={colorConfig.max}
         min={colorConfig.min}
+        size={'small'}
         step={colorConfig.step}
         type={'number'}
         value={value}
         onChange={handleChange}
       />
-      <Button>
-        <IconGithub />
-      </Button>
-    </div>
+    </Space>
   )
 }
 

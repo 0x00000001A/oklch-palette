@@ -15,7 +15,6 @@ import IconSun from '../../icons/IconSun.tsx'
 import {INSERT_POSITIONS} from '../../state'
 import {useColorsStore} from '../../state/index.ts'
 
-import {ColorSpaceDropdown} from './ColorSpaceDropdown'
 import ExportDropdown from './ExportDropdown/ExportDropdown.tsx'
 import {PaletteDropdown} from './PaletteDropdown'
 import {VisionDropdown} from './VisionDropdown'
@@ -112,7 +111,8 @@ const Navbar: FC = () => {
       </div>
       <div className={'navbar__items'}>
         <div className="navbar__items">
-          <ColorSpaceDropdown />
+          {/* @todo not implemented yet */}
+          {/* <ColorSpaceDropdown /> */}
           <VisionDropdown />
         </div>
         <div className="navbar__items">

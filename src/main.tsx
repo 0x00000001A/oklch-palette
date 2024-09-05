@@ -1,4 +1,5 @@
-import {App as AntdApp} from 'antd'
+import {App as AntdApp, ConfigProvider} from 'antd'
+import {ThemeProvider} from 'antd-style'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 
@@ -15,8 +16,12 @@ if (!rootElement) {
 
 ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
-    <AntdApp>
-      <App />
-    </AntdApp>
+    <ThemeProvider>
+      <ConfigProvider>
+        <AntdApp>
+          <App />
+        </AntdApp>
+      </ConfigProvider>
+    </ThemeProvider>
   </React.StrictMode>
 )

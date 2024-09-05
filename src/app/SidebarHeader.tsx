@@ -1,10 +1,9 @@
+import {Button, Flex, Form, Input, Space, Typography, theme} from 'antd'
+import {createStyles} from 'antd-style'
 import {ChangeEvent, FC, useCallback, useEffect, useState} from 'react'
 
-import {Button} from '../components/Button'
 import {ColorBar} from '../components/ColorBar'
 import ColorForm from '../components/ColorForm/ColorForm.tsx'
-import {Input} from '../components/Input'
-import {Panel} from '../components/Panel'
 import {useColorsStore} from '../state'
 import {isValidHex} from '../utils/colors.ts'
 
@@ -42,16 +41,21 @@ const ColorInfoForm: FC = () => {
   useEffect(handleColorHexChanged, [value])
 
   return (
-    <div className={'color-info__form'}>
-      <label>Hex value:</label>
-      <Input
-        style={{textAlign: 'right'}}
-        value={draftHex}
-        onChange={handleHexValueChange}
-      />
-      <Button>Apply</Button>
-      <Button>Copy</Button>
-    </div>
+    <Form layout={'inline'} size={'small'}>
+      <Form.Item label={'Hex value:'}>
+        <Input
+          style={{textAlign: 'right'}}
+          value={draftHex}
+          onChange={handleHexValueChange}
+        />
+      </Form.Item>
+      <Form.Item>
+        <Button htmlType={'submit'}>Apply</Button>
+      </Form.Item>
+      <Form.Item style={{marginRight: 0}}>
+        <Button htmlType={'button'}>Copy</Button>
+      </Form.Item>
+    </Form>
   )
 }
 
@@ -61,21 +65,33 @@ const ColorInfo: FC = () => {
   })
 
   return (
-    <div className={'color-info'}>
-      <span className={'color-info__name'}>{name}</span>
+    <Flex justify={'space-between'}>
+      <Typography.Text strong>{name}</Typography.Text>
       <ColorInfoForm />
-    </div>
+    </Flex>
   )
 }
 
+const useStyle = createStyles(({css, token}) => ({
+  root: css`
+    padding: ${token.paddingSM}px;
+  `
+}))
+
 const SidebarHeader: FC<SidebarHeaderProps> = () => {
+  const {styles} = useStyle()
+  const {token} = theme.useToken()
+
   return (
-    <Panel className={'sidebar-header'}>
+    <Space className={styles.root} direction={'vertical'}>
       <ColorInfo />
       <ColorForm />
-      <ColorBar colorsFrom={'row'} style={{flexGrow: 1}} />
-      <ColorBar colorsFrom={'col'} style={{flexGrow: 1}} />
-    </Panel>
+      <Flex gap={token.paddingSM}>
+        {/* @todo remove style */}
+        <ColorBar colorsFrom={'row'} style={{flexGrow: 1}} />
+        <ColorBar colorsFrom={'col'} style={{flexGrow: 1}} />
+      </Flex>
+    </Space>
   )
 }
 

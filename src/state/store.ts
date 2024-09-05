@@ -1,4 +1,3 @@
-import {paletteExporters} from '../lib/PaletteExporters/PaletteExporter.ts'
 import {createStore} from '../lib/StateManager'
 import defaultPalette from '../palettes/default.ts'
 import {

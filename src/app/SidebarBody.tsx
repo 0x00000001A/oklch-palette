@@ -1,14 +1,25 @@
+import {createStyles} from 'antd-style'
 import React, {FC, useMemo} from 'react'
 
 import {ColorGraph} from '../components/ColorGraph'
-import {Panel} from '../components/Panel'
 import {LCH_CHANNELS_ARRAY, LCH_CHANNELS_CONFIG} from '../constants/colors.ts'
 
 export type SidebarBodyProps = {
   // props
 }
 
+const useStyle = createStyles(({css, token}) => ({
+  root: css`
+    padding: ${token.paddingSM}px;
+    display: grid;
+    gap: ${token.paddingSM}px;
+    grid-template-columns: 1fr 1fr;
+  `
+}))
+
 const SidebarBody: FC<SidebarBodyProps> = () => {
+  const {styles} = useStyle()
+
   const colorGraphs = useMemo(() => {
     return LCH_CHANNELS_ARRAY.map((channel) => (
       <React.Fragment key={channel}>
@@ -30,28 +41,7 @@ const SidebarBody: FC<SidebarBodyProps> = () => {
     ))
   }, [])
 
-  return (
-    <Panel
-      style={{
-        display: 'flex',
-        flexBasis: 'min-content',
-        flexShrink: 0,
-        gap: 8,
-        overflow: 'auto',
-        width: '100%'
-      }}
-    >
-      <div
-        style={{
-          display: 'grid',
-          gap: 8,
-          gridTemplateColumns: '1fr 1fr'
-        }}
-      >
-        {colorGraphs}
-      </div>
-    </Panel>
-  )
+  return <div className={styles.root}>{colorGraphs}</div>
 }
 
 export default SidebarBody

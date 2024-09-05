@@ -1,3 +1,4 @@
+import {Input} from 'antd'
 import {Fragment, useCallback} from 'react'
 
 import {useColorsStore} from '../../state'
@@ -25,83 +26,92 @@ const ColorPalette = () => {
   return (
     <div
       style={{
-        alignContent: 'start',
-        display: 'grid',
-        gridTemplateColumns: `96px repeat(${colNames.length}, ${cellSize}px)`,
-        gridTemplateRows: `max-content repeat(${colNames.length}, ${cellSize}px)`,
-        justifyContent: 'start',
+        backgroundColor: 'rgba(0, 0, 0, 0.075)',
+        height: '100%',
         overflow: 'auto',
         overscrollBehavior: 'none',
-        padding: '0 8px 8px 0',
         width: '100%'
       }}
     >
       <div
         style={{
-          background: '#fff',
-          left: 0,
-          position: 'sticky',
-          top: 0,
-          zIndex: 4
+          alignContent: 'start',
+          display: 'inline-grid',
+          gridTemplateColumns: `100px repeat(${colNames.length}, ${cellSize}px)`,
+          gridTemplateRows: `max-content repeat(${rowNames.length}, ${cellSize}px)`,
+          justifyContent: 'start',
+          padding: '0 8px 8px 0'
         }}
       >
-        {/*  0,0 cell */}
-      </div>
-      {colNames.map((col) => (
         <div
           style={{
-            alignItems: 'end',
-            background: '#fff',
-            display: 'flex',
-            fontSize: 12,
-            justifyContent: 'center',
-            lineHeight: '18px',
-            padding: '8px 4px',
+            left: 0,
             position: 'sticky',
             top: 0,
-            zIndex: 3
+            zIndex: 4
           }}
-          key={col}
         >
-          <span
-            style={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap'
-            }}
-          >
-            {col}
-          </span>
+          {/*  0,0 cell */}
         </div>
-      ))}
-      {rowNames.map((row, rowIndex) => (
-        <Fragment key={rowIndex}>
+        {colNames.map((col) => (
           <div
             style={{
-              alignItems: 'center',
-              background: '#fff',
+              alignItems: 'end',
               display: 'flex',
               fontSize: 12,
-              left: 0,
-              overflow: 'hidden',
-              padding: '4px 8px 4px 8px',
+              justifyContent: 'center',
+              lineHeight: '18px',
+              padding: '8px 4px',
               position: 'sticky',
-              textAlign: 'right',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
+              top: 0,
               zIndex: 3
             }}
-            key={rowIndex}
+            key={col}
           >
-            {row}
+            <span
+              style={{
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              <Input size={'small'} value={col} variant={'filled'} />
+            </span>
           </div>
-          {colNames.map((col, colIndex) => (
-            <ColorCell col={colIndex} key={col} row={rowIndex} onClick={handleColorClick}>
-              50
-            </ColorCell>
-          ))}
-        </Fragment>
-      ))}
+        ))}
+        {rowNames.map((row, rowIndex) => (
+          <Fragment key={rowIndex}>
+            <div
+              style={{
+                alignItems: 'center',
+                display: 'flex',
+                fontSize: 12,
+                left: 0,
+                overflow: 'hidden',
+                padding: '4px 8px 4px 8px',
+                position: 'sticky',
+                textAlign: 'right',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                zIndex: 3
+              }}
+              key={rowIndex}
+            >
+              <Input size={'small'} value={row} variant={'filled'} />
+            </div>
+            {colNames.map((col, colIndex) => (
+              <ColorCell
+                col={colIndex}
+                key={col}
+                row={rowIndex}
+                onClick={handleColorClick}
+              >
+                50
+              </ColorCell>
+            ))}
+          </Fragment>
+        ))}
+      </div>
     </div>
   )
 }

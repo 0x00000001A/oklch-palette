@@ -10,7 +10,10 @@ export const cssVariablesExporter: PaletteExporterHandler = (
   palette.forEach((row, rowIndex) => {
     result.push(
       ...row.map((color, colorIndex) => {
-        return `--color-${rowNames[rowIndex]}-${colNames[colorIndex]}: ${color.hex};\n`
+        const familyName = rowNames[rowIndex].replace(' ', '-').toLowerCase()
+        const tonesName = colNames[colorIndex].replace(' ', '-').toLowerCase()
+
+        return `--color-${familyName}-${tonesName}: ${color.hex};\n`
       })
     )
 

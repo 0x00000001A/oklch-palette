@@ -3,7 +3,7 @@ import {Button, Dropdown, message} from 'antd'
 import {FC, useCallback, useMemo} from 'react'
 
 import {paletteExporters} from '../../../lib/PaletteExporters/PaletteExporter.ts'
-import {useColorsStore} from '../../../state/index.ts'
+import {useColorsStore} from '../../../state'
 
 const ExportDropdown: FC = () => {
   const [messageApi, contextHolder] = message.useMessage()

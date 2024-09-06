@@ -2,8 +2,8 @@ import {Flex} from 'antd'
 import {createStyles} from 'antd-style'
 import {FC} from 'react'
 
-import SidebarBody from './SidebarBody.tsx'
-import SidebarHeader from './SidebarHeader.tsx'
+import SidebarBody from './Body.tsx'
+import SidebarHeader from './Header.tsx'
 
 const useStyle = createStyles(({css, token}) => ({
   root: css`

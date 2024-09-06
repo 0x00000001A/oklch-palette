@@ -14,7 +14,7 @@ import {createStyles, css, useThemeMode} from 'antd-style'
 import {FC, useCallback} from 'react'
 
 import {INSERT_POSITIONS} from '../../state'
-import {useColorsStore} from '../../state/index.ts'
+import {useColorsStore} from '../../state'
 
 import ExportDropdown from './ExportDropdown/ExportDropdown.tsx'
 import {PaletteDropdown} from './PaletteDropdown'

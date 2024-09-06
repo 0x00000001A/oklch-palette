@@ -3,9 +3,9 @@ import {createStyles} from 'antd-style'
 import {FC} from 'react'
 
 import ColorPalette from '../components/ColorPalette'
-import {Navbar} from '../components/Navbar'
 
-import Sidebar from './Sidebar.tsx'
+import {Navbar} from './Navbar'
+import {Sidebar} from './Sidebar'
 
 const useStyle = createStyles(({css, token}) => ({
   body: css`

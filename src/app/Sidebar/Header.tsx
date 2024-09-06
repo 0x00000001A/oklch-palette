@@ -2,10 +2,10 @@ import {Button, Flex, Form, Input, Space, Typography, theme} from 'antd'
 import {createStyles} from 'antd-style'
 import {ChangeEvent, FC, useCallback, useEffect, useState} from 'react'
 
-import {ColorBar} from '../components/ColorBar'
-import ColorForm from '../components/ColorForm/ColorForm.tsx'
-import {useColorsStore} from '../state'
-import {isValidHex} from '../utils/colors.ts'
+import {ColorBar} from '../../components/ColorBar'
+import ColorForm from '../../components/ColorForm/ColorForm.tsx'
+import {useColorsStore} from '../../state'
+import {isValidHex} from '../../utils/colors.ts'
 
 export type SidebarHeaderProps = {
   // props

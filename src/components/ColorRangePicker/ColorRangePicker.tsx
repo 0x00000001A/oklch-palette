@@ -1,3 +1,4 @@
+import {createStyles, css} from 'antd-style'
 import {ChangeEvent, FC, useCallback, useEffect, useMemo} from 'react'
 
 import {GRAPH_WIDTH, LCH_CHANNELS_ARRAY} from '../../constants/colors.ts'
@@ -13,7 +14,50 @@ import {colorsWorkerManager} from '../../worker'
 
 import {ColorRangePickerProps} from './types.ts'
 
-import './index.css'
+const useStyles = createStyles(({token}) => ({
+  root: css`
+    position: absolute;
+    width: 154px !important;
+    height: 1px;
+    bottom: -7px;
+    transform: rotate(-90deg);
+    transform-origin: bottom left;
+    margin: 0;
+    background-color: transparent;
+    -webkit-appearance: none;
+
+    &:focus {
+      outline: none;
+    }
+
+    &::-webkit-slider-runnable-track {
+      height: 14px;
+      background: transparent;
+    }
+
+    &::-webkit-slider-thumb {
+      width: 14px;
+      height: 14px;
+      background: transparent;
+      border-radius: 100%;
+      appearance: none;
+      border: 2px solid ${token.colorText};
+      transform: scale(0.8);
+      box-shadow: inset 0 0 1px 0 ${token.colorBorder};
+    }
+
+    &:focus::-webkit-slider-thumb {
+      border: 4px solid ${token.colorText};
+      transform: scale(1.25);
+    }
+  `,
+  selected: css`
+    &::-webkit-slider-thumb {
+      border: 4px solid ${token.colorText};
+      transform: scale(1.25);
+    }
+  `
+}))
 
 const ColorRangePicker: FC<ColorRangePickerProps> = ({
   channel,
@@ -26,6 +70,7 @@ const ColorRangePicker: FC<ColorRangePickerProps> = ({
   step,
   width
 }) => {
+  const {styles} = useStyles()
   const isSelected = useColorsStore(isColorSelectedByDirection(colorsFrom, index))
 
   const setChannelValue = useColorsStore((state) => state.setSelectedColorChannelValue)
@@ -92,7 +137,7 @@ const ColorRangePicker: FC<ColorRangePickerProps> = ({
 
   return (
     <input
-      className={cls('color-range-picker', isSelected && 'color-range-picker_selected')}
+      className={cls(styles.root, isSelected && styles.selected)}
       max={max}
       min={min}
       size={step}

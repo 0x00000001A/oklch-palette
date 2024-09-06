@@ -34,7 +34,7 @@ const App: FC = () => {
       <div className={styles.header}>
         <Navbar />
       </div>
-      <Flex className={styles.body}>
+      <Flex className={styles.body} wrap={'nowrap'}>
         <ColorPalette />
         <Sidebar />
       </Flex>

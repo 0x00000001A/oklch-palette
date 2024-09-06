@@ -1,24 +1,37 @@
+import {EyeOutlined} from '@ant-design/icons'
+import {Flex, Select} from 'antd'
+import {createStyles, css} from 'antd-style'
+import {DefaultOptionType} from 'antd/es/select'
 import {FC, useCallback, useState} from 'react'
-
-import IconEye from '../../../icons/IconEye.tsx'
-import Dropdown from '../Dropdown/Dropdown.tsx'
-import {BaseOption} from '../Dropdown/types.ts'
 
 import {visionOptions} from './data.tsx'
 import VisionFilters from './filters.svg?react'
 import {VisionDropdownLabelProps} from './types.ts'
 
+const useStyles = createStyles(() => ({
+  icon: css`
+    position: absolute;
+    z-index: 1;
+    width: 3rem;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  `,
+  root: css`
+    position: relative;
+
+    /*noinspection CssUnusedSymbol*/
+    && .ant-select .ant-select-selector {
+      padding-left: calc(3rem - 8px);
+    }
+  `
+}))
+
 const VisionDropdownLabel: FC<VisionDropdownLabelProps> = ({description, label}) => (
-  <div
-    style={{
-      alignItems: 'center',
-      display: 'flex',
-      gap: 16,
-      justifyContent: 'space-between'
-    }}
-  >
+  <Flex align={'center'} gap={'small'} justify={'space-between'}>
     {label} {description && <small>≈{description}% of users</small>}
-  </div>
+  </Flex>
 )
 
 const options = visionOptions.map((option, index) => ({
@@ -34,23 +47,33 @@ const options = visionOptions.map((option, index) => ({
 }))
 
 const VisionDropdown: FC = () => {
-  const [value, setValue] = useState<BaseOption>(options[0])
+  const {styles} = useStyles()
+  const [value, setValue] = useState(options[0].value)
 
-  const handleChange = useCallback((option: BaseOption) => {
-    document.body.style.filter = option.raw ? option.raw : `url(#${option.value})`
-    setValue(option)
-  }, [])
+  const handleChange = useCallback(
+    (newValue: string, {raw}: DefaultOptionType & {raw?: string}) => {
+      document.body.style.filter = raw || `url(#${newValue})`
+      setValue(newValue)
+    },
+    []
+  )
 
   return (
     <>
       <VisionFilters />
-      <Dropdown
-        icon={<IconEye />}
-        optionLabelProp={'name'}
-        options={options}
-        value={value}
-        onChange={handleChange}
-      />
+      <div className={styles.root}>
+        <div className={styles.icon}>
+          <EyeOutlined />
+        </div>
+        <Select
+          options={options}
+          popupMatchSelectWidth={false}
+          size={'small'}
+          value={value}
+          variant={'borderless'}
+          onChange={handleChange}
+        />
+      </div>
     </>
   )
 }

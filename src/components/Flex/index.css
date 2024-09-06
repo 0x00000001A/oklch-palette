@@ -1,7 +1,0 @@
-.flex:not(.flex_inline) {
-  display: flex;
-}
-
-.flex_inline {
-  display: inline-flex;
-}

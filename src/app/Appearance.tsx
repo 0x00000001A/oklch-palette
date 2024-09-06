@@ -14,6 +14,11 @@ const Appearance: React.FC<AppearanceProps> = ({children}) => {
 
   return (
     <ThemeProvider
+      theme={{
+        token: {
+          motion: false
+        }
+      }}
       defaultAppearance={appearance}
       themeMode={appearance}
       onAppearanceChange={handleThemeModeChange}

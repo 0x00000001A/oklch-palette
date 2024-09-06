@@ -7,11 +7,10 @@ import {
   InsertRowLeftOutlined,
   InsertRowRightOutlined,
   MoonOutlined,
-  SettingOutlined,
   SunOutlined
 } from '@ant-design/icons'
-import {Button, Divider} from 'antd'
-import {useThemeMode} from 'antd-style'
+import {Button, Divider, Flex, Space} from 'antd'
+import {createStyles, css, useThemeMode} from 'antd-style'
 import {FC, useCallback} from 'react'
 
 import {INSERT_POSITIONS} from '../../state'
@@ -21,9 +20,14 @@ import ExportDropdown from './ExportDropdown/ExportDropdown.tsx'
 import {PaletteDropdown} from './PaletteDropdown'
 import {VisionDropdown} from './VisionDropdown'
 
-import './index.css'
+const useStyles = createStyles(({token}) => ({
+  root: css`
+    padding: ${token.sizeXS}px;
+  `
+}))
 
 const Navbar: FC = () => {
+  const {styles} = useStyles()
   const {setThemeMode, themeMode} = useThemeMode()
   const addToPalette = useColorsStore((store) => store.addToPalette)
   const applyChannelValueTo = useColorsStore((store) => store.applyChannelValueTo)
@@ -57,74 +61,66 @@ const Navbar: FC = () => {
   }, [applyChannelValueTo])
 
   return (
-    <nav className={'navbar'}>
-      <div className="navbar__items">
-        <PaletteDropdown />
-        <ExportDropdown />
-        <Divider type={'vertical'} />
-        <Button
-          icon={<InsertRowLeftOutlined />}
-          size={'small'}
-          type={'text'}
-          onClick={handleInsertColorTonesAfterButtonClick}
-        />
-        <Button
-          icon={<InsertRowRightOutlined />}
-          size={'small'}
-          type={'text'}
-          onClick={handleInsertColorTonesBeforeButtonClick}
-        />
-        <Button
-          icon={<InsertRowAboveOutlined />}
-          size={'small'}
-          type={'text'}
-          onClick={handleInsertColorFamilyAfterButtonClick}
-        />
-        <Button
-          icon={<InsertRowBelowOutlined />}
-          size={'small'}
-          type={'text'}
-          onClick={handleInsertColorFamilyBeforeButtonClick}
-        />
-        <Divider type={'vertical'} />
-        <Button
-          icon={<ColumnHeightOutlined />}
-          size={'small'}
-          type={'text'}
-          onClick={handleApplyLightnessToColButtonClick}
-        >
-          L
-        </Button>
-        <Button
-          icon={<ColumnHeightOutlined />}
-          size={'small'}
-          type={'text'}
-          onClick={handleApplyChromaToColButtonClick}
-        >
-          C
-        </Button>
-        <Button
-          icon={<ColumnWidthOutlined />}
-          size={'small'}
-          type={'text'}
-          onClick={handleApplyHueToRowButtonClick}
-        >
-          H
-        </Button>
-      </div>
-      <div className={'navbar__items'}>
-        <div className="navbar__items">
+    <nav className={styles.root}>
+      <Flex justify={'space-between'}>
+        <Space className="navbar__items">
+          <PaletteDropdown />
+          <ExportDropdown />
+          <Divider type={'vertical'} />
+          <Button
+            icon={<InsertRowLeftOutlined />}
+            size={'small'}
+            type={'text'}
+            onClick={handleInsertColorTonesAfterButtonClick}
+          />
+          <Button
+            icon={<InsertRowRightOutlined />}
+            size={'small'}
+            type={'text'}
+            onClick={handleInsertColorTonesBeforeButtonClick}
+          />
+          <Button
+            icon={<InsertRowAboveOutlined />}
+            size={'small'}
+            type={'text'}
+            onClick={handleInsertColorFamilyAfterButtonClick}
+          />
+          <Button
+            icon={<InsertRowBelowOutlined />}
+            size={'small'}
+            type={'text'}
+            onClick={handleInsertColorFamilyBeforeButtonClick}
+          />
+          <Divider type={'vertical'} />
+          <Button
+            icon={<ColumnHeightOutlined />}
+            size={'small'}
+            type={'text'}
+            onClick={handleApplyLightnessToColButtonClick}
+          >
+            L
+          </Button>
+          <Button
+            icon={<ColumnHeightOutlined />}
+            size={'small'}
+            type={'text'}
+            onClick={handleApplyChromaToColButtonClick}
+          >
+            C
+          </Button>
+          <Button
+            icon={<ColumnWidthOutlined />}
+            size={'small'}
+            type={'text'}
+            onClick={handleApplyHueToRowButtonClick}
+          >
+            H
+          </Button>
+        </Space>
+        <Space>
           {/* @todo not implemented yet */}
           {/* <ColorSpaceDropdown /> */}
           <VisionDropdown />
-        </div>
-        <div className="navbar__items">
-          <Button
-            aria-label={'Switch to light mode'}
-            icon={<SettingOutlined />}
-            size={'small'}
-            type={'text'}
-          />
           <Button
             aria-label={'Switch to light mode'}
             icon={themeMode === 'dark' ? <MoonOutlined /> : <SunOutlined />}
@@ -146,8 +142,8 @@ const Navbar: FC = () => {
           >
             About
           </Button>
-        </div>
-      </div>
+        </Space>
+      </Flex>
     </nav>
   )
 }

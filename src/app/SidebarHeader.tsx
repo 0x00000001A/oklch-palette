@@ -49,11 +49,8 @@ const ColorInfoForm: FC = () => {
           onChange={handleHexValueChange}
         />
       </Form.Item>
-      <Form.Item>
-        <Button htmlType={'submit'}>Apply</Button>
-      </Form.Item>
       <Form.Item style={{marginRight: 0}}>
-        <Button htmlType={'button'}>Copy</Button>
+        <Button htmlType={'submit'}>Copy</Button>
       </Form.Item>
     </Form>
   )

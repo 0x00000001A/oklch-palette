@@ -1,17 +1,19 @@
 import {
   ColumnHeightOutlined,
   ColumnWidthOutlined,
+  GithubOutlined,
   InsertRowAboveOutlined,
   InsertRowBelowOutlined,
   InsertRowLeftOutlined,
-  InsertRowRightOutlined
+  InsertRowRightOutlined,
+  MoonOutlined,
+  SettingOutlined,
+  SunOutlined
 } from '@ant-design/icons'
 import {Button, Divider} from 'antd'
+import {useThemeMode} from 'antd-style'
 import {FC, useCallback} from 'react'
 
-import IconGithub from '../../icons/IconGithub.tsx'
-import IconSettings from '../../icons/IconSettings.tsx'
-import IconSun from '../../icons/IconSun.tsx'
 import {INSERT_POSITIONS} from '../../state'
 import {useColorsStore} from '../../state/index.ts'
 
@@ -22,6 +24,7 @@ import {VisionDropdown} from './VisionDropdown'
 import './index.css'
 
 const Navbar: FC = () => {
+  const {setThemeMode, themeMode} = useThemeMode()
   const addToPalette = useColorsStore((store) => store.addToPalette)
   const applyChannelValueTo = useColorsStore((store) => store.applyChannelValueTo)
 
@@ -116,19 +119,33 @@ const Navbar: FC = () => {
           <VisionDropdown />
         </div>
         <div className="navbar__items">
-          <button aria-label={'Switch to light mode'} className={'navbar__button'}>
-            <IconSettings />
-          </button>
-          <button aria-label={'Switch to light mode'} className={'navbar__button'}>
-            <IconSun />
-          </button>
-          <a
-            aria-label={'Go to project GitHub page'}
-            className={'navbar__button'}
-            href={'#'}
+          <Button
+            aria-label={'Switch to light mode'}
+            icon={<SettingOutlined />}
+            size={'small'}
+            type={'text'}
+          />
+          <Button
+            aria-label={'Switch to light mode'}
+            icon={themeMode === 'dark' ? <MoonOutlined /> : <SunOutlined />}
+            size={'small'}
+            type={'text'}
+            onClick={() => {
+              setThemeMode(themeMode === 'dark' ? 'light' : 'dark')
+            }}
           >
-            <IconGithub />
-          </a>
+            Toggle theme
+          </Button>
+          <Button
+            aria-label={'Go to project GitHub page'}
+            href={'https://github.com/0x00000001A/oklch-palette'}
+            icon={<GithubOutlined />}
+            size={'small'}
+            target={'_blank'}
+            type={'text'}
+          >
+            About
+          </Button>
         </div>
       </div>
     </nav>

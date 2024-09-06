@@ -1,3 +1,4 @@
+import {createStyles, css} from 'antd-style'
 import {FC, useCallback, useEffect, useMemo, useRef, useState} from 'react'
 
 import {GRAPH_HEIGHT, GRAPH_WIDTH} from '../../constants/colors.ts'
@@ -12,6 +13,34 @@ import {ColorGraphProps} from './types.ts'
 
 import './index.css'
 
+// noinspection CssUnresolvedCustomProperty
+const useStyles = createStyles(({token}) => ({
+  canvasWrapper: css`
+    position: relative;
+    display: flex;
+    overflow: hidden;
+    --color-a: ${token.colorFillContent};
+    --color-b: ${token.colorBgLayout};
+    --size: 6px;
+    background-image: linear-gradient(
+      -45deg,
+      var(--color-a) 25%,
+      var(--color-b) 25%,
+      var(--color-b) 50%,
+      var(--color-a) 50%,
+      var(--color-a) 75%,
+      var(--color-b) 75%,
+      var(--color-b)
+    );
+    background-size: 6px 6px;
+  `,
+  root: css`
+    background: ${token.colorBgLayout};
+    border-radius: ${token.borderRadius}px;
+    border: 1px solid ${token.colorBorder};
+  `
+}))
+
 const ColorGraph: FC<ColorGraphProps> = ({
   channel,
   colorsFrom = 'row',
@@ -19,6 +48,7 @@ const ColorGraph: FC<ColorGraphProps> = ({
   min,
   step
 }) => {
+  const {styles} = useStyles()
   const colorsLen = useColorsStore(getColorsLengthByDirection(colorsFrom))
 
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -112,9 +142,9 @@ const ColorGraph: FC<ColorGraphProps> = ({
   useEffect(subscribeToColorsWorkerUpdates, [])
 
   return (
-    <div className={'color-graph'} style={{width: GRAPH_WIDTH}}>
+    <div className={styles.root} style={{width: GRAPH_WIDTH}}>
       <div className={'color-graph__values'}>{colorValues}</div>
-      <div className={'color-graph__canvas-wrapper'}>
+      <div className={styles.canvasWrapper}>
         <canvas
           className={'color-graph__canvas'}
           height={GRAPH_HEIGHT}

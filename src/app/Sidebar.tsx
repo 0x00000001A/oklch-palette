@@ -1,18 +1,27 @@
+import {Flex} from 'antd'
+import {createStyles} from 'antd-style'
 import {FC} from 'react'
 
 import SidebarBody from './SidebarBody.tsx'
 import SidebarHeader from './SidebarHeader.tsx'
 
-export type SidebarProps = {
-  // props
-}
+const useStyle = createStyles(({css, token}) => ({
+  root: css`
+    background: ${token.colorBgContainer};
+    border-left: 1px solid ${token.colorBorder};
+    flex-shrink: 0;
+    overflow: auto;
+  `
+}))
 
-const Sidebar: FC<SidebarProps> = () => {
+const Sidebar: FC = () => {
+  const {styles} = useStyle()
+
   return (
-    <div className={'sidebar'}>
+    <Flex className={styles.root} vertical>
       <SidebarHeader />
       <SidebarBody />
-    </div>
+    </Flex>
   )
 }
 

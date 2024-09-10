@@ -2,9 +2,8 @@ import {Flex} from 'antd'
 import {createStyles} from 'antd-style'
 import {FC} from 'react'
 
-import ColorPalette from '../components/ColorPalette'
-
 import {Navbar} from './Navbar'
+import Palette from './Palette'
 import {Sidebar} from './Sidebar'
 
 const useStyle = createStyles(({css, token}) => ({
@@ -35,7 +34,7 @@ const App: FC = () => {
         <Navbar />
       </div>
       <Flex className={styles.body} wrap={'nowrap'}>
-        <ColorPalette />
+        <Palette />
         <Sidebar />
       </Flex>
     </div>

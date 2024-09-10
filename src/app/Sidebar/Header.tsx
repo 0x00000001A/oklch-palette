@@ -12,40 +12,47 @@ export type SidebarHeaderProps = {
 }
 
 const ColorInfoForm: FC = () => {
-  const value = useColorsStore((state) => {
-    return state.getSelectedColor().hex
-  })
+  const selectedColor = useColorsStore(
+    (state) => state.colors[state.selectedRow][state.selectedCol]
+  )
 
-  const [draftHex, setDraftHex] = useState(value)
+  const [hex, setHex] = useState(selectedColor.hex)
 
   const updateValue = useColorsStore((state) => state.setSelectedColorValue)
 
   const handleHexValueChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
-      const hex = event.target.value
+      const value = event.target.value
 
-      setDraftHex(event.target.value)
+      setHex(value)
 
-      if (isValidHex(hex)) {
-        updateValue(hex)
+      if (isValidHex(value)) {
+        updateValue(value)
       }
     },
     [updateValue]
   )
 
+  const handleInputBlur = useCallback(() => {
+    if (!isValidHex(hex)) {
+      setHex(selectedColor.hex)
+    }
+  }, [hex, selectedColor.hex])
+
   const handleColorHexChanged = useCallback(() => {
-    setDraftHex(value)
-  }, [value])
+    setHex(selectedColor.hex)
+  }, [selectedColor])
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(handleColorHexChanged, [value])
+  useEffect(handleColorHexChanged, [selectedColor])
 
   return (
     <Form layout={'inline'} size={'small'}>
       <Form.Item label={'Hex value:'}>
         <Input
           style={{textAlign: 'right'}}
-          value={draftHex}
+          value={hex}
+          onBlur={handleInputBlur}
           onChange={handleHexValueChange}
         />
       </Form.Item>
@@ -58,7 +65,7 @@ const ColorInfoForm: FC = () => {
 
 const ColorInfo: FC = () => {
   const name = useColorsStore((state) => {
-    return `${state.rowNames[state.selectedRow]}-${state.colNames[state.selectedCol]}`
+    return `${state.rows[state.selectedRow].name}-${state.columns[state.selectedCol].name}`
   })
 
   return (

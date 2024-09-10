@@ -1,6 +1,6 @@
 import {FC, useMemo} from 'react'
 
-import {useColorsStore} from '../../state'
+import {SchemaGroup, useColorsStore} from '../../state'
 import {colorsNamesByDirection} from '../../state/selectors.ts'
 import {arrayCompare} from '../../utils/compare.ts'
 
@@ -13,8 +13,8 @@ const ColorBar: FC<ColorBarProps> = ({colorsFrom, ...restProps}) => {
   const colorsNames = useColorsStore(colorsNamesByDirection(colorsFrom), arrayCompare)
 
   const colors = useMemo(() => {
-    return colorsNames.map((_: string, index: number) => (
-      <ColorBarItem colorsFrom={colorsFrom} index={index} key={index} />
+    return colorsNames.map((data: SchemaGroup, index: number) => (
+      <ColorBarItem colorsFrom={colorsFrom} index={index} key={data.id} />
     ))
   }, [colorsFrom, colorsNames])
 

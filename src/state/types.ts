@@ -9,6 +9,11 @@ export type SchemaColor = {
   updatedAt: number
 }
 
+export type SchemaGroup = {
+  id: string
+  name: string
+}
+
 export type ColorsDirection = 'col' | 'row'
 
 export const INSERT_POSITIONS = {
@@ -27,12 +32,16 @@ export type ColorsState = {
     channel: number,
     value?: number
   ) => void
-  colNames: string[]
   colors: SchemaColor[][]
+  columns: SchemaGroup[]
   exportPalette: (exporter: PaletteExporterHandler) => string
   getSelectedColor: () => SchemaColor
   name: string
-  rowNames: string[]
+  removeColumn: (id: string) => void
+  removeRow: (id: string) => void
+  renameColumn: (id: string, newName: string) => void
+  renameRow: (id: string, newName: string) => void
+  rows: SchemaGroup[]
   selectedCol: number
   selectedRow: number
   setPalette: (palette: typeof defaultPalette) => void
@@ -40,4 +49,7 @@ export type ColorsState = {
   setSelectedColorChannelValue: (channel: LCH_CHANNELS_NAMES, value: number) => void
   setSelectedColorInDirection: (direction: ColorsDirection, value: number) => void
   setSelectedColorValue: (hex: string) => void
+  setSelectedColumn: (index: number) => void
+  setSelectedRow: (index: number) => void
+  swapRows: (rowA: number, rowB: number) => void
 }

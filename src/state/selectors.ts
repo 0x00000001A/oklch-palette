@@ -22,9 +22,9 @@ export const getNextColor = colorsSelector(
       let [nextRow, nextCol] = [state.selectedRow, state.selectedCol]
 
       if (direction === 'col') {
-        nextRow = Math.min(state.rowNames.length - 1, index + 1)
+        nextRow = Math.min(state.rows.length - 1, index + 1)
       } else {
-        nextCol = Math.min(state.colNames.length - 1, index + 1)
+        nextCol = Math.min(state.columns.length - 1, index + 1)
       }
 
       return state.colors[nextRow][nextCol]
@@ -49,10 +49,10 @@ export const getColorByDirection = colorsSelector(
 export const colorsNamesByDirection = colorsSelector((direction: ColorsDirection) => {
   return (state) => {
     if (direction === 'col') {
-      return state.rowNames
+      return state.rows
     }
 
-    return state.colNames
+    return state.columns
   }
 })
 

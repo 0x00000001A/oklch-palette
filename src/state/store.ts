@@ -1,3 +1,5 @@
+import {arrayMove} from '@dnd-kit/sortable'
+
 import {createStore} from '../lib/StateManager'
 import defaultPalette from '../palettes/default.ts'
 import {
@@ -37,6 +39,22 @@ export const hexToSchemaColor = (hex: string): SchemaColor => {
   }
 }
 
+const stringArrayToObjectWithIdArray = (source: string[]) => {
+  return source.map((name) => ({
+    id: crypto.randomUUID(),
+    name
+  }))
+}
+
+function objectsArrayToStringArray<
+  R extends Record<number | string | symbol, unknown>,
+  Z extends keyof R
+>(source: R[], key: Z = 'name' as Z) {
+  return source.map((entry) => {
+    return String(entry[key])
+  })
+}
+
 export const colorsStore = createStore<ColorsState>((set, get) => ({
   addToPalette(insertType, insertDirection) {
     set((state) => {
@@ -44,15 +62,18 @@ export const colorsStore = createStore<ColorsState>((set, get) => ({
       let updatedSelectedCol = state.selectedCol
       let updatedSelectedRow = state.selectedRow
 
-      const updatedRowNames = [...state.rowNames]
-      const updatedColNames = [...state.colNames]
+      const updatedRows = [...state.rows]
+      const updatedColumns = [...state.columns]
       const insertPosition = insertDirection === INSERT_POSITIONS.AFTER ? 1 : 0
 
       if (insertType === 'row') {
         updatedSelectedRow = state.selectedRow + insertPosition
 
         updatedColors.splice(updatedSelectedRow, 0, [...updatedColors[state.selectedRow]])
-        updatedRowNames.splice(updatedSelectedRow, 0, 'No name')
+        updatedRows.splice(updatedSelectedRow, 0, {
+          id: crypto.randomUUID(),
+          name: 'No name'
+        })
       } else {
         updatedSelectedCol = state.selectedCol + insertPosition
 
@@ -60,7 +81,10 @@ export const colorsStore = createStore<ColorsState>((set, get) => ({
           row.splice(updatedSelectedCol, 0, row[state.selectedCol])
           return row
         })
-        updatedColNames.splice(updatedSelectedCol, 0, 'No name')
+        updatedColumns.splice(updatedSelectedCol, 0, {
+          id: crypto.randomUUID(),
+          name: 'No name'
+        })
       }
 
       updatedColors = updatedColors.map((row) => {
@@ -73,9 +97,9 @@ export const colorsStore = createStore<ColorsState>((set, get) => ({
       })
 
       return {
-        colNames: updatedColNames,
         colors: updatedColors,
-        rowNames: updatedRowNames,
+        columns: updatedColumns,
+        rows: updatedRows,
         selectedCol: updatedSelectedCol,
         selectedRow: updatedSelectedRow
       }
@@ -98,7 +122,7 @@ export const colorsStore = createStore<ColorsState>((set, get) => ({
           }
         )
       } else {
-        state.rowNames.forEach((_, rowIndex) => {
+        state.rows.forEach((_, rowIndex) => {
           const updatedColor = updatedColors[rowIndex][state.selectedCol].oklch
           updatedColor[channel] = updatedValue
 
@@ -109,13 +133,17 @@ export const colorsStore = createStore<ColorsState>((set, get) => ({
       return {colors: updatedColors}
     })
   },
-  colNames: defaultPalette.colNames,
   colors: defaultPalette.colors.map((colorsRow) => {
     return (colorsRow as string[]).map(hexToSchemaColor)
   }),
+  columns: stringArrayToObjectWithIdArray(defaultPalette.colNames),
   exportPalette(exporter) {
-    const {colNames, colors, rowNames} = get()
-    return exporter(rowNames, colNames, colors)
+    const {colors, columns, rows} = get()
+    return exporter(
+      objectsArrayToStringArray(rows),
+      objectsArrayToStringArray(columns),
+      colors
+    )
   },
   getSelectedColor() {
     const {colors, selectedCol, selectedRow} = get()
@@ -123,13 +151,87 @@ export const colorsStore = createStore<ColorsState>((set, get) => ({
   },
   imageData: [],
   name: 'Default palette',
-  rowNames: defaultPalette.rowNames,
+  removeColumn(id) {
+    set(({colors, columns}) => {
+      const columnIndex = columns.findIndex((column) => column.id === id) + 1
+      const updatedColors = colors.map((row) => {
+        const updatedRow = [...row]
+
+        updatedRow.splice(columnIndex, 1)
+
+        return updatedRow
+      })
+      const updatedColumns = columns.filter((column) => column.id !== id)
+
+      return {
+        colors: updatedColors,
+        columns: updatedColumns
+      }
+    })
+  },
+  removeRow(id) {
+    set(({colors, rows}) => {
+      const rowIndex = rows.findIndex((row) => row.id === id)
+      const updatedRows = rows.filter((row) => row.id !== id)
+      const updatedColors = [...colors]
+
+      updatedColors.splice(rowIndex, 1)
+
+      console.log(updatedColors, rowIndex)
+
+      return {
+        colors: updatedColors,
+        rows: updatedRows
+      }
+    })
+  },
+  renameColumn(id, newName) {
+    set(({columns}) => {
+      return {
+        columns: columns.map((data) => {
+          if (data.id !== id) {
+            return data
+          }
+
+          return {
+            ...data,
+            name: newName
+          }
+        })
+      }
+    })
+  },
+  renameRow(id, newName) {
+    set(({rows}) => {
+      return {
+        rows: rows.map((data) => {
+          if (data.id !== id) {
+            return data
+          }
+
+          return {
+            ...data,
+            name: newName
+          }
+        })
+      }
+    })
+  },
+  rows: stringArrayToObjectWithIdArray(defaultPalette.rowNames),
   selectedCol: 0,
   selectedRow: 0,
   setPalette(palette) {
     set({
       ...palette,
       colors: palette.colors.map((paletteColors) => paletteColors.map(hexToSchemaColor)),
+      columns: palette.colNames.map((name) => ({
+        id: crypto.randomUUID(),
+        name
+      })),
+      rows: palette.rowNames.map((name) => ({
+        id: crypto.randomUUID(),
+        name
+      })),
       selectedCol: 0,
       selectedRow: 0
     })
@@ -161,6 +263,21 @@ export const colorsStore = createStore<ColorsState>((set, get) => ({
 
       return {
         colors
+      }
+    })
+  },
+  setSelectedColumn(index: number) {
+    set({selectedCol: index})
+  },
+  setSelectedRow(index: number) {
+    set({selectedRow: index})
+  },
+  swapRows(rowA, rowB) {
+    set(({colors, rows}) => {
+      return {
+        colors: arrayMove(colors, rowA, rowB),
+        rows: arrayMove(rows, rowA, rowB),
+        selectedRow: rowB
       }
     })
   }

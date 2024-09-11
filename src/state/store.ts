@@ -149,6 +149,10 @@ export const colorsStore = createStore<ColorsState>((set, get) => ({
     const {colors, selectedCol, selectedRow} = get()
     return colors[selectedRow][selectedCol]
   },
+  getSelectedRowColor(columnId) {
+    const {colors, columns, selectedRow} = get()
+    return colors[selectedRow][columns.findIndex(({id}) => id === columnId)]
+  },
   imageData: [],
   name: 'Default palette',
   removeColumn(id) {

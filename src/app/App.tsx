@@ -3,8 +3,9 @@ import {createStyles} from 'antd-style'
 import {FC} from 'react'
 
 import {Navbar} from './Navbar'
-import Palette from './Palette'
+import {Palette} from './Palette'
 import {Sidebar} from './Sidebar'
+import {Validator} from './Validator'
 
 const useStyle = createStyles(({css, token}) => ({
   body: css`
@@ -34,7 +35,10 @@ const App: FC = () => {
         <Navbar />
       </div>
       <Flex className={styles.body} wrap={'nowrap'}>
-        <Palette />
+        <Flex style={{overflow: 'hidden'}} vertical>
+          <Palette />
+          <Validator />
+        </Flex>
         <Sidebar />
       </Flex>
     </div>

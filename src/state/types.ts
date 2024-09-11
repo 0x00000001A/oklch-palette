@@ -36,6 +36,7 @@ export type ColorsState = {
   columns: SchemaGroup[]
   exportPalette: (exporter: PaletteExporterHandler) => string
   getSelectedColor: () => SchemaColor
+  getSelectedRowColor: (columnId: string) => SchemaColor
   name: string
   removeColumn: (id: string) => void
   removeRow: (id: string) => void

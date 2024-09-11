@@ -1,15 +1,4 @@
-export type AnalyzerResult = {
-  backgroundColor: number[]
-  foregroundColor: number[]
-  label: string
-  success: boolean
-  value: number | string
-}
-
-export type Analyzer = (
-  foregroundColor: number[],
-  backgroundColor: number[]
-) => AnalyzerResult
+import {Analyzer, AnalyzerResult} from './types.ts'
 
 function luminance([r, g, b]: number[]) {
   const [lumR, lumG, lumB] = [r, g, b].map<number>((component) => {
@@ -37,7 +26,10 @@ const WCAG_MINIMUM_RATIOS = [
   {label: 'AAA', success: true, value: 7}
 ]
 
-export const wcag22: Analyzer = (foregroundColor, backgroundColor) => {
+const wcag22Internal = (
+  foregroundColor: number[],
+  backgroundColor: number[]
+): AnalyzerResult => {
   const [luminance1, luminance2] = [foregroundColor, backgroundColor].map(luminance)
 
   const ratio = contrastRatio(luminance1, luminance2)
@@ -55,4 +47,11 @@ export const wcag22: Analyzer = (foregroundColor, backgroundColor) => {
   }
 
   return {backgroundColor, foregroundColor, label, success, value}
+}
+
+export const wcag22: Analyzer = (foregroundColor, backgroundColor) => {
+  return [
+    wcag22Internal(foregroundColor, backgroundColor),
+    wcag22Internal(backgroundColor, foregroundColor)
+  ]
 }

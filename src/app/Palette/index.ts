@@ -1,3 +1,1 @@
-import Palette from './Palette.tsx'
-
-export default Palette
+export {default as Palette} from './Palette'

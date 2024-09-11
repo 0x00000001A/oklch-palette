@@ -1,11 +1,12 @@
-import {Button, Flex, Form, Input, Space, Typography, theme} from 'antd'
+import {ColorPicker, Flex, Form, Input, Space, Typography, theme} from 'antd'
 import {createStyles} from 'antd-style'
+import {AggregationColor} from 'antd/es/color-picker/color'
 import {ChangeEvent, FC, useCallback, useEffect, useState} from 'react'
 
 import {ColorBar} from '../../components/ColorBar'
 import ColorForm from '../../components/ColorForm/ColorForm.tsx'
 import {useColorsStore} from '../../state'
-import {isValidHex} from '../../utils/colors.ts'
+import {isValidHex, rgbToHex} from '../../utils/colors.ts'
 
 export type SidebarHeaderProps = {
   // props
@@ -33,6 +34,20 @@ const ColorInfoForm: FC = () => {
     [updateValue]
   )
 
+  const handleHexValueColorPickerChange = useCallback(
+    (event: AggregationColor) => {
+      const {b, g, r} = event.toRgb()
+      const value = rgbToHex([r, g, b])
+
+      setHex(value)
+
+      if (isValidHex(value)) {
+        updateValue(value)
+      }
+    },
+    [updateValue]
+  )
+
   const handleInputBlur = useCallback(() => {
     if (!isValidHex(hex)) {
       setHex(selectedColor.hex)
@@ -47,19 +62,23 @@ const ColorInfoForm: FC = () => {
   useEffect(handleColorHexChanged, [selectedColor])
 
   return (
-    <Form layout={'inline'} size={'small'}>
-      <Form.Item label={'Hex value:'}>
+    <Form.Item label={'Hex value:'} layout={'horizontal'}>
+      <Space.Compact>
         <Input
+          size={'small'}
           style={{textAlign: 'right'}}
           value={hex}
           onBlur={handleInputBlur}
           onChange={handleHexValueChange}
         />
-      </Form.Item>
-      <Form.Item style={{marginRight: 0}}>
-        <Button htmlType={'submit'}>Copy</Button>
-      </Form.Item>
-    </Form>
+        <ColorPicker
+          size={'small'}
+          value={hex}
+          onChange={handleHexValueColorPickerChange}
+          disabledAlpha
+        />
+      </Space.Compact>
+    </Form.Item>
   )
 }
 

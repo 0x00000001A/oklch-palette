@@ -31,6 +31,9 @@ export const useCellStyles = createStyles(
   ({token}, props: {color: string; isSelected: boolean}) => ({
     root: css`
       --box-shadow: inset 0 0 0 2px ${token.colorBorderBg};
+      display: flex;
+      align-items: center;
+      justify-content: center;
       background: ${props.color};
       height: 40px;
       width: 64px;

@@ -35,7 +35,7 @@ const App: FC = () => {
         <Navbar />
       </div>
       <Flex className={styles.body} wrap={'nowrap'}>
-        <Flex style={{overflow: 'hidden'}} vertical>
+        <Flex style={{flexGrow: 1, overflow: 'hidden'}} vertical>
           <Palette />
           <Validator />
         </Flex>

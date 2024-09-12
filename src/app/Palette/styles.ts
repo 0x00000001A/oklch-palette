@@ -28,18 +28,22 @@ export const useTableStyles = createStyles(({token}) => ({
 
 // noinspection CssUnresolvedCustomProperty
 export const useCellStyles = createStyles(
-  ({token}, props: {color: string; isSelected: boolean}) => ({
+  (_, props: {color: string; isSelected: boolean}) => ({
     root: css`
-      --box-shadow: inset 0 0 0 2px ${token.colorBorderBg};
       display: flex;
       align-items: center;
       justify-content: center;
       background: ${props.color};
       height: 40px;
+      position: relative;
       width: 64px;
-      box-shadow: ${props.isSelected ? 'var(--box-shadow)' : 'unset'};
+      border-radius: ${props.isSelected ? '2px' : 'unset'};
+      z-index: ${props.isSelected ? '4' : 'unset'};
+      transform: ${props.isSelected ? 'scale(1.2)' : 'unset'};
       &:hover {
-        box-shadow: var(--box-shadow);
+        z-index: 1000;
+        transform: scale(1.2);
+        border-radius: 2px;
       }
     `
   })

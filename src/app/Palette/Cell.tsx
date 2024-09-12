@@ -1,47 +1,69 @@
-import {FC, useCallback, useMemo} from 'react'
+import {FC, HTMLAttributes, PropsWithChildren, useCallback, useMemo} from 'react'
 
-import {apcaw3} from '../../lib/ContrastValidators/apcaw3.ts'
 import {useColorsStore} from '../../state'
-import useColorStore from '../../state/store.ts'
+import {cls} from '../../utils/cls.ts'
 
-import {useCellStyles} from './styles.ts'
+export type ColorCellProps = Omit<HTMLAttributes<HTMLDivElement>, 'color' | 'onClick'> &
+  PropsWithChildren & {
+    col?: number
+    isNotSelectable?: boolean
+    row?: number
+  }
 
-const PaletteCell: FC<{colIndex: number; rowId: string}> = ({colIndex, rowId}) => {
-  const rowIndex = useColorStore((state) =>
-    state.rows.findIndex((row) => row.id === rowId)
+const ColorCell: FC<ColorCellProps> = ({
+  children,
+  className,
+  col = 0,
+  isNotSelectable,
+  row = 0,
+  style,
+  ...restProps
+}) => {
+  const color = useColorsStore(
+    ({colors, selectedCol, selectedRow}) => {
+      const isSelected = col === selectedCol && row === selectedRow
+
+      const {hex, updatedAt} = colors[row][col]
+      return {hex, isSelected, updatedAt}
+    },
+    (a, b) => {
+      return a.isSelected === b.isSelected && a.updatedAt === b.updatedAt
+    }
   )
 
-  const isSelected = useColorStore(
-    (state) => state.selectedCol === colIndex && state.selectedRow === rowIndex
-  )
-
-  const color = useColorStore((state) => {
-    return state.colors[rowIndex][colIndex]
-  })
-
-  const {styles} = useCellStyles({color: color.hex, isSelected})
   const setSelectedColor = useColorsStore((state) => state.setSelectedColor)
 
   const handleColorClick = useCallback(() => {
-    setSelectedColor(rowIndex, colIndex)
-  }, [colIndex, rowIndex, setSelectedColor])
+    setSelectedColor(row, col)
+  }, [row, col, setSelectedColor])
 
-  const contrastApca = useMemo(() => {
-    return Math.round(apcaw3(color.rgb, [255, 255, 255])[0].value as never)
-  }, [color.rgb])
+  const cellStyles = useMemo(() => {
+    return {
+      ...style,
+      backgroundColor: color.hex,
+      color: '#fff'
+    }
+  }, [color.hex, style])
+
+  const cellClassName = useMemo(() => {
+    return cls(
+      'color-palette__cell',
+      color.isSelected && 'color-palette__cell_selected',
+      isNotSelectable && 'color-palette__cell_not-selectable',
+      className
+    )
+  }, [className, color.isSelected, isNotSelectable])
 
   return (
     <div
-      style={{
-        color: Number(contrastApca) < 50 ? '#000' : '#fff',
-        fontSize: 12
-      }}
-      className={styles.root}
+      {...restProps}
+      className={cellClassName}
+      style={cellStyles}
       onClick={handleColorClick}
     >
-      {contrastApca as never}
+      {children}
     </div>
   )
 }
 
-export default PaletteCell
+export default ColorCell

@@ -5,14 +5,16 @@ import {ChangeEvent, useCallback, useEffect, useMemo, useState} from 'react'
 import {useColorsStore} from '../../state'
 import useColorStore from '../../state/store.ts'
 import {hexToRgb, isValidHex, rgbToHex} from '../../utils/colors.ts'
+import {arrayCompare} from '../../utils/compare.ts'
 
 import ValidatorResults from './Results.tsx'
 
 const Validator = () => {
-  const columns = useColorsStore((state) => state.columns)
-  const selectedRow = useColorStore((state) => state.selectedRow)
+  const rows = useColorsStore((state) => state.rows, arrayCompare)
+  const columns = useColorsStore((state) => state.columns, arrayCompare)
   const selectedColor = useColorsStore(
-    (state) => state.colors[state.selectedRow][state.selectedCol]
+    (state) => state.colors[state.selectedRow][state.selectedCol],
+    (a, b) => a.hex === b.hex
   )
   const getSelectedRowColor = useColorStore((state) => state.getSelectedRowColor)
 
@@ -25,11 +27,11 @@ const Validator = () => {
   )
 
   const handleAgainstColumnChange = useCallback(
-    (columnId: string = againstColumn) => {
+    (columnId: string) => {
       setAgainstColumn(columnId)
       setAgainstColumnColor(getSelectedRowColor(columnId))
     },
-    [againstColumn, getSelectedRowColor]
+    [getSelectedRowColor]
   )
 
   const handleDarkColorChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
@@ -62,8 +64,15 @@ const Validator = () => {
     }
   }, [darkColor, lightColor])
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(handleAgainstColumnChange, [selectedRow])
+  useEffect(() => {
+    if (columns[0].id === againstColumn) {
+      return
+    }
+
+    setAgainstColumn(columns[0].id)
+    setAgainstColumnColor(getSelectedRowColor(columns[0].id))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [columns, rows])
 
   return (
     <Row gutter={[8, 8]} style={{padding: 8}}>

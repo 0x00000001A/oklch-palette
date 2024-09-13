@@ -2,6 +2,7 @@ export type AnalyzerResult = {
   backgroundColor: number[]
   foregroundColor: number[]
   label: string
+  note?: string
   success: boolean
   value: number | string
 }
@@ -9,4 +10,10 @@ export type AnalyzerResult = {
 export type Analyzer = (
   foregroundColor: number[],
   backgroundColor: number[]
-) => AnalyzerResult[]
+) => {
+  label: string
+  results: {
+    backward: AnalyzerResult
+    forward: AnalyzerResult
+  }
+}

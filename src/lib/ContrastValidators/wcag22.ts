@@ -50,8 +50,11 @@ const wcag22Internal = (
 }
 
 export const wcag22: Analyzer = (foregroundColor, backgroundColor) => {
-  return [
-    wcag22Internal(foregroundColor, backgroundColor),
-    wcag22Internal(backgroundColor, foregroundColor)
-  ]
+  return {
+    label: 'WCAG 2.2',
+    results: {
+      backward: wcag22Internal(backgroundColor, foregroundColor),
+      forward: wcag22Internal(foregroundColor, backgroundColor)
+    }
+  }
 }

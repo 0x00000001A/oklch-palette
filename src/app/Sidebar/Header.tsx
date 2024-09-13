@@ -39,11 +39,7 @@ const ColorInfoForm: FC = () => {
       const {b, g, r} = event.toRgb()
       const value = rgbToHex([r, g, b])
 
-      setHex(value)
-
-      if (isValidHex(value)) {
-        updateValue(value)
-      }
+      updateValue(value)
     },
     [updateValue]
   )
@@ -75,6 +71,7 @@ const ColorInfoForm: FC = () => {
           size={'small'}
           value={hex}
           onChange={handleHexValueColorPickerChange}
+          destroyTooltipOnHide
           disabledAlpha
         />
       </Space.Compact>

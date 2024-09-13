@@ -1,4 +1,5 @@
 import {Col, ColorPicker, Flex, Form, Input, Row, Select, Space} from 'antd'
+import {createStyles, css} from 'antd-style'
 import {AggregationColor} from 'antd/es/color-picker/color'
 import {ChangeEvent, useCallback, useEffect, useMemo, useState} from 'react'
 
@@ -9,7 +10,16 @@ import {arrayCompare} from '../../utils/compare.ts'
 
 import ValidatorResults from './Results.tsx'
 
+const useStyles = createStyles(({token}) => ({
+  root: css`
+    background: ${token.colorBgContainer};
+    border-top: 1px solid ${token.colorBorder};
+  `
+}))
+
 const Validator = () => {
+  const {styles} = useStyles()
+
   const rows = useColorsStore((state) => state.rows, arrayCompare)
   const columns = useColorsStore((state) => state.columns, arrayCompare)
   const selectedColor = useColorsStore(
@@ -75,7 +85,7 @@ const Validator = () => {
   }, [columns, rows])
 
   return (
-    <Row gutter={[8, 8]} style={{padding: 8}}>
+    <Row className={styles.root} gutter={[8, 8]} style={{padding: 8}}>
       <Col span={8}>
         <Flex gap={8} vertical>
           <Form.Item label={'Against'} style={{margin: 0}}>

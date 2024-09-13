@@ -1,38 +1,29 @@
 import {Flex} from 'antd'
-import React, {FC} from 'react'
+import {FC, useMemo} from 'react'
 
-import {validateContrast, validatorsNames} from '../../lib/ContrastValidators'
+import {validatorsNames} from '../../lib/ContrastValidators'
 import {SchemaColor} from '../../state'
-import {rgbToHex} from '../../utils/colors.ts'
+
+import ValidatorResultsItem from './ResultsItem.tsx'
 
 const ValidatorResults: FC<{colorA: SchemaColor; colorB: SchemaColor}> = ({
   colorA,
   colorB
 }) => {
+  const results = useMemo(() => {
+    return validatorsNames.map((validatorName) => (
+      <ValidatorResultsItem
+        colorA={colorA}
+        colorB={colorB}
+        key={validatorName}
+        name={validatorName}
+      />
+    ))
+  }, [colorA, colorB])
+
   return (
     <Flex gap={8} vertical>
-      {validatorsNames.map((validatorName) => (
-        <React.Fragment key={validatorName}>
-          <div>{validatorName}</div>
-          {validateContrast(validatorName as never, colorA.rgb, colorB.rgb).map(
-            (result, resultIndex) => (
-              <div
-                style={{
-                  background: rgbToHex(result.backgroundColor as never),
-                  borderRadius: 4,
-                  color: rgbToHex(result.foregroundColor as never),
-                  fontSize: 24,
-                  padding: '4px 8px',
-                  textAlign: 'center'
-                }}
-                key={resultIndex}
-              >
-                {result.label}
-              </div>
-            )
-          )}
-        </React.Fragment>
-      ))}
+      {results}
     </Flex>
   )
 }

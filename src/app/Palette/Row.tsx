@@ -23,7 +23,13 @@ const PaletteRow: FC<PaletteRowProps> = (props) => {
 
   return (
     <PaletteRowContext.Provider value={contextValue}>
-      <tr {...props} ref={setNodeRef} style={style} {...attributes} />
+      <tr
+        {...props}
+        ref={setNodeRef}
+        style={style}
+        {...attributes}
+        tabIndex={undefined}
+      />
     </PaletteRowContext.Provider>
   )
 }

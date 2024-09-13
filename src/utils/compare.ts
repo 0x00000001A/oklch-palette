@@ -1,7 +1,7 @@
 import {SchemaColor} from '../state'
 
 export function arrayCompare(arrayA: readonly unknown[], arrayB: readonly unknown[]) {
-  return arrayA.toString() === arrayB.toString()
+  return JSON.stringify(arrayA) === JSON.stringify(arrayB)
 }
 
 export function truthyCompare() {

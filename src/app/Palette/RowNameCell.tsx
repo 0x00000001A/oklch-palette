@@ -1,28 +1,30 @@
 import {Input, Space} from 'antd'
 import {ChangeEvent, FC, useCallback, useState} from 'react'
 
-import {useColorsStore} from '../../state'
+import {SchemaGroup, useColorsStore} from '../../state'
 
 import PaletteDragHandle from './DragHandler.tsx'
-import {PaletteRowData} from './types.ts'
 
-const PaletteRowNameCell: FC<{row: PaletteRowData}> = ({row}) => {
-  const [name, setName] = useState(row.rowName)
+const PaletteRowNameCell: FC<{row: SchemaGroup; rowIndex: number}> = ({
+  row,
+  rowIndex
+}) => {
+  const [name, setName] = useState(row.name)
 
   const renameRow = useColorsStore((store) => store.renameRow)
   const setSelectedRow = useColorsStore((state) => state.setSelectedRow)
 
   const handleNameChange = useCallback(
     (newName: ChangeEvent<HTMLInputElement>) => {
-      renameRow(row.key, newName.target.value)
+      renameRow(row.id, newName.target.value)
       setName(newName.target.value)
     },
-    [renameRow, row.key]
+    [renameRow, row.id]
   )
 
   const handleRowNameInputFocused = useCallback(() => {
-    setSelectedRow(row.rowIndex)
-  }, [row.rowIndex, setSelectedRow])
+    setSelectedRow(rowIndex)
+  }, [rowIndex, setSelectedRow])
 
   return (
     <Space size={'small'}>

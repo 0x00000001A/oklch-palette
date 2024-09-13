@@ -1,29 +1,29 @@
-import {FC, HTMLAttributes, PropsWithChildren, useCallback, useMemo} from 'react'
+import {FC, HTMLAttributes, PropsWithChildren, useCallback} from 'react'
 
 import {useColorsStore} from '../../state'
-import {cls} from '../../utils/cls.ts'
+import useColorStore from '../../state/store.ts'
+
+import {useCellStyles} from './styles.ts'
 
 export type ColorCellProps = Omit<HTMLAttributes<HTMLDivElement>, 'color' | 'onClick'> &
   PropsWithChildren & {
-    col?: number
+    colIndex?: number
     isNotSelectable?: boolean
-    row?: number
+    rowIndex?: number
   }
 
 const ColorCell: FC<ColorCellProps> = ({
   children,
-  className,
-  col = 0,
-  isNotSelectable,
-  row = 0,
-  style,
+  colIndex = 0,
+  rowIndex = 0,
   ...restProps
 }) => {
+  const isSelected = useColorStore(
+    (state) => state.selectedRow === rowIndex && state.selectedCol === colIndex
+  )
   const color = useColorsStore(
-    ({colors, selectedCol, selectedRow}) => {
-      const isSelected = col === selectedCol && row === selectedRow
-
-      const {hex, updatedAt} = colors[row][col]
+    ({colors}) => {
+      const {hex, updatedAt} = colors[rowIndex][colIndex]
       return {hex, isSelected, updatedAt}
     },
     (a, b) => {
@@ -31,36 +31,16 @@ const ColorCell: FC<ColorCellProps> = ({
     }
   )
 
+  const {styles} = useCellStyles({color: color.hex, isSelected})
+
   const setSelectedColor = useColorsStore((state) => state.setSelectedColor)
 
   const handleColorClick = useCallback(() => {
-    setSelectedColor(row, col)
-  }, [row, col, setSelectedColor])
-
-  const cellStyles = useMemo(() => {
-    return {
-      ...style,
-      backgroundColor: color.hex,
-      color: '#fff'
-    }
-  }, [color.hex, style])
-
-  const cellClassName = useMemo(() => {
-    return cls(
-      'color-palette__cell',
-      color.isSelected && 'color-palette__cell_selected',
-      isNotSelectable && 'color-palette__cell_not-selectable',
-      className
-    )
-  }, [className, color.isSelected, isNotSelectable])
+    setSelectedColor(rowIndex, colIndex)
+  }, [rowIndex, colIndex, setSelectedColor])
 
   return (
-    <div
-      {...restProps}
-      className={cellClassName}
-      style={cellStyles}
-      onClick={handleColorClick}
-    >
+    <div {...restProps} className={styles.root} onClick={handleColorClick}>
       {children}
     </div>
   )

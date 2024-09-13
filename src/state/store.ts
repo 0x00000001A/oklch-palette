@@ -156,8 +156,8 @@ export const colorsStore = createStore<ColorsState>((set, get) => ({
   imageData: [],
   name: 'Default palette',
   removeColumn(id) {
-    set(({colors, columns}) => {
-      const columnIndex = columns.findIndex((column) => column.id === id) + 1
+    set(({colors, columns, selectedCol}) => {
+      const columnIndex = columns.findIndex((column) => column.id === id)
       const updatedColors = colors.map((row) => {
         const updatedRow = [...row]
 
@@ -169,23 +169,23 @@ export const colorsStore = createStore<ColorsState>((set, get) => ({
 
       return {
         colors: updatedColors,
-        columns: updatedColumns
+        columns: updatedColumns,
+        selectedCol: selectedCol === columnIndex ? 0 : selectedCol
       }
     })
   },
   removeRow(id) {
-    set(({colors, rows}) => {
+    set(({colors, rows, selectedRow}) => {
       const rowIndex = rows.findIndex((row) => row.id === id)
       const updatedRows = rows.filter((row) => row.id !== id)
       const updatedColors = [...colors]
 
       updatedColors.splice(rowIndex, 1)
 
-      console.log(updatedColors, rowIndex)
-
       return {
         colors: updatedColors,
-        rows: updatedRows
+        rows: updatedRows,
+        selectedRow: selectedRow === rowIndex ? 0 : selectedRow
       }
     })
   },

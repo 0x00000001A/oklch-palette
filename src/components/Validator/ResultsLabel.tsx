@@ -11,8 +11,10 @@ const useStyles = createStyles(({token}, {result}: {result: AnalyzerResult}) => 
   `,
   label: css`
     color: ${rgbToHex(result.foregroundColor as never)};
+    font-size: clamp(1rem, 4cqi, 3rem);
   `,
   root: css`
+    container-type: inline-size;
     padding: ${token.sizeXXS}px ${token.sizeXS}px;
     font-size: 18px;
     text-align: center;

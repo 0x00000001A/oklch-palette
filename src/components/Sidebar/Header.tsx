@@ -3,10 +3,10 @@ import {createStyles} from 'antd-style'
 import {AggregationColor} from 'antd/es/color-picker/color'
 import {ChangeEvent, FC, useCallback, useEffect, useState} from 'react'
 
-import {ColorBar} from '../../components/ColorBar'
-import ColorForm from '../../components/ColorForm/ColorForm.tsx'
 import {useColorsStore} from '../../state'
 import {isValidHex, rgbToHex} from '../../utils/colors.ts'
+import {ColorBar} from '../ColorBar'
+import ColorForm from '../ColorForm/ColorForm.tsx'
 
 export type SidebarHeaderProps = {
   // props

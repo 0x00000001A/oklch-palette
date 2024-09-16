@@ -23,15 +23,15 @@ const ColorCell: FC<ColorCellProps> = ({
   )
   const color = useColorsStore(
     ({colors}) => {
-      const {hex, updatedAt} = colors[rowIndex][colIndex]
-      return {hex, isSelected, updatedAt}
+      const {hex, isValid, updatedAt} = colors[rowIndex][colIndex]
+      return {hex, isSelected, isValid, updatedAt}
     },
     (a, b) => {
       return a.isSelected === b.isSelected && a.updatedAt === b.updatedAt
     }
   )
 
-  const {styles} = useCellStyles({color: color.hex, isSelected})
+  const {styles} = useCellStyles({color: color.hex, isSelected, isValid: color.isValid})
 
   const setSelectedColor = useColorsStore((state) => state.setSelectedColor)
 

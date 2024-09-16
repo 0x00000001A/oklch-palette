@@ -2,8 +2,8 @@ import {App as AntdApp, ConfigProvider} from 'antd'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 
-import App from './app/App.tsx'
-import Appearance from './app/Appearance.tsx'
+import App from './App.tsx'
+import Appearance from './Appearance.tsx'
 
 import './index.css'
 

@@ -4,6 +4,7 @@ import defaultPalette from '../palettes/default.ts'
 
 export type SchemaColor = {
   hex: string
+  isValid?: boolean
   oklch: [number, number, number]
   rgb: [number, number, number]
   updatedAt: number

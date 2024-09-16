@@ -88,7 +88,7 @@ const Validator = () => {
     <Row className={styles.root} gutter={[8, 8]} style={{padding: 8}}>
       <Col span={8}>
         <Flex gap={8} vertical>
-          <Form.Item label={'Against'} style={{margin: 0}}>
+          <Form.Item label={'Against'} layout={'horizontal'} style={{margin: 0}}>
             <Select
               fieldNames={{
                 label: 'name',
@@ -107,7 +107,7 @@ const Validator = () => {
       </Col>
       <Col span={8}>
         <Flex gap={8} vertical>
-          <Form.Item label={'Dark color'} style={{margin: 0}}>
+          <Form.Item label={'Dark color'} layout={'horizontal'} style={{margin: 0}}>
             <Space.Compact>
               <Input
                 size={'small'}
@@ -129,7 +129,7 @@ const Validator = () => {
       </Col>
       <Col span={8}>
         <Flex gap={8} vertical>
-          <Form.Item label={'Light color'} style={{margin: 0}}>
+          <Form.Item label={'Light color'} layout={'horizontal'} style={{margin: 0}}>
             <Space.Compact>
               <Input
                 size={'small'}

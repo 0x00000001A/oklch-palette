@@ -1,8 +1,8 @@
 import {createStyles} from 'antd-style'
 import React, {FC, useMemo} from 'react'
 
-import {ColorGraph} from '../../components/ColorGraph'
 import {LCH_CHANNELS_ARRAY, LCH_CHANNELS_CONFIG} from '../../constants/colors.ts'
+import {ColorGraph} from '../ColorGraph'
 
 export type SidebarBodyProps = {
   // props

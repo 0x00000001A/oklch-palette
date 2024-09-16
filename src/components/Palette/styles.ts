@@ -67,12 +67,17 @@ export const useTableStyles = createStyles(({token}) => ({
 }))
 
 export const useCellStyles = createStyles(
-  (_, props: {color: string; isSelected: boolean}) => ({
+  ({token}, props: {color: string; isSelected: boolean; isValid?: boolean}) => ({
     root: css`
       display: flex;
       align-items: center;
       justify-content: center;
-      background: ${props.color};
+      --color-a: ${token.colorFillContent};
+      --color-b: ${token.colorBgLayout};
+      background: ${props.isValid
+        ? props.color
+        : `linear-gradient( -45deg, var(--color-a) 25%, var(--color-b) 25%, var(--color-b) 50%, var(--color-a) 50%, var(--color-a) 75%, var(--color-b) 75%, var(--color-b))`};
+      background-size: 6px 6px;
       height: 40px;
       position: relative;
       width: 64px;

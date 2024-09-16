@@ -4,9 +4,11 @@ import {createStore} from '../lib/StateManager'
 import defaultPalette from '../palettes/default.ts'
 import {
   hexToRgb,
+  isWithinGamut,
   oklabToOklch,
   oklchToRgb,
   rgbFloatToInt,
+  rgbToFloat,
   rgbToHex,
   rgbToXyz,
   xyzToOklab
@@ -20,6 +22,7 @@ export const createSchemaColor = (oklch: [number, number, number]): SchemaColor 
 
   return {
     hex,
+    isValid: isWithinGamut(oklchToRgb(oklch)),
     oklch,
     rgb,
     updatedAt: Date.now()
@@ -33,6 +36,7 @@ export const hexToSchemaColor = (hex: string): SchemaColor => {
 
   return {
     hex,
+    isValid: isWithinGamut(rgbToFloat(rgb)),
     oklch,
     rgb,
     updatedAt: Date.now()

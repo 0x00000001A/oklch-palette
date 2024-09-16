@@ -1,9 +1,37 @@
 import react from '@vitejs/plugin-react-swc'
-import {defineConfig} from 'vite'
+import {defineConfig, splitVendorChunkPlugin} from 'vite'
 import svgr from 'vite-plugin-svgr'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  build: {
+    minify: true,
+    modulePreload: {
+      polyfill: true
+    },
+    rollupOptions: {
+      output: {
+        assetFileNames: '[name].[ext]',
+        chunkFileNames: '[name].js',
+        entryFileNames: 'main.js',
+        format: 'es',
+        manualChunks: (id: string) => {
+          if (id.includes('rc-')) {
+            return 'rc'
+          }
+
+          if (id.includes('antd-')) {
+            return 'antd-misc'
+          }
+
+          if (id.includes('antd')) {
+            return 'antd'
+          }
+        }
+      },
+      preserveEntrySignatures: 'strict'
+    }
+  },
   plugins: [
     react(),
     svgr(),
@@ -16,6 +44,7 @@ export default defineConfig({
         })
       },
       name: 'vite-plugin-corp-headers'
-    }
+    },
+    splitVendorChunkPlugin()
   ]
 })

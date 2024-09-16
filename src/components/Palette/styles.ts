@@ -74,9 +74,7 @@ export const useCellStyles = createStyles(
       justify-content: center;
       --color-a: ${token.colorFillContent};
       --color-b: ${token.colorBgLayout};
-      background: ${props.isValid
-        ? props.color
-        : `linear-gradient( -45deg, var(--color-a) 25%, var(--color-b) 25%, var(--color-b) 50%, var(--color-a) 50%, var(--color-a) 75%, var(--color-b) 75%, var(--color-b))`};
+      background: ${props.isValid ? props.color : `transparent`};
       background-size: 6px 6px;
       height: 40px;
       position: relative;

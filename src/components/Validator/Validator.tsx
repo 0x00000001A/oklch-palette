@@ -12,6 +12,7 @@ import ValidatorResults from './Results.tsx'
 
 const useStyles = createStyles(({token}) => ({
   root: css`
+    padding: ${token.sizeSM}px ${token.sizeLG}px ${token.sizeLG}px;
     background: ${token.colorBgContainer};
     border-top: 1px solid ${token.colorBorder};
   `
@@ -85,7 +86,7 @@ const Validator = () => {
   }, [columns, rows])
 
   return (
-    <Row className={styles.root} gutter={[8, 8]} style={{padding: 8}}>
+    <Row className={styles.root} gutter={[16, 16]} style={{padding: `8px 16px 16px`}}>
       <Col span={8}>
         <Flex gap={8} vertical>
           <Form.Item label={'Against'} layout={'horizontal'} style={{margin: 0}}>

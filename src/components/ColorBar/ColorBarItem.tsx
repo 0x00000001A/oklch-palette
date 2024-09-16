@@ -34,8 +34,8 @@ const ColorBarItem: FC<ColorBarItemProps> = ({
   }, [colorsFrom, index, setSelectedColor])
 
   const styles = useMemo(() => {
-    return {...style, color: color.hex}
-  }, [color.hex, style])
+    return {...style, color: color.isValid ? color.hex : 'transparent'}
+  }, [color.hex, color.isValid, style])
 
   return (
     <div

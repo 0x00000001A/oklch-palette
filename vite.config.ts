@@ -16,10 +16,6 @@ export default defineConfig({
         entryFileNames: 'main.js',
         format: 'es',
         manualChunks: (id: string) => {
-          if (id.includes('rc-')) {
-            return 'rc'
-          }
-
           if (id.includes('antd-')) {
             return 'antd-misc'
           }

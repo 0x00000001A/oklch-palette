@@ -1,6 +1,6 @@
 import {createStyles, css} from 'antd-style'
 import {observer} from 'mobx-react-lite'
-import {FC, useCallback, useEffect, useRef, useState} from 'react'
+import {FC, useCallback, useEffect, useRef} from 'react'
 
 import {GRAPH_HEIGHT, GRAPH_WIDTH} from '../../constants/colors.ts'
 import {PaletteColor} from '../../store/PaletteStore.ts'
@@ -45,7 +45,6 @@ const ColorGraph: FC<ColorGraphProps & {colors: PaletteColor[]; workerGroup: str
     const {styles} = useStyles()
 
     const canvasRef = useRef<HTMLCanvasElement>(null)
-    const [canvasSize, setCanvasSize] = useState([0, 0])
 
     const handleImageDataReceived = useCallback(
       ({data}: MessageEvent<ColorsMessageResponse>) => {
@@ -90,18 +89,6 @@ const ColorGraph: FC<ColorGraphProps & {colors: PaletteColor[]; workerGroup: str
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(subscribeToColorsWorkerUpdates, [])
 
-    useEffect(() => {
-      if (!canvasRef.current) {
-        return
-      }
-
-      const canvas = canvasRef.current
-      const width = Math.ceil(canvas.width / colors.length)
-      const height = canvas.height
-
-      setCanvasSize([width, height])
-    }, [colors])
-
     return (
       <div className={styles.root} style={{width: GRAPH_WIDTH}}>
         <div className={styles.canvasWrapper}>
@@ -129,14 +116,12 @@ const ColorGraph: FC<ColorGraphProps & {colors: PaletteColor[]; workerGroup: str
                 channel={channel}
                 color={color}
                 colorsLength={colors.length}
-                height={canvasSize[1]}
                 index={index}
                 key={color.id}
                 max={max}
                 min={min}
                 nextColor={colors[index + 1] || color}
                 step={step}
-                width={canvasSize[0]}
                 workerGroup={workerGroup}
               />
             ))}

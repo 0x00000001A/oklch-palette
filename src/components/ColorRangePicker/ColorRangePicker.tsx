@@ -1,9 +1,9 @@
 import {Slider} from 'antd'
 import {createStyles, css} from 'antd-style'
 import {observer} from 'mobx-react-lite'
-import {FC, useEffect} from 'react'
+import {FC, useEffect, useMemo} from 'react'
 
-import {LCH_CHANNELS_ARRAY} from '../../constants/colors.ts'
+import {GRAPH_HEIGHT, GRAPH_WIDTH, LCH_CHANNELS_ARRAY} from '../../constants/colors.ts'
 import {PaletteColor} from '../../store/PaletteStore.ts'
 import {colorsWorkerManager} from '../../worker'
 
@@ -11,79 +11,68 @@ import {ColorRangePickerProps} from './types.ts'
 
 const useStyles = createStyles(() => ({
   root: css`
+    top: 5px;
     margin: 0;
     padding: 0;
+    /*noinspection CssUnusedSymbol*/
+    .ant-slider-rail {
+      top: -5px;
+    }
   `
 }))
 
 const ColorRangePicker: FC<
   ColorRangePickerProps & {color: PaletteColor; nextColor: PaletteColor}
 > = observer(
-  ({
-    channel,
-    color,
-    colorsLength,
-    height,
-    index,
-    max,
-    min,
-    nextColor,
-    step,
-    width,
-    workerGroup
-  }) => {
+  ({channel, color, colorsLength, index, max, min, nextColor, step, workerGroup}) => {
     const {styles} = useStyles()
 
     const handleChange = (value: number) => {
-      // console.log(event)
-      // if (event.target === document.activeElement) {
       color.updateOklchChannelValue(channel, Number(value))
-      // }
     }
 
     const handleFocus = () => {
       color.setSelected()
     }
 
-    const handleValueChange = () => {
-      if (!width || !height) {
-        return
-      }
-
+    const workerData = useMemo(() => {
       const channelsToUpdate = LCH_CHANNELS_ARRAY.filter((i) => i !== channel)
-
       const colors = [[...color.oklch], [...nextColor.oklch]]
 
       const workerMessage = {
         colors,
-        height,
+        height: GRAPH_HEIGHT,
         index,
-        width
+        width: Math.ceil(GRAPH_WIDTH / colorsLength - 1)
       }
 
-      channelsToUpdate.forEach((channelToUpdate) => {
+      return {channelsToUpdate, workerMessage}
+    }, [channel, color.oklch, colorsLength, index, nextColor.oklch])
+
+    const handleValueChange = () => {
+      workerData.channelsToUpdate.forEach((channelToUpdate) => {
         colorsWorkerManager.runTask({
-          ...workerMessage,
+          ...workerData.workerMessage,
           channel: `${channelToUpdate}-${workerGroup}`,
           colorChannel: channelToUpdate,
-          id: `${channelToUpdate}-${workerMessage.index}-${workerGroup}`
+          id: `${channelToUpdate}-${workerData.workerMessage.index}-${workerGroup}`
         })
       })
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    useEffect(handleValueChange, [width, height, color.hex, nextColor.hex, colorsLength])
+    useEffect(handleValueChange, [color.hex, nextColor.hex])
 
     return (
       <Slider
         styles={{
           handle: {
-            marginLeft: 2
+            transform: color.isSelected ? 'unset' : 'scale(0.65)'
           },
           rail: {
             left: '50%',
-            marginLeft: 2,
-            transform: 'translateX(-50%)'
+            transform: 'translateX(-50%)',
+            width: 1
           },
           track: {
             display: 'none'
@@ -91,6 +80,9 @@ const ColorRangePicker: FC<
           tracks: {
             display: 'none'
           }
+        }}
+        tooltip={{
+          open: false
         }}
         className={styles.root}
         max={max}

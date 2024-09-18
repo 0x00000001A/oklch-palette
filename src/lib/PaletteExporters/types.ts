@@ -1,9 +1,7 @@
-import {SchemaColor} from '../../state'
-
 export type PaletteExporterHandler = (
   rowNames: string[],
   colNames: string[],
-  palette: SchemaColor[][]
+  palette: {hex: string}[][]
 ) => string
 
 export type PaletteExporter = {

@@ -18,6 +18,38 @@ function generateNumbersBetween(min: number, max: number, amount: number) {
     .map((_, y) => min + increments * y)
 }
 
+function generatePixels(
+  index: number,
+  currColor: number[],
+  nextColor: number[],
+  width: number
+) {
+  nextColor = nextColor ? nextColor : currColor
+
+  if (!index) {
+    return [
+      [
+        ...generateNumbersBetween(currColor[0], currColor[0], Math.round(width / 2)),
+        ...generateNumbersBetween(currColor[0], nextColor[0], Math.round(width / 2))
+      ],
+      [
+        ...generateNumbersBetween(currColor[1], currColor[1], Math.round(width / 2)),
+        ...generateNumbersBetween(currColor[1], nextColor[1], Math.round(width / 2))
+      ],
+      [
+        ...generateNumbersBetween(currColor[2], currColor[2], Math.round(width / 2)),
+        ...generateNumbersBetween(currColor[2], nextColor[2], Math.round(width / 2))
+      ]
+    ]
+  }
+
+  return [
+    generateNumbersBetween(currColor[0], nextColor[0], width),
+    generateNumbersBetween(currColor[1], nextColor[1], width),
+    generateNumbersBetween(currColor[2], nextColor[2], width)
+  ]
+}
+
 self.addEventListener('message', (event: MessageEvent<ColorsMessagePayload>) => {
   const {channel, colorChannel, colors, height, index} = event.data
   const originalWidth = event.data.width
@@ -33,14 +65,7 @@ self.addEventListener('message', (event: MessageEvent<ColorsMessagePayload>) => 
   const buffer = new ArrayBuffer(size * 4)
   const result = new Uint8ClampedArray(buffer)
 
-  const currColor = colors[0]
-  const nextColor = !index || colors[1] ? colors[1] : colors[0]
-
-  const [lightness, chroma, hue] = [
-    generateNumbersBetween(currColor[0], nextColor[0], width),
-    generateNumbersBetween(currColor[1], nextColor[1], width),
-    generateNumbersBetween(currColor[2], nextColor[2], width)
-  ]
+  const [lightness, chroma, hue] = generatePixels(index, colors[0], colors[1], width)
 
   for (let pixelIndex = 0; pixelIndex < size; pixelIndex += 1) {
     const bufferIndex = pixelIndex * 4

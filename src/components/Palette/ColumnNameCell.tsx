@@ -1,38 +1,30 @@
 import {Input} from 'antd'
-import {ChangeEvent, FC, useCallback, useState} from 'react'
+import {observer} from 'mobx-react-lite'
+import {ChangeEvent, FC, useCallback} from 'react'
 
-import {SchemaGroup, useColorsStore} from '../../state'
+import {PaletteColumn} from '../../store/PaletteStore.ts'
 
-const PaletteColumnNameCell: FC<{colIndex: number; column: SchemaGroup}> = ({
-  colIndex,
-  column
-}) => {
-  const [name, setName] = useState(column.name)
-
-  const renameColumn = useColorsStore((store) => store.renameColumn)
-  const setSelectedColumn = useColorsStore((state) => state.setSelectedColumn)
-
+const PaletteColumnNameCell: FC<{column: PaletteColumn}> = observer(({column}) => {
   const handleNameChange = useCallback(
-    (newName: ChangeEvent<HTMLInputElement>) => {
-      renameColumn(column.id, newName.target.value)
-      setName(newName.target.value)
+    (event: ChangeEvent<HTMLInputElement>) => {
+      column.setName(event.target.value)
     },
-    [renameColumn, column.id]
+    [column]
   )
 
   const handleColumnNameInputFocused = useCallback(() => {
-    setSelectedColumn(colIndex)
-  }, [colIndex, setSelectedColumn])
+    column.setSelected()
+  }, [column])
 
   return (
     <Input
       size={'small'}
-      value={name}
+      value={column.name}
       variant={'filled'}
       onChange={handleNameChange}
       onFocus={handleColumnNameInputFocused}
     />
   )
-}
+})
 
 export default PaletteColumnNameCell

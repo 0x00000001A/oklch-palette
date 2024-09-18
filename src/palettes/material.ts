@@ -273,6 +273,7 @@ const materialPalette = {
       '#DD2C00'
     ]
   ],
+  name: 'Material',
   rowNames: [
     'Red',
     'Pink',

@@ -1,43 +1,35 @@
 import {Input, Space} from 'antd'
-import {ChangeEvent, FC, useCallback, useState} from 'react'
+import {observer} from 'mobx-react-lite'
+import {ChangeEvent, FC, useCallback} from 'react'
 
-import {SchemaGroup, useColorsStore} from '../../state'
+import {PaletteRow} from '../../store/PaletteStore.ts'
 
 import PaletteDragHandle from './DragHandler.tsx'
 
-const PaletteRowNameCell: FC<{row: SchemaGroup; rowIndex: number}> = ({
-  row,
-  rowIndex
-}) => {
-  const [name, setName] = useState(row.name)
-
-  const renameRow = useColorsStore((store) => store.renameRow)
-  const setSelectedRow = useColorsStore((state) => state.setSelectedRow)
-
+const PaletteRowNameCell: FC<{row: PaletteRow}> = observer(({row}) => {
   const handleNameChange = useCallback(
-    (newName: ChangeEvent<HTMLInputElement>) => {
-      renameRow(row.id, newName.target.value)
-      setName(newName.target.value)
+    (event: ChangeEvent<HTMLInputElement>) => {
+      row.setName(event.target.value)
     },
-    [renameRow, row.id]
+    [row]
   )
 
   const handleRowNameInputFocused = useCallback(() => {
-    setSelectedRow(rowIndex)
-  }, [rowIndex, setSelectedRow])
+    row.setSelected()
+  }, [row])
 
   return (
     <Space size={'small'}>
       <PaletteDragHandle />
       <Input
         size={'small'}
-        value={name}
+        value={row.name}
         variant={'filled'}
         onChange={handleNameChange}
         onFocus={handleRowNameInputFocused}
       />
     </Space>
   )
-}
+})
 
 export default PaletteRowNameCell

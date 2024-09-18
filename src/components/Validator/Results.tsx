@@ -1,31 +1,27 @@
 import {Flex} from 'antd'
-import {FC, useMemo} from 'react'
+import {observer} from 'mobx-react-lite'
+import {FC} from 'react'
 
 import {validatorsNames} from '../../lib/ContrastValidators'
-import {SchemaColor} from '../../state'
+import {PaletteColor} from '../../store/PaletteStore.ts'
 
 import ValidatorResultsItem from './ResultsItem.tsx'
 
-const ValidatorResults: FC<{colorA: SchemaColor; colorB: SchemaColor}> = ({
-  colorA,
-  colorB
-}) => {
-  const results = useMemo(() => {
-    return validatorsNames.map((validatorName) => (
-      <ValidatorResultsItem
-        colorA={colorA}
-        colorB={colorB}
-        key={validatorName}
-        name={validatorName}
-      />
-    ))
-  }, [colorA, colorB])
-
-  return (
-    <Flex gap={8} vertical>
-      {results}
-    </Flex>
-  )
-}
+const ValidatorResults: FC<{colorA: PaletteColor; colorB: PaletteColor}> = observer(
+  ({colorA, colorB}) => {
+    return (
+      <Flex gap={8} vertical>
+        {validatorsNames.map((validatorName) => (
+          <ValidatorResultsItem
+            colorA={colorA}
+            colorB={colorB}
+            key={validatorName}
+            name={validatorName}
+          />
+        ))}
+      </Flex>
+    )
+  }
+)
 
 export default ValidatorResults

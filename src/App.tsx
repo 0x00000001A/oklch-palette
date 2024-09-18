@@ -6,6 +6,7 @@ import {Navbar} from './components/Navbar'
 import {Palette} from './components/Palette'
 import {Sidebar} from './components/Sidebar'
 import {Validator} from './components/Validator'
+import {palette} from './main.tsx'
 
 const useStyle = createStyles(({css, token}) => ({
   body: css`
@@ -45,12 +46,12 @@ const App: FC = () => {
   return (
     <div className={styles.root}>
       <div className={styles.header}>
-        <Navbar />
+        <Navbar palette={palette} />
       </div>
       <Flex className={styles.body} wrap={'nowrap'}>
         <Flex style={{flexGrow: 1, overflow: 'hidden'}} vertical>
-          <Palette />
-          <Validator />
+          <Palette palette={palette} />
+          <Validator palette={palette} />
         </Flex>
         <Sidebar />
       </Flex>

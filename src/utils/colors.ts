@@ -35,9 +35,9 @@ export function rgbToXyz(rgb: Color): Color {
   const linearRgb = rgbToLinearRgb(srgb)
 
   const xyzMatrix: Matrix = [
-    [506752 / 1228815, 87881 / 245763, 12673 / 70218],
-    [87098 / 409605, 175762 / 245763, 12673 / 175545],
-    [7918 / 409605, 87881 / 737289, 1001167 / 1053270]
+    [0.4124564, 0.3575761, 0.1804375],
+    [0.2126729, 0.7151522, 0.072175],
+    [0.0193339, 0.119192, 0.9503041]
   ]
 
   return multiplyMatrixAndVector(xyzMatrix, linearRgb)
@@ -137,13 +137,12 @@ export function xyzToOklab(xyz: Color): Color {
 
 // http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html
 export function oklabToOklch(oklab: Color): Color {
-  const l = oklab[0]
-  const c = Math.sqrt(Math.pow(oklab[1], 2) + Math.pow(oklab[2], 2))
-  const hRad = Math.atan2(oklab[2], oklab[1])
-  const hDeg = (hRad * 180) / Math.PI
-  const h = hDeg < 0 ? hDeg + 360 : hDeg
-
-  return [l, c, h]
+  const hue = (Math.atan2(oklab[2], oklab[1]) * 180) / Math.PI
+  return [
+    oklab[0], // L is still L
+    Math.sqrt(oklab[1] ** 2 + oklab[2] ** 2), // Chroma
+    hue >= 0 ? hue : hue + 360 // Hue, in degrees [0 to 360)
+  ]
 }
 
 export function hexShortToFull(hex: string) {
@@ -197,9 +196,9 @@ export function oklabToXyz(oklab: Color): Color {
 // https://www.w3.org/TR/css-color-4/#color-conversion-code
 export function xyzToRgb(xyz: Color): Color {
   const m: Matrix = [
-    [12831 / 3959, -329 / 214, -1974 / 3959],
-    [-851781 / 878810, 1648619 / 878810, 36519 / 878810],
-    [705 / 12673, -2585 / 12673, 705 / 667]
+    [3.2404542, -1.5371385, -0.4985314],
+    [-0.969266, 1.8760108, 0.041556],
+    [0.0556434, -0.2040259, 1.0572252]
   ]
 
   return multiplyMatrixAndVector(m, xyz)
@@ -272,7 +271,7 @@ export function hsvToRgb([h, s, v]: [number, number, number]) {
   return [c[0] * 255, c[1] * 255, c[2] * 255]
 }
 
-export function isValidHex(hex: string) {
+export function isValidHex(hex: string = '') {
   // mb shorter
   return /^#([A-Z0-9]{3}){1,2}$/i.test(hex)
 }

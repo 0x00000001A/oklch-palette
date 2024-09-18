@@ -2,13 +2,14 @@ import {DeleteOutlined} from '@ant-design/icons'
 import {Button, Popconfirm, PopconfirmProps} from 'antd'
 import {FC, useCallback} from 'react'
 
+import {PaletteColumn} from '../../store/PaletteStore.ts'
+
 const PaletteCellRemoveColumn: FC<{
-  columnId: string
-  onRemove: (columnId: string) => void
-}> = ({columnId, onRemove}) => {
+  column: PaletteColumn
+}> = ({column}) => {
   const confirm: PopconfirmProps['onConfirm'] = useCallback(() => {
-    onRemove(columnId)
-  }, [onRemove, columnId])
+    column.delete()
+  }, [column])
 
   return (
     <Popconfirm

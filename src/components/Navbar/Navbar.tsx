@@ -11,10 +11,12 @@ import {
 } from '@ant-design/icons'
 import {Button, Divider, Flex, Space} from 'antd'
 import {createStyles, css, useThemeMode} from 'antd-style'
-import {FC, useCallback} from 'react'
+import {observer} from 'mobx-react-lite'
+import {useCallback} from 'react'
 
-import {INSERT_POSITIONS} from '../../state'
-import {useColorsStore} from '../../state'
+import {LCH_CHANNELS_NAMES} from '../../constants/colors.ts'
+import {PaletteStore} from '../../store/PaletteStore.ts'
+import {INSERT_POSITIONS} from '../../store/types.ts'
 
 import ExportDropdown from './ExportDropdown/ExportDropdown.tsx'
 import {PaletteDropdown} from './PaletteDropdown'
@@ -26,70 +28,77 @@ const useStyles = createStyles(({token}) => ({
   `
 }))
 
-const Navbar: FC = () => {
+const Navbar = observer(({palette}: {palette: PaletteStore}) => {
   const {styles} = useStyles()
   const {setThemeMode, themeMode} = useThemeMode()
-  const addToPalette = useColorsStore((store) => store.addToPalette)
-  const applyChannelValueTo = useColorsStore((store) => store.applyChannelValueTo)
 
   const handleInsertColorTonesAfterButtonClick = useCallback(() => {
-    addToPalette('col', INSERT_POSITIONS.AFTER)
-  }, [addToPalette])
+    palette.cloneColumn(INSERT_POSITIONS.AFTER)
+  }, [palette])
 
   const handleInsertColorTonesBeforeButtonClick = useCallback(() => {
-    addToPalette('col', INSERT_POSITIONS.BEFORE)
-  }, [addToPalette])
+    palette.cloneColumn(INSERT_POSITIONS.BEFORE)
+  }, [palette])
 
   const handleInsertColorFamilyAfterButtonClick = useCallback(() => {
-    addToPalette('row', INSERT_POSITIONS.AFTER)
-  }, [addToPalette])
+    palette.cloneRow(INSERT_POSITIONS.AFTER)
+  }, [palette])
 
   const handleInsertColorFamilyBeforeButtonClick = useCallback(() => {
-    addToPalette('row', INSERT_POSITIONS.BEFORE)
-  }, [addToPalette])
+    palette.cloneRow(INSERT_POSITIONS.BEFORE)
+  }, [palette])
 
-  const handleApplyHueToRowButtonClick = useCallback(() => {
-    applyChannelValueTo('row', 2)
-  }, [applyChannelValueTo])
+  const handleApplyHueToRowButtonClick = () => {
+    palette.selectedRow.setChannelValue(
+      LCH_CHANNELS_NAMES.HUE,
+      palette.selectedColor.oklch[2]
+    )
+  }
 
-  const handleApplyChromaToColButtonClick = useCallback(() => {
-    applyChannelValueTo('col', 1)
-  }, [applyChannelValueTo])
+  const handleApplyChromaToColButtonClick = () => {
+    palette.selectedColumn.setChannelValue(
+      LCH_CHANNELS_NAMES.CHROMA,
+      palette.selectedColor.oklch[1]
+    )
+  }
 
-  const handleApplyLightnessToColButtonClick = useCallback(() => {
-    applyChannelValueTo('col', 0)
-  }, [applyChannelValueTo])
+  const handleApplyLightnessToColButtonClick = () => {
+    palette.selectedColumn.setChannelValue(
+      LCH_CHANNELS_NAMES.LIGHTNESS,
+      palette.selectedColor.oklch[0]
+    )
+  }
 
   return (
     <nav className={styles.root}>
       <Flex justify={'space-between'}>
         <Space className="navbar__items">
-          <PaletteDropdown />
-          <ExportDropdown />
+          <PaletteDropdown palette={palette} />
+          <ExportDropdown palette={palette} />
           <Divider type={'vertical'} />
           <Button
             icon={<InsertRowLeftOutlined />}
             size={'small'}
             type={'text'}
-            onClick={handleInsertColorTonesAfterButtonClick}
+            onClick={handleInsertColorTonesBeforeButtonClick}
           />
           <Button
             icon={<InsertRowRightOutlined />}
             size={'small'}
             type={'text'}
-            onClick={handleInsertColorTonesBeforeButtonClick}
+            onClick={handleInsertColorTonesAfterButtonClick}
           />
           <Button
             icon={<InsertRowAboveOutlined />}
             size={'small'}
             type={'text'}
-            onClick={handleInsertColorFamilyAfterButtonClick}
+            onClick={handleInsertColorFamilyBeforeButtonClick}
           />
           <Button
             icon={<InsertRowBelowOutlined />}
             size={'small'}
             type={'text'}
-            onClick={handleInsertColorFamilyBeforeButtonClick}
+            onClick={handleInsertColorFamilyAfterButtonClick}
           />
           <Divider type={'vertical'} />
           <Button
@@ -146,6 +155,6 @@ const Navbar: FC = () => {
       </Flex>
     </nav>
   )
-}
+})
 
 export default Navbar

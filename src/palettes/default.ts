@@ -86,7 +86,7 @@ const defaultPalette = {
       '#383838'
     ]
   ],
-  name: 'Stripe',
+  name: 'Default',
   rowNames: ['Red', 'Yellow', 'Green', 'Blue', 'Purple', 'Secondary', 'Gray']
 }
 

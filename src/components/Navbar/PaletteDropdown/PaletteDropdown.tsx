@@ -1,22 +1,15 @@
-import {FolderOpenOutlined} from '@ant-design/icons'
+import {CaretDownFilled, FolderOpenOutlined} from '@ant-design/icons'
 import {Button, Dropdown, message} from 'antd'
-import {FC, useCallback, useMemo, useState} from 'react'
+import {observer} from 'mobx-react-lite'
+import {useCallback, useMemo, useState} from 'react'
 
 import palettes from '../../../palettes'
-import {useColorsStore} from '../../../state'
+import {PaletteStore} from '../../../store/PaletteStore.ts'
 
-const palettesOptions = Object.values(palettes).map((palette) => ({
-  ...palette,
-  key: palette.name,
-  label: palette.name
-}))
-
-const PaletteDropdown: FC = () => {
+const PaletteDropdown = observer(({palette}: {palette: PaletteStore}) => {
   const [messageApi, contextHolder] = message.useMessage()
-  const setPalette = useColorsStore((state) => state.setPalette)
 
   const [loading, setLoading] = useState(false)
-  const [paletteName, setPaletteName] = useState(palettesOptions[0].name)
 
   const handlePaletteSelected = useCallback(
     (option: {key: string}) => {
@@ -27,8 +20,7 @@ const PaletteDropdown: FC = () => {
       palettes[newPaletteName.toLowerCase()]
         .lazyImport()
         .then((module) => {
-          setPalette(module.default)
-          setPaletteName(newPaletteName)
+          palette.load(module.default)
           messageApi.success('Palette loaded')
         })
         .catch(() => {
@@ -40,7 +32,7 @@ const PaletteDropdown: FC = () => {
           }, 240)
         })
     },
-    [messageApi, setPalette]
+    [messageApi, palette]
   )
 
   const items = useMemo(() => {
@@ -60,11 +52,12 @@ const PaletteDropdown: FC = () => {
           size={'small'}
           type={'text'}
         >
-          <strong>Palette:</strong> {paletteName}
+          <strong>Palette:</strong> {palette.name}
+          <CaretDownFilled />
         </Button>
       </Dropdown>
     </>
   )
-}
+})
 
 export default PaletteDropdown

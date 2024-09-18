@@ -1,14 +1,13 @@
 import {createStyles, css} from 'antd-style'
-import {FC, useCallback, useEffect, useMemo, useRef, useState} from 'react'
+import {observer} from 'mobx-react-lite'
+import {FC, useCallback, useEffect, useRef, useState} from 'react'
 
 import {GRAPH_HEIGHT, GRAPH_WIDTH} from '../../constants/colors.ts'
-import {useColorsStore} from '../../state'
-import {getColorsLengthByDirection} from '../../state/selectors.ts'
+import {PaletteColor} from '../../store/PaletteStore.ts'
 import {colorsWorkerManager} from '../../worker'
 import {ColorsMessageResponse} from '../../worker/types.ts'
 import {ColorRangePicker} from '../ColorRangePicker'
 
-import ColorGraphValue from './ColorGraphValue.tsx'
 import {ColorGraphProps} from './types.ts'
 
 import './index.css'
@@ -41,120 +40,110 @@ const useStyles = createStyles(({token}) => ({
   `
 }))
 
-const ColorGraph: FC<ColorGraphProps> = ({
-  channel,
-  colorsFrom = 'row',
-  max,
-  min,
-  step
-}) => {
-  const {styles} = useStyles()
-  const colorsLen = useColorsStore(getColorsLengthByDirection(colorsFrom))
+const ColorGraph: FC<ColorGraphProps & {colors: PaletteColor[]; workerGroup: string}> =
+  observer(({channel, colors = [], max, min, step, workerGroup}) => {
+    const {styles} = useStyles()
 
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [canvasSize, setCanvasSize] = useState([0, 0])
+    const canvasRef = useRef<HTMLCanvasElement>(null)
+    const [canvasSize, setCanvasSize] = useState([0, 0])
 
-  const handleImageDataReceived = useCallback(
-    ({data}: MessageEvent<ColorsMessageResponse>) => {
+    const handleImageDataReceived = useCallback(
+      ({data}: MessageEvent<ColorsMessageResponse>) => {
+        if (!canvasRef.current) {
+          return
+        }
+
+        const context = canvasRef.current.getContext('2d')
+
+        if (!context) {
+          console.error('Failed to initiate canvas context')
+          return
+        }
+
+        const imageData = new ImageData(
+          new Uint8ClampedArray(data.buffer),
+          data.width,
+          data.height
+        )
+
+        let x = data.index * data.width + Math.round(data.width / 2)
+
+        if (!data.index) {
+          x = 0
+        }
+
+        context.putImageData(imageData, x, 0)
+      },
+      []
+    )
+
+    const subscribeToColorsWorkerUpdates = () => {
+      const workerChannel = `${channel}-${workerGroup}`
+
+      colorsWorkerManager.subscribe(workerChannel, handleImageDataReceived)
+
+      return () => {
+        colorsWorkerManager.unsubscribe(workerChannel, handleImageDataReceived)
+      }
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(subscribeToColorsWorkerUpdates, [])
+
+    useEffect(() => {
       if (!canvasRef.current) {
         return
       }
 
-      const context = canvasRef.current.getContext('2d')
+      const canvas = canvasRef.current
+      const width = Math.ceil(canvas.width / colors.length)
+      const height = canvas.height
 
-      if (!context) {
-        console.error('Failed to initiate canvas context')
-        return
-      }
+      setCanvasSize([width, height])
+    }, [colors])
 
-      const imageData = new ImageData(
-        new Uint8ClampedArray(data.buffer),
-        data.width,
-        data.height
-      )
-
-      let x = data.index * data.width + Math.round(data.width / 2)
-
-      if (!data.index) {
-        x = 0
-      }
-
-      context.putImageData(imageData, x, 0)
-    },
-    []
-  )
-
-  useEffect(() => {
-    if (!canvasRef.current) {
-      return
-    }
-
-    const canvas = canvasRef.current
-    const width = Math.ceil(canvas.width / colorsLen)
-    const height = canvas.height
-
-    setCanvasSize([width, height])
-  }, [colorsLen])
-
-  const colorValues = useMemo(() => {
-    return new Array(colorsLen)
-      .fill(0)
-      .map((_, index: number) => (
-        <ColorGraphValue
-          channel={channel}
-          colorsFrom={colorsFrom}
-          index={index}
-          key={index}
-        />
-      ))
-  }, [channel, colorsFrom, colorsLen])
-
-  const colorRangePickers = useMemo(() => {
-    return new Array(colorsLen)
-      .fill(0)
-      .map((_: number, index: number) => (
-        <ColorRangePicker
-          channel={channel}
-          colorsFrom={colorsFrom}
-          colorsLength={colorsLen}
-          height={canvasSize[1]}
-          index={index}
-          key={index}
-          max={max}
-          min={min}
-          step={step}
-          width={canvasSize[0]}
-        />
-      ))
-  }, [canvasSize, channel, colorsFrom, colorsLen, max, min, step])
-
-  const subscribeToColorsWorkerUpdates = () => {
-    const workerChannel = `${channel}-${colorsFrom}`
-
-    colorsWorkerManager.subscribe(workerChannel, handleImageDataReceived)
-
-    return () => {
-      colorsWorkerManager.unsubscribe(workerChannel, handleImageDataReceived)
-    }
-  }
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(subscribeToColorsWorkerUpdates, [])
-
-  return (
-    <div className={styles.root} style={{width: GRAPH_WIDTH}}>
-      <div className={'color-graph__values'}>{colorValues}</div>
-      <div className={styles.canvasWrapper}>
-        <canvas
-          className={'color-graph__canvas'}
-          height={GRAPH_HEIGHT}
-          ref={canvasRef}
-          width={GRAPH_WIDTH}
-        />
-        {colorRangePickers}
+    return (
+      <div className={styles.root} style={{width: GRAPH_WIDTH}}>
+        <div className={styles.canvasWrapper}>
+          <canvas
+            className={'color-graph__canvas'}
+            height={GRAPH_HEIGHT}
+            ref={canvasRef}
+            width={GRAPH_WIDTH}
+          />
+          <div
+            style={{
+              display: 'grid',
+              gridAutoColumns: '1fr',
+              gridAutoFlow: 'column',
+              height: '100%',
+              justifyItems: 'center',
+              left: 0,
+              position: 'absolute',
+              top: 0,
+              width: '100%'
+            }}
+          >
+            {colors.map((color, index) => (
+              <ColorRangePicker
+                channel={channel}
+                color={color}
+                colorsLength={colors.length}
+                height={canvasSize[1]}
+                index={index}
+                key={color.id}
+                max={max}
+                min={min}
+                nextColor={colors[index + 1] || color}
+                step={step}
+                width={canvasSize[0]}
+                workerGroup={workerGroup}
+              />
+            ))}
+          </div>
+        </div>
       </div>
-    </div>
-  )
-}
+    )
+  })
 
 export default ColorGraph

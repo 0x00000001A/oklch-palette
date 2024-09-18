@@ -1,9 +1,9 @@
 import {HTMLAttributes} from 'react'
 
-import {ColorsDirection} from '../../state'
+import {PaletteColor} from '../../store/PaletteStore.ts'
 
-export type ColorBarProps = HTMLAttributes<HTMLDivElement> & {
-  colorsFrom: ColorsDirection
+export type ColorBarProps = HTMLAttributes<HTMLDivElement>
+
+export type ColorBarItemProps = Omit<ColorBarProps, 'color' | 'colorsFrom'> & {
+  color: PaletteColor
 }
-
-export type ColorBarItemProps = ColorBarProps & {index: number}

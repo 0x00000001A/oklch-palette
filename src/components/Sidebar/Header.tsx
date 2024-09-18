@@ -1,10 +1,12 @@
 import {ColorPicker, Flex, Form, Input, Space, Typography, theme} from 'antd'
 import {createStyles} from 'antd-style'
 import {AggregationColor} from 'antd/es/color-picker/color'
+import {observer} from 'mobx-react-lite'
 import {ChangeEvent, FC, useCallback, useEffect, useState} from 'react'
 
-import {useColorsStore} from '../../state'
-import {isValidHex, rgbToHex} from '../../utils/colors.ts'
+import {palette} from '../../main.tsx'
+import {PaletteStore} from '../../store/PaletteStore.ts'
+import {isValidHex} from '../../utils/colors.ts'
 import {ColorBar} from '../ColorBar'
 import ColorForm from '../ColorForm/ColorForm.tsx'
 
@@ -12,14 +14,8 @@ export type SidebarHeaderProps = {
   // props
 }
 
-const ColorInfoForm: FC = () => {
-  const selectedColor = useColorsStore(
-    (state) => state.colors[state.selectedRow][state.selectedCol]
-  )
-
-  const [hex, setHex] = useState(selectedColor.hex)
-
-  const updateValue = useColorsStore((state) => state.setSelectedColorValue)
+const ColorInfoForm = observer(({palette}: {palette: PaletteStore}) => {
+  const [hex, setHex] = useState(palette.selectedColor.hex)
 
   const handleHexValueChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -28,34 +24,30 @@ const ColorInfoForm: FC = () => {
       setHex(value)
 
       if (isValidHex(value)) {
-        updateValue(value)
+        palette.selectedColor.setHexColor(value)
       }
     },
-    [updateValue]
+    [palette.selectedColor]
   )
 
-  const handleHexValueColorPickerChange = useCallback(
-    (event: AggregationColor) => {
-      const {b, g, r} = event.toRgb()
-      const value = rgbToHex([r, g, b])
-
-      updateValue(value)
-    },
-    [updateValue]
-  )
+  const handleHexValueColorPickerChange = (event: AggregationColor) => {
+    const {b, g, r} = event.toRgb()
+    palette.selectedColor.setRgbColor([r, g, b])
+    setHex(palette.selectedColor.hex)
+  }
 
   const handleInputBlur = useCallback(() => {
     if (!isValidHex(hex)) {
-      setHex(selectedColor.hex)
+      setHex(palette.selectedColor.hex)
     }
-  }, [hex, selectedColor.hex])
+  }, [hex, palette.selectedColor.hex])
 
   const handleColorHexChanged = useCallback(() => {
-    setHex(selectedColor.hex)
-  }, [selectedColor])
+    setHex(palette.selectedColor.hex)
+  }, [palette.selectedColor.hex])
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(handleColorHexChanged, [selectedColor])
+  useEffect(handleColorHexChanged, [palette.selectedColor.hex])
 
   return (
     <Form.Item label={'Hex value:'} layout={'horizontal'}>
@@ -77,20 +69,16 @@ const ColorInfoForm: FC = () => {
       </Space.Compact>
     </Form.Item>
   )
-}
+})
 
-const ColorInfo: FC = () => {
-  const name = useColorsStore((state) => {
-    return `${state.rows[state.selectedRow].name}-${state.columns[state.selectedCol].name}`
-  })
-
+const ColorInfo = observer(({palette}: {palette: PaletteStore}) => {
   return (
     <Flex justify={'space-between'}>
-      <Typography.Text strong>{name}</Typography.Text>
-      <ColorInfoForm />
+      <Typography.Text strong>{palette.selectedColorName}</Typography.Text>
+      <ColorInfoForm palette={palette} />
     </Flex>
   )
-}
+})
 
 const useStyle = createStyles(({css, token}) => ({
   root: css`
@@ -98,21 +86,20 @@ const useStyle = createStyles(({css, token}) => ({
   `
 }))
 
-const SidebarHeader: FC<SidebarHeaderProps> = () => {
+const SidebarHeader: FC<SidebarHeaderProps> = observer(() => {
   const {styles} = useStyle()
   const {token} = theme.useToken()
 
   return (
     <Space className={styles.root} direction={'vertical'}>
-      <ColorInfo />
+      <ColorInfo palette={palette} />
       <ColorForm />
       <Flex gap={token.paddingSM}>
-        {/* @todo remove style */}
-        <ColorBar colorsFrom={'row'} style={{flexGrow: 1}} />
-        <ColorBar colorsFrom={'col'} style={{flexGrow: 1}} />
+        <ColorBar colors={palette.selectedColor.row.colors} />
+        <ColorBar colors={palette.selectedColor.column.colors} />
       </Flex>
     </Space>
   )
-}
+})
 
 export default SidebarHeader

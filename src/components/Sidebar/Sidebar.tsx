@@ -2,6 +2,8 @@ import {Flex} from 'antd'
 import {createStyles} from 'antd-style'
 import {FC} from 'react'
 
+import {palette} from '../../main.tsx'
+
 import SidebarBody from './Body.tsx'
 import SidebarHeader from './Header.tsx'
 
@@ -20,7 +22,7 @@ const Sidebar: FC = () => {
   return (
     <Flex className={styles.root} vertical>
       <SidebarHeader />
-      <SidebarBody />
+      <SidebarBody palette={palette} />
     </Flex>
   )
 }

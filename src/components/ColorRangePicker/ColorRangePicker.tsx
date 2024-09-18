@@ -65,6 +65,13 @@ const ColorRangePicker: FC<
 
     return (
       <Slider
+        style={{
+          left:
+            index * Math.ceil(GRAPH_WIDTH / colorsLength - 1) +
+            Math.ceil((GRAPH_WIDTH / colorsLength - 1) / 2) -
+            5,
+          position: 'absolute'
+        }}
         styles={{
           handle: {
             transform: color.isSelected ? 'unset' : 'scale(0.65)'

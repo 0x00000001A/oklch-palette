@@ -29,16 +29,16 @@ function generatePixels(
   if (!index) {
     return [
       [
-        ...generateNumbersBetween(currColor[0], currColor[0], Math.round(width / 2)),
-        ...generateNumbersBetween(currColor[0], nextColor[0], Math.round(width / 2))
+        ...generateNumbersBetween(currColor[0], currColor[0], Math.ceil(width / 2)),
+        ...generateNumbersBetween(currColor[0], nextColor[0], Math.ceil(width / 2))
       ],
       [
-        ...generateNumbersBetween(currColor[1], currColor[1], Math.round(width / 2)),
-        ...generateNumbersBetween(currColor[1], nextColor[1], Math.round(width / 2))
+        ...generateNumbersBetween(currColor[1], currColor[1], Math.ceil(width / 2)),
+        ...generateNumbersBetween(currColor[1], nextColor[1], Math.ceil(width / 2))
       ],
       [
-        ...generateNumbersBetween(currColor[2], currColor[2], Math.round(width / 2)),
-        ...generateNumbersBetween(currColor[2], nextColor[2], Math.round(width / 2))
+        ...generateNumbersBetween(currColor[2], currColor[2], Math.ceil(width / 2)),
+        ...generateNumbersBetween(currColor[2], nextColor[2], Math.ceil(width / 2))
       ]
     ]
   }
@@ -53,7 +53,7 @@ function generatePixels(
 self.addEventListener('message', (event: MessageEvent<ColorsMessagePayload>) => {
   const {channel, colorChannel, colors, height, index} = event.data
   const originalWidth = event.data.width
-  const halfWidth = Math.round(originalWidth / 2)
+  const halfWidth = Math.ceil(originalWidth / 2)
   let width = originalWidth
 
   if (!index) {

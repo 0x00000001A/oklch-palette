@@ -98,34 +98,20 @@ const ColorGraph: FC<ColorGraphProps & {colors: PaletteColor[]; workerGroup: str
             ref={canvasRef}
             width={GRAPH_WIDTH}
           />
-          <div
-            style={{
-              display: 'grid',
-              gridAutoColumns: '1fr',
-              gridAutoFlow: 'column',
-              height: '100%',
-              justifyItems: 'center',
-              left: 0,
-              position: 'absolute',
-              top: 0,
-              width: '100%'
-            }}
-          >
-            {colors.map((color, index) => (
-              <ColorRangePicker
-                channel={channel}
-                color={color}
-                colorsLength={colors.length}
-                index={index}
-                key={color.id}
-                max={max}
-                min={min}
-                nextColor={colors[index + 1] || color}
-                step={step}
-                workerGroup={workerGroup}
-              />
-            ))}
-          </div>
+          {colors.map((color, index) => (
+            <ColorRangePicker
+              channel={channel}
+              color={color}
+              colorsLength={colors.length}
+              index={index}
+              key={color.id}
+              max={max}
+              min={min}
+              nextColor={colors[index + 1] || color}
+              step={step}
+              workerGroup={workerGroup}
+            />
+          ))}
         </div>
       </div>
     )
